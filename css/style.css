@@ -1168,3 +1168,7 @@ a.more:hover,
 }
 .t-slide { display: none; }
 .t-slide.active { display: block; }
+#authLabel {
+	color: #092957; /* hoặc màu chữ navbar bạn đang dùng cho Home/Shop... */
+	font-weight: 500;
+}

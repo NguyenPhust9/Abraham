@@ -1,0 +1,232 @@
+/* =========================================================
+   ABRAHAM — ADMIN PRODUCTS
+   Yêu cầu: supabaseClient (js/supabase.js) và việc xác thực
+   admin (js/admin-guard.js) phải chạy trước file này.
+========================================================= */
+
+let allProducts = [];
+let productModalInstance = null;
+
+/* ---------- Helper: format tiền VNĐ ---------- */
+function formatVND(value) {
+	return Number(value || 0).toLocaleString("vi-VN") + "đ";
+}
+
+/* ---------- Load toàn bộ sản phẩm ---------- */
+async function loadProducts() {
+	const tbody = document.getElementById("productsTableBody");
+	tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Đang tải dữ liệu...</td></tr>`;
+
+	const { data, error } = await supabaseClient
+		.from("products")
+		.select("*")
+		.order("id", { ascending: true });
+
+	if (error) {
+		tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">Lỗi tải dữ liệu: ${error.message}</td></tr>`;
+		return;
+	}
+
+	allProducts = data || [];
+	renderCategoryFilter();
+	renderStats();
+	renderTable();
+}
+
+/* ---------- Đổ danh mục vào bộ lọc ---------- */
+function renderCategoryFilter() {
+	const select = document.getElementById("categoryFilter");
+	const current = select.value;
+
+	const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))].sort();
+
+	select.innerHTML = `<option value="">Tất cả danh mục</option>` +
+		categories.map(c => `<option value="${c}">${c}</option>`).join("");
+
+	select.value = current;
+}
+
+/* ---------- Cập nhật thẻ thống kê ---------- */
+function renderStats() {
+	document.getElementById("statTotal").textContent = allProducts.length;
+	document.getElementById("statActive").textContent = allProducts.filter(p => p.is_active).length;
+	document.getElementById("statLowStock").textContent = allProducts.filter(p => (p.stock ?? 0) <= 5).length;
+	document.getElementById("statCategories").textContent = new Set(allProducts.map(p => p.category).filter(Boolean)).size;
+}
+
+/* ---------- Render bảng theo tìm kiếm / lọc hiện tại ---------- */
+function renderTable() {
+	const tbody = document.getElementById("productsTableBody");
+	const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+	const category = document.getElementById("categoryFilter").value;
+
+	let list = allProducts.filter(p => {
+		const matchKeyword = !keyword ||
+			(p.name || "").toLowerCase().includes(keyword) ||
+			(p.sku || "").toLowerCase().includes(keyword);
+		const matchCategory = !category || p.category === category;
+		return matchKeyword && matchCategory;
+	});
+
+	if (list.length === 0) {
+		tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Không tìm thấy sản phẩm nào.</td></tr>`;
+		return;
+	}
+
+	tbody.innerHTML = list.map(p => `
+		<tr>
+			<td><img src="${p.image_url || 'images/product-1.png'}" class="thumb" alt=""></td>
+			<td>
+				<div class="fw-semibold">${p.name || ""}</div>
+				${p.badge ? `<span class="badge bg-light text-dark border">${p.badge}</span>` : ""}
+			</td>
+			<td class="text-muted">${p.sku || "—"}</td>
+			<td>${p.category || "—"}</td>
+			<td class="fw-semibold">${formatVND(p.price)}</td>
+			<td>
+				<span class="badge ${(p.stock ?? 0) <= 5 ? "badge-stock-low" : "bg-light text-dark"}">${p.stock ?? 0}</span>
+			</td>
+			<td>
+				<span class="badge ${p.is_active ? "badge-active" : "badge-inactive"}">${p.is_active ? "Đang bán" : "Đã ẩn"}</span>
+			</td>
+			<td class="text-end">
+				<button class="btn-icon" onclick="openEditModal(${p.id})" title="Sửa">
+					<i class="fa fa-pen"></i>
+				</button>
+				<button class="btn-icon danger" onclick="handleDeleteProduct(${p.id})" title="Xoá">
+					<i class="fa fa-trash"></i>
+				</button>
+			</td>
+		</tr>
+	`).join("");
+}
+
+/* ---------- Mở modal thêm mới ---------- */
+function openAddModal() {
+	document.getElementById("productForm").reset();
+	document.getElementById("productId").value = "";
+	document.getElementById("productIsActive").checked = true;
+	document.getElementById("productModalTitle").textContent = "Thêm sản phẩm";
+	hideProductFormError();
+	productModalInstance.show();
+}
+
+/* ---------- Mở modal sửa ---------- */
+function openEditModal(id) {
+	const product = allProducts.find(p => p.id === id);
+	if (!product) return;
+
+	document.getElementById("productId").value = product.id;
+	document.getElementById("productName").value = product.name || "";
+	document.getElementById("productSku").value = product.sku || "";
+	document.getElementById("productCategory").value = product.category || "";
+	document.getElementById("productPrice").value = product.price || 0;
+	document.getElementById("productStock").value = product.stock || 0;
+	document.getElementById("productImageUrl").value = product.image_url || "";
+	document.getElementById("productBadge").value = product.badge || "";
+	document.getElementById("productDescription").value = product.description || "";
+	document.getElementById("productIsActive").checked = !!product.is_active;
+
+	document.getElementById("productModalTitle").textContent = "Sửa sản phẩm";
+	hideProductFormError();
+	productModalInstance.show();
+}
+
+/* ---------- Xoá sản phẩm ---------- */
+async function handleDeleteProduct(id) {
+	const product = allProducts.find(p => p.id === id);
+	const confirmed = confirm(`Xoá sản phẩm "${product ? product.name : id}"? Hành động này không thể hoàn tác.`);
+	if (!confirmed) return;
+
+	const { error } = await supabaseClient.from("products").delete().eq("id", id);
+
+	if (error) {
+		alert("Lỗi khi xoá: " + error.message);
+		return;
+	}
+
+	await loadProducts();
+}
+
+/* ---------- Lỗi trong modal ---------- */
+function showProductFormError(message) {
+	const box = document.getElementById("productFormError");
+	box.textContent = message;
+	box.classList.remove("d-none");
+}
+function hideProductFormError() {
+	document.getElementById("productFormError").classList.add("d-none");
+}
+
+/* ---------- Submit form thêm / sửa ---------- */
+async function handleProductSubmit(event) {
+	event.preventDefault();
+	hideProductFormError();
+
+	const id = document.getElementById("productId").value;
+	const submitBtn = document.getElementById("productSubmitBtn");
+
+	const payload = {
+		name: document.getElementById("productName").value.trim(),
+		sku: document.getElementById("productSku").value.trim() || null,
+		category: document.getElementById("productCategory").value.trim() || null,
+		price: Number(document.getElementById("productPrice").value) || 0,
+		stock: Number(document.getElementById("productStock").value) || 0,
+		image_url: document.getElementById("productImageUrl").value.trim() || null,
+		badge: document.getElementById("productBadge").value.trim() || null,
+		description: document.getElementById("productDescription").value.trim() || null,
+		is_active: document.getElementById("productIsActive").checked,
+		updated_at: new Date().toISOString()
+	};
+
+	submitBtn.disabled = true;
+	submitBtn.textContent = "Đang lưu...";
+
+	try {
+		let error;
+
+		if (id) {
+			// Sửa sản phẩm có sẵn
+			({ error } = await supabaseClient.from("products").update(payload).eq("id", id));
+		} else {
+			// Thêm sản phẩm mới
+			({ error } = await supabaseClient.from("products").insert(payload));
+		}
+
+		if (error) throw error;
+
+		productModalInstance.hide();
+		await loadProducts();
+
+	} catch (err) {
+		showProductFormError(err.message || "Có lỗi xảy ra, vui lòng thử lại.");
+	} finally {
+		submitBtn.disabled = false;
+		submitBtn.textContent = "Lưu sản phẩm";
+	}
+}
+
+/* ---------- Khởi tạo khi admin đã xác thực xong ---------- */
+document.addEventListener("adminVerified", function (e) {
+
+	// Hiện tên admin trên topbar
+	if (e.detail && e.detail.name) {
+		document.getElementById("adminNameLabel").textContent = e.detail.name;
+		document.getElementById("adminAvatar").textContent = e.detail.name.charAt(0).toUpperCase();
+	}
+
+	productModalInstance = new bootstrap.Modal(document.getElementById("productModal"));
+
+	loadProducts();
+
+	document.getElementById("openAddModalBtn").addEventListener("click", openAddModal);
+	document.getElementById("productForm").addEventListener("submit", handleProductSubmit);
+	document.getElementById("searchInput").addEventListener("input", renderTable);
+	document.getElementById("categoryFilter").addEventListener("change", renderTable);
+
+	document.getElementById("adminLogoutBtn").addEventListener("click", async function (evt) {
+		evt.preventDefault();
+		await supabaseClient.auth.signOut();
+		window.location.href = "index.html";
+	});
+});

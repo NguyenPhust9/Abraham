@@ -49,8 +49,12 @@
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
-						<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
+				<li>
+				<a href="#" id="authTrigger" data-bs-toggle="modal" data-bs-target="#authModal" class="nav-link">
+					<img src="images/user.svg">
+					<span id="authLabel" class="ms-1"></span>
+				</a>
+				</li>						<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
 					</ul>
 				</div>
 			</div>
@@ -529,10 +533,44 @@
 		</footer>
 		<!-- End Footer Section -->	
 
-
+<!-- Start Auth Modal -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="authModalTitle">Đăng nhập</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="authError" class="alert alert-danger d-none"></div>
+        <form id="authForm">
+          <div class="mb-3">
+            <label for="authEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="authEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="authPassword" class="form-label">Mật khẩu</label>
+            <input type="password" class="form-control" id="authPassword" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-primary w-100" id="authSubmitBtn">Đăng nhập</button>
+        </form>
+        <p class="text-center mt-3">
+          <span id="authSwitchText">Chưa có tài khoản?</span>
+          <a href="#" id="authSwitchLink">Đăng ký ngay</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Auth Modal -->
 		<script src="js/bootstrap.bundle.min.js"></script>
-		<script src="js/tiny-slider.js"></script>
-		<script src="js/custom.js"></script>
+<script src="js/tiny-slider.js"></script>
+<script src="js/custom.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+</body>
 	</body>
 
 </html>

@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Abraham — Quản trị</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --abx-navy: #092957;
+      --abx-navy-light: #153F73;
+      --abx-gold: #F2B72B;
+      --abx-gold-dark: #D99412;
+      --abx-red: #E51512;
+      --abx-white: #FFFFFF;
+      --abx-bg: #F7F9FC;
+      --abx-text: #667085;
+    }
+
+    body {
+      background: var(--abx-bg);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* ---------- Layout ---------- */
+    .admin-wrap { display: flex; min-height: 100vh; }
+
+    .admin-sidebar {
+      width: 250px;
+      background: var(--abx-navy);
+      color: #fff;
+      flex-shrink: 0;
+      padding: 24px 0;
+    }
+    .admin-sidebar .brand {
+      padding: 0 24px 24px;
+      font-size: 20px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      margin-bottom: 16px;
+    }
+    .admin-sidebar .brand span { color: var(--abx-gold); }
+    .admin-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      font-size: 14.5px;
+      transition: .15s;
+    }
+    .admin-nav a:hover { background: var(--abx-navy-light); color: #fff; }
+    .admin-nav a.active { background: var(--abx-navy-light); color: #fff; border-left: 3px solid var(--abx-gold); }
+    .admin-nav a i { width: 18px; text-align: center; }
+
+    .admin-sidebar .back-link {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,.1);
+    }
+
+    .admin-main { flex: 1; padding: 28px 32px; }
+
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .admin-topbar h1 { font-size: 24px; font-weight: 700; color: var(--abx-navy); margin: 0; }
+    .admin-topbar .user-chip {
+      background: #fff;
+      border-radius: 30px;
+      padding: 6px 16px 6px 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      font-size: 14px;
+    }
+    .admin-topbar .user-chip .avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--abx-gold); color: var(--abx-navy);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px;
+    }
+
+    .admin-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(9,41,87,.06);
+      padding: 22px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(9,41,87,.06);
+    }
+    .stat-card .stat-label { color: var(--abx-text); font-size: 13.5px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 700; color: var(--abx-navy); }
+    .stat-card .stat-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(242,183,43,.15); color: var(--abx-gold-dark);
+      font-size: 18px;
+    }
+
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    table.admin-table th {
+      font-size: 12.5px;
+      text-transform: uppercase;
+      color: var(--abx-text);
+      border-bottom: 2px solid #EEF1F6;
+      padding: 10px 12px;
+      white-space: nowrap;
+    }
+    table.admin-table td {
+      padding: 10px 12px;
+      vertical-align: middle;
+      font-size: 14.5px;
+      border-bottom: 1px solid #F1F3F7;
+    }
+    table.admin-table img.thumb {
+      width: 46px; height: 46px; object-fit: cover; border-radius: 8px; background: #F1F3F7;
+    }
+    .badge-stock-low { background: #FDE8E8; color: var(--abx-red); }
+    .badge-active { background: #E7F7EE; color: #16A34A; }
+    .badge-inactive { background: #F1F3F7; color: var(--abx-text); }
+
+    .btn-abx-gold {
+      background: var(--abx-gold);
+      border-color: var(--abx-gold);
+      color: var(--abx-navy);
+      font-weight: 600;
+    }
+    .btn-abx-gold:hover { background: var(--abx-gold-dark); border-color: var(--abx-gold-dark); color: #fff; }
+
+    .btn-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid #E4E7EC;
+      background: #fff;
+      color: var(--abx-text);
+    }
+    .btn-icon:hover { background: var(--abx-bg); }
+    .btn-icon.danger:hover { background: #FDE8E8; color: var(--abx-red); border-color: #FDE8E8; }
+
+    @media (max-width: 860px) {
+      .admin-sidebar { position: fixed; left: -260px; top: 0; bottom: 0; z-index: 50; transition: .2s; }
+      .admin-sidebar.open { left: 0; }
+      .admin-main { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Màn hình chờ kiểm tra quyền admin -->
+  <div id="adminCheckingScreen" class="d-flex align-items-center justify-content-center flex-column" style="height:100vh; gap:12px;">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="text-muted mb-0">Đang kiểm tra quyền truy cập...</p>
+  </div>
+
+  <!-- Nội dung admin thật -->
+  <div id="adminContent" class="d-none">
+    <div class="admin-wrap">
+
+      <!-- Sidebar -->
+      <aside class="admin-sidebar" id="adminSidebar">
+        <div class="brand">Abraham <span>Admin</span></div>
+        <nav class="admin-nav">
+          <a href="#" class="active"><i class="fa fa-bicycle"></i> Sản phẩm</a>
+        </nav>
+        <div class="admin-nav back-link">
+          <a href="index.html"><i class="fa fa-arrow-left"></i> Về trang chủ</a>
+          <a href="#" id="adminLogoutBtn"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="admin-main">
+
+        <div class="admin-topbar">
+          <h1>Quản lý sản phẩm</h1>
+          <div class="user-chip">
+            <span class="avatar" id="adminAvatar">A</span>
+            <span id="adminNameLabel">Admin</span>
+          </div>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-card d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-label">Tổng sản phẩm</div>
+                <div class="stat-value" id="statTotal">–</div>
+              </div>
+              <div class="stat-icon"><i class="fa fa-box"></i></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-label">Đang bán</div>
+                <div class="stat-value" id="statActive">–</div>
+              </div>
+              <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-label">Sắp hết hàng</div>
+                <div class="stat-value" id="statLowStock">–</div>
+              </div>
+              <div class="stat-icon"><i class="fa fa-triangle-exclamation"></i></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-label">Danh mục</div>
+                <div class="stat-value" id="statCategories">–</div>
+              </div>
+              <div class="stat-icon"><i class="fa fa-layer-group"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table card -->
+        <div class="admin-card">
+          <div class="table-toolbar">
+            <div class="d-flex gap-2 flex-wrap">
+              <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo tên hoặc SKU..." style="min-width:220px;">
+              <select id="categoryFilter" class="form-select" style="min-width:160px;">
+                <option value="">Tất cả danh mục</option>
+              </select>
+            </div>
+            <button class="btn btn-abx-gold" id="openAddModalBtn">
+              <i class="fa fa-plus me-1"></i> Thêm sản phẩm
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table admin-table mb-0">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Tên sản phẩm</th>
+                  <th>SKU</th>
+                  <th>Danh mục</th>
+                  <th>Giá</th>
+                  <th>Tồn kho</th>
+                  <th>Trạng thái</th>
+                  <th class="text-end">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <tr><td colspan="8" class="text-center text-muted py-4">Đang tải dữ liệu...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= Modal Thêm / Sửa sản phẩm ================= -->
+  <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalTitle">Thêm sản phẩm</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="productFormError" class="alert alert-danger d-none"></div>
+          <form id="productForm">
+            <input type="hidden" id="productId">
+
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label">Tên sản phẩm *</label>
+                <input type="text" class="form-control" id="productName" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">SKU</label>
+                <input type="text" class="form-control" id="productSku">
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Danh mục</label>
+                <input type="text" class="form-control" id="productCategory" placeholder="VD: Xe đạp 24">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Giá (VNĐ) *</label>
+                <input type="number" min="0" step="1000" class="form-control" id="productPrice" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Tồn kho *</label>
+                <input type="number" min="0" class="form-control" id="productStock" required>
+              </div>
+
+              <div class="col-md-8">
+                <label class="form-label">Link hình ảnh</label>
+                <input type="text" class="form-control" id="productImageUrl" placeholder="images/ten-file.png">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Badge (nhãn nhỏ)</label>
+                <input type="text" class="form-control" id="productBadge" placeholder="VD: Mới, Giảm giá">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Mô tả</label>
+                <textarea class="form-control" id="productDescription" rows="3"></textarea>
+              </div>
+
+              <div class="col-12 form-check ps-4">
+                <input type="checkbox" class="form-check-input" id="productIsActive" checked>
+                <label class="form-check-label" for="productIsActive">Đang bán (hiển thị ngoài shop)</label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
+              <button type="submit" class="btn btn-abx-gold" id="productSubmitBtn">Lưu sản phẩm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/admin-guard.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

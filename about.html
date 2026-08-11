@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Abraham Bike">
+	<meta name="description" content="About Abraham Bike - dependable bicycles built for everyday riding, backed by experience, quality, and nationwide support.">
+	<meta name="keywords" content="Abraham Bike, bicycle, bike shop, road bike, city bike, Vietnam">
+
+	<link rel="icon" type="image/png" href="images/favicon-abraham.png">
+
+	<!-- Same libraries/styles as Home -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<link href="css/tiny-slider.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+
+	<title>About Us — Abraham Bike</title>
+
+	<style>
+		/* =========================================================
+		   ABOUT PAGE
+		   Keeps the same visual language as the Abraham Home page:
+		   dark green, warm off-white, large imagery, generous spacing.
+		   ========================================================= */
+
+		.about-page {
+			background: #eff2f1;
+			color: #2f2f2f;
+		}
+
+		.about-page .section-kicker {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 14px;
+			color: #3b5d50;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: .16em;
+			text-transform: uppercase;
+		}
+
+		.about-page .section-kicker::before {
+			content: "";
+			width: 28px;
+			height: 2px;
+			background: #f9bf29;
+			display: inline-block;
+		}
+
+		.about-page .section-title {
+			max-width: 650px;
+		}
+
+		.about-page .section-copy {
+			color: #6a6a6a;
+			font-size: 15px;
+			line-height: 1.85;
+		}
+
+		/* HERO */
+		.hero.hero--about {
+			padding-top: 72px;
+			padding-bottom: 72px;
+			overflow: hidden;
+		}
+
+		.hero--about .intro-excerpt {
+			max-width: 560px;
+		}
+
+		.hero--about .intro-excerpt h1 {
+			font-size: clamp(42px, 5vw, 72px);
+			line-height: .98;
+			letter-spacing: -0.045em;
+			margin-bottom: 24px;
+		}
+
+		.hero--about .intro-excerpt p {
+			max-width: 500px;
+			font-size: 16px;
+			line-height: 1.8;
+		}
+
+		.hero--about .hero-img-wrap {
+			position: relative;
+			min-height: 470px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.hero--about .hero-img-wrap::before {
+			content: "";
+			position: absolute;
+			width: 390px;
+			height: 390px;
+			border-radius: 50%;
+			background: rgba(255,255,255,.08);
+			right: 6%;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+
+		.hero--about .hero-img-wrap img {
+			position: relative;
+			z-index: 2;
+			width: min(620px, 95%);
+			max-height: 500px;
+			object-fit: contain;
+			filter: drop-shadow(0 25px 35px rgba(0,0,0,.18));
+		}
+
+		.hero--about .hero-note {
+			display: flex;
+			gap: 28px;
+			flex-wrap: wrap;
+			margin-top: 30px;
+			color: rgba(255,255,255,.75);
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.hero--about .hero-note span {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.hero--about .hero-note i {
+			color: #f9bf29;
+		}
+
+		/* STATS */
+		.about-stats {
+			padding: 38px 0;
+			background: #ffffff;
+			border-bottom: 1px solid rgba(0,0,0,.06);
+		}
+
+		.about-stat {
+			padding: 14px 18px;
+			border-right: 1px solid #e8e8e8;
+		}
+
+		.about-stat:last-child {
+			border-right: 0;
+		}
+
+		.about-stat strong {
+			display: block;
+			font-size: clamp(30px, 4vw, 46px);
+			line-height: 1;
+			color: #3b5d50;
+			margin-bottom: 8px;
+			font-weight: 700;
+		}
+
+		.about-stat span {
+			font-size: 13px;
+			color: #6a6a6a;
+			font-weight: 600;
+		}
+
+		/* STORY */
+		.about-story {
+			padding: 110px 0;
+		}
+
+		.about-story .imgs-grid {
+			min-height: 560px;
+		}
+
+		.about-story .imgs-grid .grid img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.about-story .story-callout {
+			padding: 20px 22px;
+			margin: 28px 0 0;
+			background: #ffffff;
+			border-left: 4px solid #f9bf29;
+			border-radius: 0 12px 12px 0;
+			color: #4f4f4f;
+			font-size: 14px;
+			line-height: 1.75;
+			box-shadow: 0 12px 34px rgba(0,0,0,.05);
+		}
+
+		/* VALUE / WHY CHOOSE */
+		.about-values {
+			padding: 110px 0;
+			background: #ffffff;
+		}
+
+		.about-values .feature {
+			margin-bottom: 34px;
+		}
+
+		.about-values .feature .icon {
+			width: 54px;
+			height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 16px;
+			background: #eff2f1;
+			color: #3b5d50;
+			font-size: 20px;
+			margin-bottom: 18px;
+			position: relative;
+		}
+
+		.about-values .feature .icon::before {
+			display: none;
+		}
+
+		.about-values .feature h3 {
+			font-size: 15px;
+			font-weight: 700;
+			color: #2f2f2f;
+			margin-bottom: 8px;
+		}
+
+		.about-values .feature p {
+			color: #6a6a6a;
+			line-height: 1.75;
+		}
+
+		.about-values .img-wrap {
+			height: 590px;
+			border-radius: 22px;
+			overflow: hidden;
+		}
+
+		.about-values .img-wrap img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		/* ENGINEERING */
+		.about-engineering {
+			padding: 110px 0;
+		}
+
+		.engineering-visual {
+			position: relative;
+			background: #3b5d50;
+			border-radius: 28px;
+			min-height: 390px;
+			overflow: hidden;
+			margin-top: 45px;
+			margin-bottom: 34px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.engineering-visual::after {
+			content: "ABRAHAM";
+			position: absolute;
+			right: 25px;
+			bottom: -18px;
+			font-size: clamp(64px, 10vw, 150px);
+			font-weight: 800;
+			letter-spacing: -.07em;
+			color: rgba(255,255,255,.045);
+			pointer-events: none;
+		}
+
+		.engineering-visual img {
+			position: relative;
+			z-index: 2;
+			width: min(880px, 88%);
+			max-height: 350px;
+			object-fit: contain;
+			filter: drop-shadow(0 30px 38px rgba(0,0,0,.25));
+		}
+
+		.engineering-card {
+			height: 100%;
+			padding: 28px;
+			border-radius: 18px;
+			background: #ffffff;
+			border: 1px solid #e8e8e8;
+			transition: transform .2s ease, box-shadow .2s ease;
+		}
+
+		.engineering-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 16px 34px rgba(0,0,0,.07);
+		}
+
+		.engineering-card .number {
+			font-size: 12px;
+			font-weight: 800;
+			letter-spacing: .12em;
+			color: #f9bf29;
+			margin-bottom: 24px;
+		}
+
+		.engineering-card h3 {
+			font-size: 17px;
+			margin-bottom: 10px;
+		}
+
+		.engineering-card p {
+			margin-bottom: 0;
+			color: #6a6a6a;
+			font-size: 14px;
+			line-height: 1.7;
+		}
+
+		/* RIDE LIFESTYLE */
+		.about-rides {
+			padding: 110px 0;
+			background: #ffffff;
+		}
+
+		.ride-card {
+			display: block;
+			border-radius: 22px;
+			overflow: hidden;
+			background: #eff2f1;
+			height: 100%;
+			transition: transform .2s ease;
+		}
+
+		.ride-card:hover {
+			transform: translateY(-5px);
+		}
+
+		.ride-card .ride-img {
+			height: 310px;
+			overflow: hidden;
+		}
+
+		.ride-card .ride-img img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			transition: transform .4s ease;
+		}
+
+		.ride-card:hover .ride-img img {
+			transform: scale(1.035);
+		}
+
+		.ride-card .ride-body {
+			padding: 25px 26px 28px;
+		}
+
+		.ride-card .ride-label {
+			color: #3b5d50;
+			font-size: 11px;
+			font-weight: 800;
+			letter-spacing: .14em;
+			text-transform: uppercase;
+			margin-bottom: 8px;
+		}
+
+		.ride-card h3 {
+			font-size: 21px;
+			margin-bottom: 8px;
+		}
+
+		.ride-card p {
+			color: #6a6a6a;
+			font-size: 14px;
+			line-height: 1.7;
+			margin: 0;
+		}
+
+		/* PARTNERS */
+		.about-partners {
+			padding: 85px 0 105px;
+		}
+
+		.about-partners .partner-title {
+			margin-bottom: 38px;
+		}
+
+		/* CTA */
+		.about-cta {
+			padding: 0 0 110px;
+		}
+
+		.about-cta-box {
+			background: #3b5d50;
+			color: white;
+			border-radius: 28px;
+			padding: 58px 64px;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.about-cta-box::after {
+			content: "";
+			position: absolute;
+			width: 300px;
+			height: 300px;
+			border: 70px solid rgba(255,255,255,.04);
+			border-radius: 50%;
+			right: -70px;
+			top: -110px;
+		}
+
+		.about-cta-box h2 {
+			color: #ffffff;
+			font-size: clamp(32px, 4vw, 52px);
+			max-width: 640px;
+			margin-bottom: 16px;
+		}
+
+		.about-cta-box p {
+			color: rgba(255,255,255,.72);
+			max-width: 620px;
+			margin-bottom: 28px;
+		}
+
+		.about-cta-box .btn-secondary {
+			position: relative;
+			z-index: 2;
+		}
+
+		@media (max-width: 991.98px) {
+			.hero--about .hero-img-wrap {
+				min-height: 360px;
+				margin-top: 20px;
+			}
+
+			.about-story,
+			.about-values,
+			.about-engineering,
+			.about-rides {
+				padding: 80px 0;
+			}
+
+			.about-values .img-wrap {
+				height: 480px;
+				margin-top: 35px;
+			}
+
+			.about-stat {
+				border-right: 0;
+				border-bottom: 1px solid #ececec;
+			}
+
+			.about-cta-box {
+				padding: 42px 34px;
+			}
+		}
+
+		@media (max-width: 575.98px) {
+			.hero.hero--about {
+				padding-top: 48px;
+				padding-bottom: 48px;
+			}
+
+			.hero--about .hero-img-wrap {
+				min-height: 280px;
+			}
+
+			.hero--about .hero-note {
+				gap: 15px;
+			}
+
+			.engineering-visual {
+				min-height: 260px;
+			}
+
+			.ride-card .ride-img {
+				height: 260px;
+			}
+		}
+	</style>
+</head>
+
+<body class="about-page">
+
+	<!-- Start Header/Navigation -->
+	<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Abraham navigation bar">
+		<div class="container">
+			<a class="navbar-brand" href="index.html">
+				<img src="images/logo.jpg" alt="Abraham Logo" style="height: 140px;">
+			</a>
+
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarsFurni">
+				<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+					<li><a class="nav-link" href="index.html">Home</a></li>
+					<li><a class="nav-link" href="shop.html">Shop</a></li>
+					<li class="nav-item active"><a class="nav-link" href="about.html">About us</a></li>
+					<li><a class="nav-link" href="services.html">Services</a></li>
+					<li><a class="nav-link" href="blog.html">Blog</a></li>
+					<li><a class="nav-link" href="contact.html">Contact us</a></li>
+				</ul>
+
+				<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+					<li><a class="nav-link" href="#"><img src="images/user.svg" alt="Account"></a></li>
+					<li><a class="nav-link" href="cart.html"><img src="images/cart.svg" alt="Cart"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<!-- End Header/Navigation -->
+
+
+	<!-- Start About Hero -->
+	<div class="hero hero--about">
+		<div class="container">
+			<div class="row justify-content-between align-items-center">
+				<div class="col-lg-5">
+					<div class="intro-excerpt">
+						<span class="section-kicker text-white">About Abraham</span>
+						<h1>Built For The Road. Backed By Trust.</h1>
+						<p class="mb-4">
+							For more than two decades, Abraham has focused on one thing:
+							building dependable bicycles that make everyday riding easier,
+							safer, and more enjoyable.
+						</p>
+						<p>
+							<a href="shop.html" class="btn btn-secondary me-2">Explore Bikes</a>
+							<a href="#our-story" class="btn btn-white-outline">Our Story</a>
+						</p>
+
+						<div class="hero-note">
+							<span><i class="fa-solid fa-shield-halved"></i> Certified quality</span>
+							<span><i class="fa-solid fa-store"></i> Nationwide network</span>
+							<span><i class="fa-solid fa-screwdriver-wrench"></i> Rider-first support</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-7">
+					<div class="hero-img-wrap">
+						<!-- Uses an image already referenced by the Home page.
+							 Replace with your preferred About hero image if needed. -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End About Hero -->
+
+
+	<!-- Start Numbers -->
+	<section class="about-stats">
+		<div class="container">
+			<div class="row g-0 text-center">
+				<div class="col-6 col-lg-3 about-stat">
+					<strong>20+</strong>
+					<span>Years of experience</span>
+				</div>
+				<div class="col-6 col-lg-3 about-stat">
+					<strong>3,000+</strong>
+					<span>Dealers nationwide</span>
+				</div>
+				<div class="col-6 col-lg-3 about-stat">
+					<strong>CR</strong>
+					<span>Certified safety standard</span>
+				</div>
+				<div class="col-6 col-lg-3 about-stat">
+					<strong>4</strong>
+					<span>Product categories</span>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Numbers -->
+
+
+	<!-- Start Our Story -->
+	<section class="about-story" id="our-story">
+		<div class="container">
+			<div class="row justify-content-between align-items-center">
+				<div class="col-lg-7 mb-5 mb-lg-0">
+					<div class="imgs-grid">
+<div class="grid grid-1" style="width:55%; height:360px;"><img src="images/manbike.png" alt="Abraham cycling lifestyle" style="width:100%; height:100%; object-fit:cover;"></div></div>
+				</div>
+
+				<div class="col-lg-5 ps-lg-5">
+					<span class="section-kicker">Our Story</span>
+					<h2 class="section-title mb-4">A Bicycle Brand Built Around Everyday Riders.</h2>
+					<p class="section-copy">
+						Abraham was created with a straightforward belief: a good bicycle
+						should feel reliable from the first pedal stroke and remain a trusted
+						companion for the journeys that follow.
+					</p>
+					<p class="section-copy">
+						Over the years, that belief has shaped how we approach design,
+						engineering, product development, distribution, and after-sales care.
+						We continue to improve the details that matter most to riders:
+						comfort, control, durability, and confidence.
+					</p>
+
+					<div class="story-callout">
+						The name “Abraham” represents the values the brand aims to carry
+						forward: trust, commitment, and a long-term relationship with every rider.
+					</div>
+
+					<p class="mt-4">
+						<a href="services.html" class="btn">Discover Our Services</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Our Story -->
+
+
+	<!-- Start Why Choose Abraham -->
+	<section class="about-values">
+		<div class="container">
+			<div class="row justify-content-between align-items-center">
+				<div class="col-lg-6">
+					<span class="section-kicker">Why Abraham</span>
+					<h2 class="section-title">Experience You Can Feel On Every Ride.</h2>
+					<p class="section-copy mb-5">
+						From choosing the right bike to keeping it in great condition,
+						Abraham is built around practical support for real riders.
+					</p>
+
+					<div class="row">
+						<div class="col-6 col-md-6">
+							<div class="feature">
+								<div class="icon"><i class="fa-solid fa-bicycle"></i></div>
+								<h3>Rider-Focused Design</h3>
+								<p>Geometry and components selected for comfort, control, and everyday usability.</p>
+							</div>
+						</div>
+
+						<div class="col-6 col-md-6">
+							<div class="feature">
+								<div class="icon"><i class="fa-solid fa-certificate"></i></div>
+								<h3>Certified Quality</h3>
+								<p>Products developed to meet applicable safety and regulatory requirements.</p>
+							</div>
+						</div>
+
+						<div class="col-6 col-md-6">
+							<div class="feature">
+								<div class="icon"><i class="fa-solid fa-store"></i></div>
+								<h3>Nationwide Reach</h3>
+								<p>A broad dealer network makes Abraham easier to discover, try, and maintain.</p>
+							</div>
+						</div>
+
+						<div class="col-6 col-md-6">
+							<div class="feature">
+								<div class="icon"><i class="fa-solid fa-headset"></i></div>
+								<h3>Long-Term Support</h3>
+								<p>After-sales guidance and maintenance support help riders stay confident.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-5">
+					<div class="img-wrap">
+						<img src="images/ads.png" alt="Abraham bicycle lifestyle">
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Why Choose Abraham -->
+
+
+	<!-- Start Engineering -->
+	<section class="about-engineering">
+		<div class="container">
+			<div class="text-center mx-auto" style="max-width: 680px;">
+				<span class="section-kicker justify-content-center">Engineered For The Ride</span>
+				<h2 class="section-title mx-auto">The Details That Turn A Bike Into A Better Ride.</h2>
+				<p class="section-copy">
+					We focus on the parts riders interact with every day — the frame,
+					drivetrain, braking, and overall riding position.
+				</p>
+			</div>
+
+			<div class="engineering-visual">
+				<img src="images/al300tachnen.png" alt="Abraham bicycle">
+			</div>
+
+			<div class="row g-4">
+				<div class="col-md-6 col-lg-3">
+					<div class="engineering-card">
+						<div class="number">01 / FRAME</div>
+						<h3>Balanced Construction</h3>
+						<p>A dependable frame platform designed to feel stable, responsive, and easy to handle.</p>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-lg-3">
+					<div class="engineering-card">
+						<div class="number">02 / DRIVE</div>
+						<h3>Smooth Power Transfer</h3>
+						<p>Reliable gearing helps riders maintain an efficient rhythm across daily routes.</p>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-lg-3">
+					<div class="engineering-card">
+						<div class="number">03 / CONTROL</div>
+						<h3>Confident Braking</h3>
+						<p>Responsive stopping performance gives riders better control when conditions change.</p>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-lg-3">
+					<div class="engineering-card">
+						<div class="number">04 / COMFORT</div>
+						<h3>Everyday Geometry</h3>
+						<p>A comfortable riding position supports commuting, fitness rides, and longer weekends.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Engineering -->
+
+
+	<!-- Start Ride Lifestyle -->
+	<!-- Start Ride Lifestyle -->
+<section class="about-rides">
+	<div class="container">
+
+		<!-- Section Heading -->
+		<div class="row mb-5 justify-content-center">
+    <div class="col-lg-8 text-center">
+
+        <span class="section-kicker">Made To Move</span>
+
+        <h2 class="section-title mb-3">
+            One Brand. Different Ways To Ride.
+        </h2>
+
+        <p class="section-copy mb-0 mx-auto" style="max-width: 620px;">
+            Whether the destination is work, a training loop, or somewhere beyond the city,
+            Abraham is designed to fit into the way people actually ride.
+        </p>
+
+    </div>
+</div>
+
+		<!-- Ride Cards -->
+		<div class="row g-4">
+
+			<!-- Card 1 -->
+			<div class="col-12 col-md-4">
+				<a class="ride-card" href="shop.html">
+					<div class="ride-img">
+						<img src="images/post1.png" alt="Urban bicycle riding">
+					</div>
+
+					<div class="ride-body">
+						<div class="ride-label">Urban Ride</div>
+						<h3>Daily Commute</h3>
+						<p>
+							Comfortable, dependable mobility for the rhythm of everyday city life.
+						</p>
+					</div>
+				</a>
+			</div>
+
+			<!-- Card 2 -->
+			<div class="col-12 col-md-4">
+				<a class="ride-card" href="shop.html">
+					<div class="ride-img">
+						<img src="images/post2.png" alt="Road cycling">
+					</div>
+
+					<div class="ride-body">
+						<div class="ride-label">Road Experience</div>
+						<h3>Ride For Fitness</h3>
+						<p>
+							A responsive setup for riders who want to go farther and keep improving.
+						</p>
+					</div>
+				</a>
+			</div>
+
+			<!-- Card 3 -->
+			<div class="col-12 col-md-4">
+				<a class="ride-card" href="shop.html">
+					<div class="ride-img">
+						<img src="images/post3.jpg" alt="Weekend bicycle adventure">
+					</div>
+
+					<div class="ride-body">
+						<div class="ride-label">Weekend Adventure</div>
+						<h3>Explore More</h3>
+						<p>
+							Ready for slower roads, longer routes, and the journeys you ride just for yourself.
+						</p>
+					</div>
+				</a>
+			</div>
+
+		</div>
+	</div>
+</section>
+<!-- End Ride Lifestyle -->
+
+
+<!-- Start Partner Section -->
+<section class="partner-section about-partners">
+	<div class="container">
+
+		<div class="row mb-5">
+		<div class="col-lg-8 mx-auto text-center">
+	<span class="section-kicker justify-content-center">Our Partners</span>
+	<h2 class="partner-title mb-0">Đối tác đồng hành</h2>
+</div>
+		</div>
+
+		<div class="row justify-content-center align-items-center g-4">
+
+			<div class="col-12 col-md-4">
+				<div class="partner-item">
+					<img src="images/emart.png" alt="Emart" class="img-fluid">
+				</div>
+			</div>
+
+			<div class="col-12 col-md-4">
+				<div class="partner-item">
+					<img src="images/coopxtra.jpg" alt="Co.opXtra" class="img-fluid">
+				</div>
+			</div>
+
+			<div class="col-12 col-md-4">
+				<div class="partner-item">
+					<img src="images/aeon.png" alt="AEON" class="img-fluid">
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+<!-- End Partner Section -->
+	<!-- End Partner Section -->
+
+
+	<!-- Start CTA -->
+	<section class="about-cta">
+		<div class="container">
+			<div class="about-cta-box">
+				<span class="section-kicker text-white">Find Your Abraham</span>
+				<h2>Your Next Ride Starts With The Right Bike.</h2>
+				<p>
+					Explore Abraham bicycles for commuting, fitness, and everyday adventures,
+					or talk to our team about choosing the right setup for you.
+				</p>
+				<a href="shop.html" class="btn btn-secondary me-2">Shop Bikes</a>
+				<a href="contact.html" class="btn btn-white-outline">Contact Us</a>
+			</div>
+		</div>
+	</section>
+	<!-- End CTA -->
+
+
+	<!-- Start Footer Section -->
+	<footer class="footer-section">
+		<div class="container relative">
+
+			<div class="sofa-img">
+			</div>
+
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="subscription-form">
+						<h3 class="d-flex align-items-center">
+							<span class="me-1">
+								<img src="images/envelope-outline.svg" alt="Newsletter" class="img-fluid">
+							</span>
+							<span>Subscribe to Newsletter</span>
+						</h3>
+
+						<form action="#" class="row g-3">
+							<div class="col-auto">
+								<input type="text" class="form-control" placeholder="Enter your name">
+							</div>
+							<div class="col-auto">
+								<input type="email" class="form-control" placeholder="Enter your email">
+							</div>
+							<div class="col-auto">
+								<button class="btn btn-primary" type="submit" aria-label="Subscribe">
+									<span class="fa fa-paper-plane"></span>
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-5 mb-5">
+				<div class="col-lg-4">
+					<ul class="list-unstyled custom-social">
+						<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+					</ul>
+				</div>
+
+				<div class="col-lg-8">
+					<div class="row links-wrap">
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="about.html">About us</a></li>
+								<li><a href="services.html">Services</a></li>
+								<li><a href="blog.html">Blog</a></li>
+								<li><a href="contact.html">Contact us</a></li>
+							</ul>
+						</div>
+
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Support</a></li>
+								<li><a href="#">Knowledge base</a></li>
+								<li><a href="#">Live chat</a></li>
+							</ul>
+						</div>
+
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Jobs</a></li>
+								<li><a href="#">Our team</a></li>
+								<li><a href="#">Leadership</a></li>
+								<li><a href="#">Privacy Policy</a></li>
+							</ul>
+						</div>
+
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="shop.html">AL 300</a></li>
+								<li><a href="shop.html">A920</a></li>
+								<li><a href="shop.html">CALIFORNIA</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="border-top copyright">
+				<div class="row pt-4">
+					<div class="col-lg-6">
+						<p class="mb-2 text-center text-lg-start">
+							Copyright &copy;<script>document.write(new Date().getFullYear());</script>.
+							All Rights Reserved. &mdash; Abraham.
+						</p>
+					</div>
+
+					<div class="col-lg-6 text-center text-lg-end">
+						<ul class="list-unstyled d-inline-flex ms-auto">
+							<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</footer>
+	<!-- End Footer Section -->
+
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/tiny-slider.js"></script>
+	<script src="js/custom.js"></script>
+</body>
+</html>

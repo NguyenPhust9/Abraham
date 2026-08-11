@@ -1,0 +1,546 @@
+<!-- /*
+* Bootstrap 5
+* Template Name: Furni
+* Template Author: Untree.co
+* Template URI: https://untree.co/
+* License: https://creativecommons.org/licenses/by/3.0/
+*/ -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Untree.co">
+  <link rel="shortcut icon" href="favicon.png">
+
+  <meta name="description" content="" />
+  <meta name="keywords" content="bootstrap, bootstrap4" />
+
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<link href="css/tiny-slider.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		<title>Abraham — Contact</title>
+	</head>
+
+	<body>
+
+		<!-- Start Header/Navigation -->
+		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+
+			<div class="container">
+				<a class="navbar-brand" href="index.html">Furni<span>.</span></a>
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarsFurni">
+					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+						<li class="nav-item">
+							<a class="nav-link" href="index.html">Home</a>
+						</li>
+						<li><a class="nav-link" href="shop.html">Shop</a></li>
+						<li><a class="nav-link" href="about.html">About us</a></li>
+						<li><a class="nav-link" href="services.html">Services</a></li>
+						<li><a class="nav-link" href="blog.html">Blog</a></li>
+						<li class="active"><a class="nav-link" href="contact.html">Contact us</a></li>
+					</ul>
+
+					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
+						<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
+					</ul>
+				</div>
+			</div>
+				
+		</nav>
+		<!-- End Header/Navigation -->
+
+	<!-- Start Hero Section -->
+			<div class="hero hero--contact">
+				<div class="container">
+					<div class="row justify-content-center text-center">
+						<div class="col-lg-7">
+							<span class="eyebrow">We're Here to Help</span>
+							<h1>Let's Get You Rolling</h1>
+							<p class="mb-0">Have a question about a service, an order, or your next bike? Pick the fastest way to reach us below.</p>
+						</div>
+					</div>
+
+					<div class="row justify-content-center g-4 mt-5">
+
+						<div class="col-6 col-md-3">
+							<a href="tel:+842837739394" class="quick-contact-card">
+								<div class="quick-contact-icon">
+									<span class="fa fa-phone"></span>
+								</div>
+								<h4>Call Us</h4>
+								<span>+84 28 3773 9394</span>
+							</a>
+						</div>
+
+						<div class="col-6 col-md-3">
+							<a href="mailto:support@abrahambikes.com" class="quick-contact-card">
+								<div class="quick-contact-icon">
+									<span class="fa fa-envelope"></span>
+								</div>
+								<h4>Email Us</h4>
+								<span>support@abrahambikes.com</span>
+							</a>
+						</div>
+
+						<div class="col-6 col-md-3">
+							<a href="#contact-form" class="quick-contact-card featured">
+								<div class="quick-contact-icon">
+									<span class="fa fa-comments"></span>
+								</div>
+								<h4>Send a Message</h4>
+								<span>We reply within 1 day</span>
+							</a>
+						</div>
+
+						<div class="col-6 col-md-3">
+							<a href="#" class="quick-contact-card">
+								<div class="quick-contact-icon">
+									<span class="fa fa-location-dot"></span>
+								</div>
+								<h4>Visit Showroom</h4>
+								<span>District 7, HCMC</span>
+							</a>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		<!-- End Hero Section -->
+
+		<style>
+		.hero.hero--contact {
+			background: #F7F9FC;
+			padding: 90px 0 70px;
+		}
+
+		.hero.hero--contact .eyebrow {
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			font-size: 13px;
+			font-weight: 700;
+			letter-spacing: .12em;
+			text-transform: uppercase;
+			color: #D99412;
+			margin-bottom: 14px;
+		}
+
+		.hero.hero--contact h1 {
+			font-size: 48px;
+			font-weight: 800;
+			color: #092957;
+			margin-bottom: 16px;
+		}
+
+		.hero.hero--contact p {
+			color: #6a6a6a;
+			font-size: 16px;
+			line-height: 1.8;
+		}
+
+	.quick-contact-card {
+	display: block;
+	background: #FFFFFF;
+	border-radius: 18px;
+	padding: 30px 20px;
+	text-align: center;
+	text-decoration: none;
+	height: 100%;
+	box-shadow: 0 15px 35px -25px rgba(9, 41, 87, 0.2);
+	transition: .3s all ease;
+	border: 2px solid transparent;
+}
+
+.quick-contact-card:hover,
+.quick-contact-card:focus,
+.quick-contact-card:active {
+	transform: translateY(-6px);
+	box-shadow: 0 25px 45px -25px rgba(9, 41, 87, 0.3);
+	border-color: #F2B72B;
+}
+
+.quick-contact-icon {
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	background: #FFF3D6;
+	color: #092957;
+	font-size: 19px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 16px;
+}
+
+.quick-contact-card h4 {
+	font-size: 14.5px;
+	font-weight: 700;
+	color: #092957;
+	margin-bottom: 6px;
+}
+
+.quick-contact-card span {
+	font-size: 12.5px;
+	color: #6a6a6a;
+}
+		@media (max-width: 767px) {
+			.hero.hero--contact h1 { font-size: 34px; }
+		}
+		</style>
+
+		<!-- Start Contact Panel Section -->
+		<div class="contact-panel-section">
+			<div class="container">
+				<div class="row g-0 contact-panel-wrap">
+
+					<!-- Info panel -->
+					<div class="col-lg-5">
+						<div class="contact-info-panel">
+							<span class="eyebrow-label light">— Get in Touch —</span>
+							<h2>Visit, Call, or Write to Us</h2>
+							<p class="mb-4">Our service center and showroom are open six days a week. Drop by for a fitting, a repair, or just to talk bikes.</p>
+
+							<div class="contact-info-item">
+								<div class="contact-info-icon">
+									<span class="fa fa-location-dot"></span>
+								</div>
+								<div>
+									<h4>Showroom &amp; Service Center</h4>
+									<p>128 Nguyen Van Linh, District 7, Ho Chi Minh City</p>
+								</div>
+							</div>
+
+							<div class="contact-info-item">
+								<div class="contact-info-icon">
+									<span class="fa fa-phone"></span>
+								</div>
+								<div>
+									<h4>Phone</h4>
+									<p>+84 28 3773 9394</p>
+								</div>
+							</div>
+
+							<div class="contact-info-item">
+								<div class="contact-info-icon">
+									<span class="fa fa-envelope"></span>
+								</div>
+								<div>
+									<h4>Email</h4>
+									<p>support@abrahambikes.com</p>
+								</div>
+							</div>
+
+							<div class="contact-info-item">
+								<div class="contact-info-icon">
+									<span class="fa fa-clock"></span>
+								</div>
+								<div>
+									<h4>Opening Hours</h4>
+									<p>Mon – Sat, 8:00 AM – 6:30 PM<br>Sunday: Service by appointment</p>
+								</div>
+							</div>
+
+							<div class="contact-social">
+								<a href="#"><span class="fa fa-brands fa-facebook-f"></span></a>
+								<a href="#"><span class="fa fa-brands fa-instagram"></span></a>
+								<a href="#"><span class="fa fa-brands fa-twitter"></span></a>
+							</div>
+						</div>
+					</div>
+
+					<!-- Form panel -->
+					<div class="col-lg-7">
+						<div class="contact-form-panel" id="contact-form">
+							<h3 class="mb-2">Send Us a Message</h3>
+							<p class="text-muted mb-4">Tell us what your bike needs — we'll follow up with the next available slot.</p>
+
+							<form>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="text-black" for="fname">First name</label>
+											<input type="text" class="form-control" id="fname">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="text-black" for="lname">Last name</label>
+											<input type="text" class="form-control" id="lname">
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="text-black" for="email">Email address</label>
+											<input type="email" class="form-control" id="email">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="text-black" for="phone">Phone number</label>
+											<input type="text" class="form-control" id="phone">
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="text-black" for="subject">What do you need?</label>
+									<select class="form-control" id="subject">
+										<option>Bike Service &amp; Repair</option>
+										<option>Bike Fitting</option>
+										<option>Warranty Support</option>
+										<option>Order &amp; Shipping</option>
+										<option>Something Else</option>
+									</select>
+								</div>
+
+								<div class="form-group mb-4">
+									<label class="text-black" for="message">Message</label>
+									<textarea class="form-control" id="message" cols="30" rows="5" placeholder="Tell us about your bike and what it needs..."></textarea>
+								</div>
+
+								<button type="submit" class="btn btn-primary-hover-outline">Send Message</button>
+							</form>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<!-- End Contact Panel Section -->
+
+		<style>
+		.contact-panel-section {
+			padding: 7rem 0;
+			background: #FFFFFF;
+		}
+
+		.contact-panel-wrap {
+			border-radius: 24px;
+			overflow: hidden;
+			box-shadow: 0 30px 60px -35px rgba(9, 41, 87, 0.25);
+		}
+
+		.contact-info-panel {
+			background: #092957;
+			color: #FFFFFF;
+			height: 100%;
+			padding: 55px 45px;
+		}
+
+		.contact-info-panel .eyebrow-label.light {
+			display: inline-block;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: .12em;
+			text-transform: uppercase;
+			color: #F2B72B;
+			margin-bottom: 12px;
+		}
+
+		.contact-info-panel h2 {
+			color: #FFFFFF;
+			font-size: 26px;
+			font-weight: 700;
+			margin-bottom: 14px;
+		}
+
+		.contact-info-panel p {
+			color: rgba(255,255,255,.65);
+		}
+
+		.contact-info-item {
+			display: flex;
+			gap: 16px;
+			padding: 18px 0;
+			border-top: 1px solid rgba(255,255,255,.12);
+		}
+
+		.contact-info-item h4 {
+			font-size: 14.5px;
+			font-weight: 700;
+			color: #FFFFFF;
+			margin-bottom: 4px;
+		}
+
+		.contact-info-item p {
+			font-size: 13.5px;
+			margin: 0;
+			color: rgba(255,255,255,.6);
+		}
+
+		.contact-info-icon {
+			flex: 0 0 42px;
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: rgba(242, 183, 43, 0.15);
+			color: #F2B72B;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 15px;
+		}
+
+		.contact-social {
+			display: flex;
+			gap: 10px;
+			margin-top: 26px;
+		}
+
+		.contact-social a {
+			width: 38px;
+			height: 38px;
+			border-radius: 50%;
+			background: rgba(255,255,255,.1);
+			color: #FFFFFF;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+		}
+
+		.contact-social a:hover {
+			background: #F2B72B;
+			color: #092957;
+		}
+
+		.contact-form-panel {
+			background: #FFFFFF;
+			height: 100%;
+			padding: 55px 50px;
+		}
+
+		.contact-form-panel h3 {
+			color: #092957;
+			font-weight: 700;
+		}
+
+		@media (max-width: 991px) {
+			.contact-info-panel, .contact-form-panel {
+				padding: 40px 28px;
+			}
+		}
+		</style>
+
+		<!-- Start Footer Section -->
+		<footer class="footer-section">
+			<div class="container relative">
+
+				<div class="sofa-img">
+				</div>
+
+				<div class="row">
+					<div class="col-lg-8">
+						<div class="subscription-form">
+							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe for Ride Tips &amp; Offers</span></h3>
+
+							<form action="#" class="row g-3">
+								<div class="col-auto">
+									<input type="text" class="form-control" placeholder="Enter your name">
+								</div>
+								<div class="col-auto">
+									<input type="email" class="form-control" placeholder="Enter your email">
+								</div>
+								<div class="col-auto">
+									<button class="btn btn-primary">
+										<span class="fa fa-paper-plane"></span>
+									</button>
+								</div>
+							</form>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="row g-5 mb-5">
+					<div class="col-lg-4">
+						<p class="mb-4">Premium bicycles and expert service, built for every rider. Certified technicians, genuine parts, and care backed by precision — since day one.</p>
+
+						<ul class="list-unstyled custom-social">
+							<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+							<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
+							<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+							<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+						</ul>
+					</div>
+
+					<div class="col-lg-8">
+						<div class="row links-wrap">
+							<div class="col-6 col-sm-6 col-md-3">
+								<ul class="list-unstyled">
+									<li><a href="about.html">About us</a></li>
+									<li><a href="services.html">Services</a></li>
+									<li><a href="blog.html">Blog</a></li>
+									<li><a href="contact.html">Contact us</a></li>
+								</ul>
+							</div>
+
+							<div class="col-6 col-sm-6 col-md-3">
+								<ul class="list-unstyled">
+									<li><a href="#">Support</a></li>
+									<li><a href="#">Warranty</a></li>
+									<li><a href="#">Live chat</a></li>
+								</ul>
+							</div>
+
+							<div class="col-6 col-sm-6 col-md-3">
+								<ul class="list-unstyled">
+									<li><a href="#">Careers</a></li>
+									<li><a href="#">Our team</a></li>
+									<li><a href="#">Find a Store</a></li>
+									<li><a href="#">Privacy Policy</a></li>
+								</ul>
+							</div>
+
+							<div class="col-6 col-sm-6 col-md-3">
+								<ul class="list-unstyled">
+									<li><a href="#">Road Bikes</a></li>
+									<li><a href="#">Mountain Bikes</a></li>
+									<li><a href="#">Accessories</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="border-top copyright">
+					<div class="row pt-4">
+						<div class="col-lg-6">
+							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Abraham Bicycles
+            </p>
+						</div>
+
+						<div class="col-lg-6 text-center text-lg-end">
+							<ul class="list-unstyled d-inline-flex ms-auto">
+								<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+								<li><a href="#">Privacy Policy</a></li>
+							</ul>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</footer>
+		<!-- End Footer Section -->
+
+
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
+	</body>
+
+</html>

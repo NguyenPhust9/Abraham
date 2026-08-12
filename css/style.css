@@ -1267,3 +1267,14 @@ a.more:hover,
     background-color: #e08e17;
     color: #152238 !important;
 }
+.custom-navbar .container {
+  height: 140px !important; 
+  display: flex;
+  align-items: center;
+}
+.custom-navbar .navbar-brand img {
+  height: 140px !important;
+  width: auto !important;
+  max-width: none !important;
+  display: block;
+}

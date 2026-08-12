@@ -13,7 +13,11 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 	<link href="css/tiny-slider.css" rel="stylesheet">
 	<link href="css/style.css" rel="stylesheet">
-
+    <meta name="description" id="meta-description" content="Chi tiết sản phẩm Abraham">
+    <meta property="og:title" id="meta-og-title" content="Abraham Bike">
+    <meta property="og:description" id="meta-og-description" content="Chi tiết sản phẩm Abraham">
+    <meta property="og:image" id="meta-og-image" content="images/logo.jpg">
+    <meta property="og:type" content="product">
 	<title>Abraham — Product Detail</title>
 
 	<style>
@@ -723,7 +727,17 @@
 			const stock = Number(data.stock || 0);
 
 			document.title = `${name} — Abraham`;
+document.title = `${name} — Abraham`;
 
+// Cập nhật meta tag động theo từng sản phẩm
+const metaDescription = description.length > 155
+	? description.slice(0, 155) + "..."
+	: description;
+
+document.getElementById("meta-description").setAttribute("content", metaDescription);
+document.getElementById("meta-og-title").setAttribute("content", `${name} — Abraham`);
+document.getElementById("meta-og-description").setAttribute("content", metaDescription);
+document.getElementById("meta-og-image").setAttribute("content", data.image_url || "images/update.png");
 			document.getElementById("product-name").textContent = name;
 			document.getElementById("product-category").textContent = category;
 			document.getElementById("product-description").textContent = description;

@@ -585,7 +585,7 @@
 	<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Abraham navigation bar">
 		<div class="container">
 			<a class="navbar-brand" href="index.html">
-				<img src="images/logo.jpg" alt="Abraham Logo" class="abx-navbar-logo">
+				<img src="images/jinmulogo.jpg" alt="Abraham Logo" class="abx-navbar-logo">
 			</a>
 
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
@@ -727,7 +727,7 @@
 			<div class="row g-5 mb-5">
 				<div class="col-lg-4">
 
-					<img src="images/logo.jpg" alt="Abraham" class="abx-footer-logo">
+					<img src="images/jinmulogo.jpg" alt="Abraham" class="abx-footer-logo">
 
 					<p class="mb-4">
 						Abraham brings you premium bicycles built for every kind of rider —
@@ -990,8 +990,8 @@
 					product.description || "Premium bicycle designed by Abraham."
 				);
 				const image = escapeHtml(
-					product.image_url || "images/product-1.png"
-				);
+	product.image_url || "images/update.png"
+);
 				const badge = product.badge
 					? `<span class="abx-badge">${escapeHtml(product.badge)}</span>`
 					: "";
@@ -1062,7 +1062,7 @@
 					if (!productId) return;
 
 					window.location.href =
-						`product-detail.html?id=${encodeURIComponent(productId)}`;
+	`product-detail?id=${encodeURIComponent(productId)}`;
 				};
 
 				card.addEventListener("click", function (event) {

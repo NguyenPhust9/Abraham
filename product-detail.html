@@ -323,6 +323,61 @@
 			font-weight: 800;
 		}
 
+		/* =========================
+		   SẢN PHẨM TƯƠNG TỰ
+		========================= */
+		.abx-related-card {
+			display: block;
+			height: 100%;
+			overflow: hidden;
+			text-decoration: none !important;
+			background: #fff;
+			border: 1px solid rgba(9,41,87,.07);
+			border-radius: 18px;
+			box-shadow: 0 6px 20px rgba(9,41,87,.05);
+			transition: transform .25s ease, box-shadow .25s ease;
+		}
+
+		.abx-related-card:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 16px 36px rgba(9,41,87,.12);
+		}
+
+		.abx-related-image {
+			height: 180px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 18px;
+			background: radial-gradient(circle at center, #fff 0%, #f8fafc 100%);
+		}
+
+		.abx-related-image img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+
+		.abx-related-body {
+			padding: 14px 16px 16px;
+		}
+
+		.abx-related-body .abx-related-category {
+			color: var(--abx-gold-dark);
+			font-size: 9px;
+			font-weight: 900;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+		}
+
+		.abx-related-body h4 {
+			margin: 6px 0 0;
+			color: var(--abx-navy);
+			font-size: 14px;
+			font-weight: 800;
+			line-height: 1.35;
+		}
+
 		@media (max-width: 991px) {
 			.abx-product-media {
 				min-height: 430px;
@@ -364,7 +419,7 @@
 	<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Abraham navigation bar">
 		<div class="container">
 			<a class="navbar-brand" href="index.html">
-				<img src="images/logo.jpg" alt="Abraham Logo" class="abx-navbar-logo">
+				<img src="images/jinmulogo.jpg" alt="Abraham Logo" class="abx-navbar-logo">
 			</a>
 
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
@@ -424,7 +479,7 @@
 					<div class="col-lg-6">
 						<div class="abx-product-media">
 							<span id="product-badge" class="abx-detail-badge d-none"></span>
-							<img id="product-image" src="images/product-1.png" alt="Abraham Bike">
+							<img id="product-image" src="images/update.png" alt="Abraham Bike">
 						</div>
 					</div>
 
@@ -486,6 +541,13 @@
 				</div>
 
 			</div>
+
+			<!-- Sản phẩm tương tự -->
+			<div id="related-products-section" class="mt-5 d-none">
+				<h3 class="mb-4" style="color:var(--abx-navy); font-weight:800;">Sản phẩm tương tự</h3>
+				<div class="row g-4" id="related-products-list"></div>
+			</div>
+
 		</div>
 	</main>
 
@@ -522,7 +584,7 @@
 
 			<div class="row g-5 mb-5">
 				<div class="col-lg-4">
-					<img src="images/logo.jpg" alt="Abraham" class="abx-footer-logo">
+					<img src="images/jinmulogo.jpg" alt="Abraham" class="abx-footer-logo">
 
 					<p class="mb-4">
 						Abraham brings you premium bicycles built for every kind of rider —
@@ -658,7 +720,6 @@
 				data.description ||
 				"Premium bicycle designed by Abraham for confident everyday riding."
 			);
-			const image = String(data.image_url || "images/product-1.png");
 			const stock = Number(data.stock || 0);
 
 			document.title = `${name} — Abraham`;
@@ -668,7 +729,7 @@
 			document.getElementById("product-description").textContent = description;
 
 			const imageEl = document.getElementById("product-image");
-			imageEl.src = image;
+			imageEl.src = data.image_url || "images/update.png";
 			imageEl.alt = name;
 
 			const badgeEl = document.getElementById("product-badge");
@@ -689,6 +750,48 @@
 			}
 
 			detailEl.classList.remove("d-none");
+
+			// Tải sản phẩm tương tự (cùng danh mục)
+			loadRelatedProducts(data.category, data.id);
+		}
+
+		async function loadRelatedProducts(category, currentId) {
+			if (!category) return;
+
+			const { data, error } = await supabaseClient
+				.from("products")
+				.select("*")
+				.eq("category", category)
+				.neq("id", currentId)
+				.eq("is_active", true)
+				.limit(4);
+
+			if (error || !data || data.length === 0) return;
+
+			const sectionEl = document.getElementById("related-products-section");
+			const listEl = document.getElementById("related-products-list");
+
+			listEl.innerHTML = data.map(product => {
+				const name = escapeHtml(product.name || "Abraham Bike");
+				const cat = escapeHtml(product.category || "Abraham Bike");
+				const image = escapeHtml(product.image_url || "images/update.png");
+
+				return `
+					<div class="col-6 col-md-3">
+						<a href="product-detail?id=${encodeURIComponent(product.id)}" class="abx-related-card">
+							<div class="abx-related-image">
+								<img src="${image}" alt="${name}">
+							</div>
+							<div class="abx-related-body">
+								<span class="abx-related-category">${cat}</span>
+								<h4>${name}</h4>
+							</div>
+						</a>
+					</div>
+				`;
+			}).join("");
+
+			sectionEl.classList.remove("d-none");
 		}
 
 		document.addEventListener("DOMContentLoaded", loadProductDetail);

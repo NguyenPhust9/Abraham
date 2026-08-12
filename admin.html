@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Abraham — Quản trị</title>
-
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
@@ -160,7 +160,34 @@
     }
     .btn-icon:hover { background: var(--abx-bg); }
     .btn-icon.danger:hover { background: #FDE8E8; color: var(--abx-red); border-color: #FDE8E8; }
+#postContentEditor .ql-editor {
+  min-height: 220px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+#postFormActions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 14px 0 4px;
+  z-index: 5;
+}
 
+/* Chế độ phóng to modal viết bài */
+#postModal.editor-expanded .modal-dialog {
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+#postModal.editor-expanded .modal-content {
+  height: 100vh;
+  border-radius: 0;
+}
+#postModal.editor-expanded #postContentEditor .ql-editor {
+  max-height: calc(100vh - 480px);
+  min-height: 300px;
+}
     @media (max-width: 860px) {
       .admin-sidebar { position: fixed; left: -260px; top: 0; bottom: 0; z-index: 50; transition: .2s; }
       .admin-sidebar.open { left: 0; }
@@ -391,15 +418,18 @@
                 <input type="number" min="0" class="form-control" id="productStock" required>
               </div>
 
-              <div class="col-md-8">
-                <label class="form-label">Hình ảnh sản phẩm</label>
-                <input type="file" class="form-control" id="productImageFile" accept="image/*">
-                <input type="hidden" id="productImageUrl">
-                <div class="mt-2">
-                  <img id="productImagePreview" src="" alt="" class="d-none" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #E4E7EC;">
-                </div>
-                <small class="text-muted" id="uploadStatusText"></small>
-              </div>
+             <div class="col-md-8">
+  <label class="form-label">Hình ảnh sản phẩm</label>
+  <input type="file" class="form-control" id="productImageFile" accept="image/*">
+  <input type="hidden" id="productImageUrl">
+  <div class="mt-2 d-flex align-items-center gap-2">
+    <img id="productImagePreview" src="" alt="" class="d-none" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #E4E7EC;">
+    <button type="button" class="btn btn-sm btn-outline-danger d-none" id="removeProductImageBtn">
+      <i class="fa fa-trash me-1"></i>Xoá ảnh
+    </button>
+  </div>
+  <small class="text-muted" id="uploadStatusText"></small>
+</div>
               <div class="col-md-4">
                 <label class="form-label">Badge (nhãn nhỏ)</label>
                 <input type="text" class="form-control" id="productBadge" placeholder="VD: Mới, Giảm giá">
@@ -416,10 +446,10 @@
               </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2 mt-4">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
-              <button type="submit" class="btn btn-abx-gold" id="productSubmitBtn">Lưu sản phẩm</button>
-            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4" id="postFormActions">
+  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
+  <button type="submit" class="btn btn-abx-gold" id="postSubmitBtn">Lưu bài viết</button>
+</div>
           </form>
         </div>
       </div>
@@ -427,8 +457,8 @@
   </div>
 
   <!-- ================= Modal Thêm / Sửa bài viết Blog ================= -->
-  <div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="postModalTitle">Viết bài mới</h5>
@@ -474,10 +504,16 @@
                 <textarea class="form-control" id="postExcerpt" rows="2" placeholder="1-2 câu mô tả ngắn hiển thị ở trang danh sách blog"></textarea>
               </div>
 
-              <div class="col-12">
-                <label class="form-label">Nội dung bài viết *</label>
-                <textarea class="form-control" id="postContent" rows="8" required></textarea>
-              </div>
+          <div class="col-12">
+  <div class="d-flex justify-content-between align-items-center mb-1">
+    <label class="form-label mb-0">Nội dung bài viết *</label>
+    <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleEditorSizeBtn" title="Phóng to vùng soạn thảo">
+      <i class="fa fa-expand"></i> Phóng to
+    </button>
+  </div>
+  <div id="postContentEditor" style="background:#fff; min-height:220px;"></div>
+  <textarea id="postContent" class="d-none"></textarea>
+</div>
 
               <div class="col-12 form-check ps-4">
                 <input type="checkbox" class="form-check-input" id="postIsPublished" checked>
@@ -499,6 +535,8 @@
   <script src="js/supabase.js"></script>
   <script src="js/admin-guard.js"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
   <script src="js/admin.js"></script>
   <script src="js/admin-blog.js"></script>
 
@@ -520,5 +558,18 @@
       });
     });
   </script>
+  <script>
+  document.getElementById("toggleEditorSizeBtn").addEventListener("click", function () {
+    const modalEl = document.getElementById("postModal");
+    const btn = this;
+    const isExpanded = modalEl.classList.toggle("editor-expanded");
+
+    if (isExpanded) {
+      btn.innerHTML = '<i class="fa fa-compress"></i> Thu nhỏ';
+    } else {
+      btn.innerHTML = '<i class="fa fa-expand"></i> Phóng to';
+    }
+  });
+</script>
 </body>
 </html>

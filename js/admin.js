@@ -98,7 +98,7 @@ function renderTable() {
 
 	tbody.innerHTML = list.map(p => `
 		<tr>
-			<td><img src="${p.image_url || 'images/product-1.png'}" class="thumb" alt=""></td>
+			<td><img src="${p.image_url || 'images/update.png'}" class="thumb" alt=""></td>
 			<td>
 				<div class="fw-semibold">${p.name || ""}</div>
 				${p.badge ? `<span class="badge bg-light text-dark border">${p.badge}</span>` : ""}
@@ -138,6 +138,10 @@ function openAddModal() {
 	const statusText = document.getElementById("uploadStatusText");
 	if (statusText) statusText.textContent = "";
 
+	// Ẩn nút xoá ảnh vì sản phẩm mới chưa có ảnh
+	const removeBtn = document.getElementById("removeProductImageBtn");
+	if (removeBtn) removeBtn.classList.add("d-none");
+
 	document.getElementById("productIsActive").checked = true;
 	document.getElementById("productModalTitle").textContent = "Thêm sản phẩm";
 	hideProductFormError();
@@ -164,13 +168,18 @@ function openEditModal(id) {
 	const statusText = document.getElementById("uploadStatusText");
 	if (statusText) statusText.textContent = "";
 
+	// Hiện/ẩn nút xoá ảnh tuỳ sản phẩm có ảnh hay không
+	const removeBtn = document.getElementById("removeProductImageBtn");
+
 	if (preview) {
 		if (product.image_url) {
 			preview.src = product.image_url;
 			preview.classList.remove("d-none");
+			if (removeBtn) removeBtn.classList.remove("d-none");
 		} else {
 			preview.src = "";
 			preview.classList.add("d-none");
+			if (removeBtn) removeBtn.classList.add("d-none");
 		}
 	}
 
@@ -218,7 +227,7 @@ async function handleProductSubmit(event) {
 	submitBtn.disabled = true;
 
 	try {
-		// Ảnh cũ (nếu đang sửa) hoặc rỗng (nếu thêm mới)
+		// Ảnh cũ (nếu đang sửa và chưa bị xoá) hoặc rỗng (nếu thêm mới / đã bấm xoá ảnh)
 		let imageUrl = document.getElementById("productImageUrl").value.trim() || null;
 
 		// Nếu admin có chọn file ảnh mới -> upload lên Cloudinary trước
@@ -293,10 +302,28 @@ document.addEventListener("adminVerified", function (e) {
 		imageFileInput.addEventListener("change", function (evt) {
 			const file = evt.target.files[0];
 			const preview = document.getElementById("productImagePreview");
+			const removeBtn = document.getElementById("removeProductImageBtn");
 			if (file && preview) {
 				preview.src = URL.createObjectURL(file);
 				preview.classList.remove("d-none");
+				if (removeBtn) removeBtn.classList.remove("d-none");
 			}
+		});
+	}
+
+	// Xoá ảnh sản phẩm (xoá preview + reset input, không xoá trên Cloudinary)
+	const removeImageBtn = document.getElementById("removeProductImageBtn");
+	if (removeImageBtn) {
+		removeImageBtn.addEventListener("click", function () {
+			document.getElementById("productImageUrl").value = "";
+			document.getElementById("productImageFile").value = "";
+
+			const preview = document.getElementById("productImagePreview");
+			if (preview) {
+				preview.src = "";
+				preview.classList.add("d-none");
+			}
+			removeImageBtn.classList.add("d-none");
 		});
 	}
 

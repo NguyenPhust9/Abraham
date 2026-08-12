@@ -2,11 +2,13 @@
    ABRAHAM — ADMIN BLOG
    Yêu cầu: file này được load SAU js/admin.js (dùng chung
    hàm uploadImageToCloudinary và biến supabaseClient),
-   và SAU js/admin-guard.js (xác thực quyền admin).
+   SAU js/admin-guard.js (xác thực quyền admin),
+   và SAU thư viện Quill.js (quill.js + quill.snow.css).
 ========================================================= */
 
 let allPosts = [];
 let postModalInstance = null;
+let quillEditor = null;
 
 /* ---------- Tạo slug từ tiêu đề (bỏ dấu tiếng Việt) ---------- */
 function slugify(text) {
@@ -27,6 +29,31 @@ function formatPostDate(value) {
 	if (!value) return "—";
 	const d = new Date(value);
 	return d.toLocaleDateString("vi-VN");
+}
+
+/* ---------- Khởi tạo Quill editor (chỉ chạy 1 lần) ---------- */
+function initQuillEditor() {
+	if (quillEditor) return; // đã khởi tạo rồi thì không tạo lại
+
+	quillEditor = new Quill("#postContentEditor", {
+		theme: "snow",
+		placeholder: "Nội dung bài viết...",
+		modules: {
+			toolbar: [
+				[{ header: [2, 3, false] }],
+				["bold", "italic", "underline", "strike"],
+				[{ list: "ordered" }, { list: "bullet" }],
+				["blockquote", "link", "image"],
+				["clean"]
+			]
+		}
+	});
+
+	// Mỗi khi nội dung Quill thay đổi -> đồng bộ HTML sang textarea ẩn #postContent
+	quillEditor.on("text-change", function () {
+		const html = quillEditor.root.innerHTML;
+		document.getElementById("postContent").value = html;
+	});
 }
 
 /* ---------- Load toàn bộ bài viết ---------- */
@@ -95,6 +122,11 @@ function openAddPostModal() {
 	document.getElementById("postForm").reset();
 	document.getElementById("postId").value = "";
 	document.getElementById("postImageUrl").value = "";
+	document.getElementById("postContent").value = "";
+
+	if (quillEditor) {
+		quillEditor.setContents([]); // xoá trắng nội dung Quill
+	}
 
 	const preview = document.getElementById("postImagePreview");
 	preview.src = "";
@@ -121,6 +153,11 @@ function openEditPostModal(id) {
 	document.getElementById("postContent").value = post.content || "";
 	document.getElementById("postImageUrl").value = post.image_url || "";
 	document.getElementById("postIsPublished").checked = !!post.is_published;
+
+	// Đổ nội dung cũ (HTML) vào Quill editor
+	if (quillEditor) {
+		quillEditor.root.innerHTML = post.content || "";
+	}
 
 	const preview = document.getElementById("postImagePreview");
 	document.getElementById("postUploadStatusText").textContent = "";
@@ -173,6 +210,20 @@ async function handlePostSubmit(event) {
 	const fileInput = document.getElementById("postImageFile");
 	const statusText = document.getElementById("postUploadStatusText");
 
+	// Đảm bảo lấy đúng nội dung mới nhất từ Quill trước khi submit
+	if (quillEditor) {
+		document.getElementById("postContent").value = quillEditor.root.innerHTML;
+	}
+
+	// Kiểm tra nội dung rỗng (Quill khi trống vẫn có thể trả về "<p><br></p>")
+	const rawContent = document.getElementById("postContent").value.trim();
+	const isContentEmpty = !rawContent || rawContent === "<p><br></p>";
+
+	if (isContentEmpty) {
+		showPostFormError("Vui lòng nhập nội dung bài viết.");
+		return;
+	}
+
 	submitBtn.disabled = true;
 
 	try {
@@ -199,7 +250,7 @@ async function handlePostSubmit(event) {
 			category: document.getElementById("postCategory").value.trim() || null,
 			author: document.getElementById("postAuthor").value.trim() || null,
 			excerpt: document.getElementById("postExcerpt").value.trim() || null,
-			content: document.getElementById("postContent").value.trim() || null,
+			content: rawContent,
 			image_url: imageUrl,
 			is_published: document.getElementById("postIsPublished").checked,
 			updated_at: new Date().toISOString()
@@ -232,6 +283,8 @@ async function handlePostSubmit(event) {
 document.addEventListener("adminVerified", function () {
 
 	postModalInstance = new bootstrap.Modal(document.getElementById("postModal"));
+
+	initQuillEditor();
 
 	loadPosts();
 

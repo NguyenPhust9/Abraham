@@ -52,6 +52,7 @@
       text-decoration: none;
       font-size: 14.5px;
       transition: .15s;
+      cursor: pointer;
     }
     .admin-nav a:hover { background: var(--abx-navy-light); color: #fff; }
     .admin-nav a.active { background: var(--abx-navy-light); color: #fff; border-left: 3px solid var(--abx-gold); }
@@ -183,7 +184,8 @@
       <aside class="admin-sidebar" id="adminSidebar">
         <div class="brand">Abraham <span>Admin</span></div>
         <nav class="admin-nav">
-          <a href="#" class="active"><i class="fa fa-bicycle"></i> Sản phẩm</a>
+          <a href="#" class="admin-nav-link active" data-target="productsSection"><i class="fa fa-bicycle"></i> Sản phẩm</a>
+          <a href="#" class="admin-nav-link" data-target="blogSection"><i class="fa fa-newspaper"></i> Blog</a>
         </nav>
         <div class="admin-nav back-link">
           <a href="index.html"><i class="fa fa-arrow-left"></i> Về trang chủ</a>
@@ -195,87 +197,159 @@
       <main class="admin-main">
 
         <div class="admin-topbar">
-          <h1>Quản lý sản phẩm</h1>
+          <h1 id="pageTitle">Quản lý sản phẩm</h1>
           <div class="user-chip">
             <span class="avatar" id="adminAvatar">A</span>
             <span id="adminNameLabel">Admin</span>
           </div>
         </div>
 
-        <!-- Stat cards -->
-        <div class="row g-3 mb-4">
-          <div class="col-6 col-md-3">
-            <div class="stat-card d-flex justify-content-between align-items-center">
-              <div>
-                <div class="stat-label">Tổng sản phẩm</div>
-                <div class="stat-value" id="statTotal">–</div>
-              </div>
-              <div class="stat-icon"><i class="fa fa-box"></i></div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="stat-card d-flex justify-content-between align-items-center">
-              <div>
-                <div class="stat-label">Đang bán</div>
-                <div class="stat-value" id="statActive">–</div>
-              </div>
-              <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="stat-card d-flex justify-content-between align-items-center">
-              <div>
-                <div class="stat-label">Sắp hết hàng</div>
-                <div class="stat-value" id="statLowStock">–</div>
-              </div>
-              <div class="stat-icon"><i class="fa fa-triangle-exclamation"></i></div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="stat-card d-flex justify-content-between align-items-center">
-              <div>
-                <div class="stat-label">Danh mục</div>
-                <div class="stat-value" id="statCategories">–</div>
-              </div>
-              <div class="stat-icon"><i class="fa fa-layer-group"></i></div>
-            </div>
-          </div>
-        </div>
+        <!-- ================= SECTION: SẢN PHẨM ================= -->
+        <div id="productsSection">
 
-        <!-- Table card -->
-        <div class="admin-card">
-          <div class="table-toolbar">
-            <div class="d-flex gap-2 flex-wrap">
-              <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo tên hoặc SKU..." style="min-width:220px;">
-              <select id="categoryFilter" class="form-select" style="min-width:160px;">
-                <option value="">Tất cả danh mục</option>
-              </select>
+          <!-- Stat cards -->
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+              <div class="stat-card d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-label">Tổng sản phẩm</div>
+                  <div class="stat-value" id="statTotal">–</div>
+                </div>
+                <div class="stat-icon"><i class="fa fa-box"></i></div>
+              </div>
             </div>
-            <button class="btn btn-abx-gold" id="openAddModalBtn">
-              <i class="fa fa-plus me-1"></i> Thêm sản phẩm
-            </button>
+            <div class="col-6 col-md-3">
+              <div class="stat-card d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-label">Đang bán</div>
+                  <div class="stat-value" id="statActive">–</div>
+                </div>
+                <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-label">Sắp hết hàng</div>
+                  <div class="stat-value" id="statLowStock">–</div>
+                </div>
+                <div class="stat-icon"><i class="fa fa-triangle-exclamation"></i></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-label">Danh mục</div>
+                  <div class="stat-value" id="statCategories">–</div>
+                </div>
+                <div class="stat-icon"><i class="fa fa-layer-group"></i></div>
+              </div>
+            </div>
           </div>
 
-          <div class="table-responsive">
-            <table class="table admin-table mb-0">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Tên sản phẩm</th>
-                  <th>SKU</th>
-                  <th>Danh mục</th>
-                  <th>Giá</th>
-                  <th>Tồn kho</th>
-                  <th>Trạng thái</th>
-                  <th class="text-end">Hành động</th>
-                </tr>
-              </thead>
-              <tbody id="productsTableBody">
-                <tr><td colspan="8" class="text-center text-muted py-4">Đang tải dữ liệu...</td></tr>
-              </tbody>
-            </table>
+          <!-- Table card -->
+          <div class="admin-card">
+            <div class="table-toolbar">
+              <div class="d-flex gap-2 flex-wrap">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm theo tên hoặc SKU..." style="min-width:220px;">
+                <select id="categoryFilter" class="form-select" style="min-width:160px;">
+                  <option value="">Tất cả danh mục</option>
+                </select>
+              </div>
+              <button class="btn btn-abx-gold" id="openAddModalBtn">
+                <i class="fa fa-plus me-1"></i> Thêm sản phẩm
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table admin-table mb-0">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Tên sản phẩm</th>
+                    <th>SKU</th>
+                    <th>Danh mục</th>
+                    <th>Giá</th>
+                    <th>Tồn kho</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                  <tr><td colspan="8" class="text-center text-muted py-4">Đang tải dữ liệu...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+
         </div>
+        <!-- ================= END SECTION: SẢN PHẨM ================= -->
+
+        <!-- ================= SECTION: BLOG ================= -->
+        <div id="blogSection" class="d-none">
+
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-md-4">
+              <div class="stat-card d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-label">Tổng bài viết</div>
+                  <div class="stat-value" id="statPostTotal">–</div>
+                </div>
+                <div class="stat-icon"><i class="fa fa-file-lines"></i></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="stat-card d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-label">Đã xuất bản</div>
+                  <div class="stat-value" id="statPostPublished">–</div>
+                </div>
+                <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="stat-card d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="stat-label">Bản nháp</div>
+                  <div class="stat-value" id="statPostDraft">–</div>
+                </div>
+                <div class="stat-icon"><i class="fa fa-pen-to-square"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <div class="table-toolbar">
+              <div class="d-flex gap-2 flex-wrap">
+                <input type="text" id="postSearchInput" class="form-control" placeholder="Tìm theo tiêu đề..." style="min-width:220px;">
+              </div>
+              <button class="btn btn-abx-gold" id="openAddPostModalBtn">
+                <i class="fa fa-plus me-1"></i> Viết bài mới
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table admin-table mb-0">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Tiêu đề</th>
+                    <th>Danh mục</th>
+                    <th>Tác giả</th>
+                    <th>Ngày đăng</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody id="postsTableBody">
+                  <tr><td colspan="7" class="text-center text-muted py-4">Đang tải dữ liệu...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+        <!-- ================= END SECTION: BLOG ================= -->
 
       </main>
     </div>
@@ -318,8 +392,13 @@
               </div>
 
               <div class="col-md-8">
-                <label class="form-label">Link hình ảnh</label>
-                <input type="text" class="form-control" id="productImageUrl" placeholder="images/ten-file.png">
+                <label class="form-label">Hình ảnh sản phẩm</label>
+                <input type="file" class="form-control" id="productImageFile" accept="image/*">
+                <input type="hidden" id="productImageUrl">
+                <div class="mt-2">
+                  <img id="productImagePreview" src="" alt="" class="d-none" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #E4E7EC;">
+                </div>
+                <small class="text-muted" id="uploadStatusText"></small>
               </div>
               <div class="col-md-4">
                 <label class="form-label">Badge (nhãn nhỏ)</label>
@@ -347,10 +426,99 @@
     </div>
   </div>
 
+  <!-- ================= Modal Thêm / Sửa bài viết Blog ================= -->
+  <div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="postModalTitle">Viết bài mới</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="postFormError" class="alert alert-danger d-none"></div>
+          <form id="postForm">
+            <input type="hidden" id="postId">
+
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label">Tiêu đề bài viết *</label>
+                <input type="text" class="form-control" id="postTitle" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Danh mục</label>
+                <input type="text" class="form-control" id="postCategory" placeholder="VD: Bảo dưỡng">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Đường dẫn (slug)</label>
+                <input type="text" class="form-control" id="postSlug" placeholder="tu-dong-tao-tu-tieu-de">
+                <small class="text-muted">Để trống để tự tạo từ tiêu đề.</small>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Tác giả</label>
+                <input type="text" class="form-control" id="postAuthor" placeholder="VD: Minh Tran">
+              </div>
+
+              <div class="col-md-8">
+                <label class="form-label">Ảnh đại diện bài viết</label>
+                <input type="file" class="form-control" id="postImageFile" accept="image/*">
+                <input type="hidden" id="postImageUrl">
+                <div class="mt-2">
+                  <img id="postImagePreview" src="" alt="" class="d-none" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #E4E7EC;">
+                </div>
+                <small class="text-muted" id="postUploadStatusText"></small>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Tóm tắt ngắn (excerpt)</label>
+                <textarea class="form-control" id="postExcerpt" rows="2" placeholder="1-2 câu mô tả ngắn hiển thị ở trang danh sách blog"></textarea>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Nội dung bài viết *</label>
+                <textarea class="form-control" id="postContent" rows="8" required></textarea>
+              </div>
+
+              <div class="col-12 form-check ps-4">
+                <input type="checkbox" class="form-check-input" id="postIsPublished" checked>
+                <label class="form-check-label" for="postIsPublished">Xuất bản (hiển thị công khai trên trang Blog)</label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
+              <button type="submit" class="btn btn-abx-gold" id="postSubmitBtn">Lưu bài viết</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <script src="js/admin-guard.js"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/admin-blog.js"></script>
+
+  <script>
+    // Chuyển đổi giữa tab "Sản phẩm" và "Blog" trong sidebar
+    document.querySelectorAll(".admin-nav-link").forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        document.querySelectorAll(".admin-nav-link").forEach(l => l.classList.remove("active"));
+        this.classList.add("active");
+
+        const target = this.getAttribute("data-target");
+        document.getElementById("productsSection").classList.toggle("d-none", target !== "productsSection");
+        document.getElementById("blogSection").classList.toggle("d-none", target !== "blogSection");
+
+        document.getElementById("pageTitle").textContent =
+          target === "blogSection" ? "Quản lý Blog" : "Quản lý sản phẩm";
+      });
+    });
+  </script>
 </body>
 </html>

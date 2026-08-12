@@ -7,9 +7,32 @@
 let allProducts = [];
 let productModalInstance = null;
 
+/* ---------- Cấu hình Cloudinary (upload ảnh sản phẩm) ---------- */
+const CLOUDINARY_CLOUD_NAME = "desf1gsdl";
+const CLOUDINARY_UPLOAD_PRESET = "teest12345";
+
 /* ---------- Helper: format tiền VNĐ ---------- */
 function formatVND(value) {
 	return Number(value || 0).toLocaleString("vi-VN") + "đ";
+}
+
+/* ---------- Upload ảnh lên Cloudinary, trả về URL công khai ---------- */
+async function uploadImageToCloudinary(file) {
+	const formData = new FormData();
+	formData.append("file", file);
+	formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+	const response = await fetch(
+		`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+		{ method: "POST", body: formData }
+	);
+
+	if (!response.ok) {
+		throw new Error("Tải ảnh lên Cloudinary thất bại.");
+	}
+
+	const data = await response.json();
+	return data.secure_url;
 }
 
 /* ---------- Load toàn bộ sản phẩm ---------- */
@@ -105,6 +128,16 @@ function renderTable() {
 function openAddModal() {
 	document.getElementById("productForm").reset();
 	document.getElementById("productId").value = "";
+	document.getElementById("productImageUrl").value = "";
+
+	const preview = document.getElementById("productImagePreview");
+	if (preview) {
+		preview.src = "";
+		preview.classList.add("d-none");
+	}
+	const statusText = document.getElementById("uploadStatusText");
+	if (statusText) statusText.textContent = "";
+
 	document.getElementById("productIsActive").checked = true;
 	document.getElementById("productModalTitle").textContent = "Thêm sản phẩm";
 	hideProductFormError();
@@ -126,6 +159,20 @@ function openEditModal(id) {
 	document.getElementById("productBadge").value = product.badge || "";
 	document.getElementById("productDescription").value = product.description || "";
 	document.getElementById("productIsActive").checked = !!product.is_active;
+
+	const preview = document.getElementById("productImagePreview");
+	const statusText = document.getElementById("uploadStatusText");
+	if (statusText) statusText.textContent = "";
+
+	if (preview) {
+		if (product.image_url) {
+			preview.src = product.image_url;
+			preview.classList.remove("d-none");
+		} else {
+			preview.src = "";
+			preview.classList.add("d-none");
+		}
+	}
 
 	document.getElementById("productModalTitle").textContent = "Sửa sản phẩm";
 	hideProductFormError();
@@ -165,24 +212,40 @@ async function handleProductSubmit(event) {
 
 	const id = document.getElementById("productId").value;
 	const submitBtn = document.getElementById("productSubmitBtn");
-
-	const payload = {
-		name: document.getElementById("productName").value.trim(),
-		sku: document.getElementById("productSku").value.trim() || null,
-		category: document.getElementById("productCategory").value.trim() || null,
-		price: Number(document.getElementById("productPrice").value) || 0,
-		stock: Number(document.getElementById("productStock").value) || 0,
-		image_url: document.getElementById("productImageUrl").value.trim() || null,
-		badge: document.getElementById("productBadge").value.trim() || null,
-		description: document.getElementById("productDescription").value.trim() || null,
-		is_active: document.getElementById("productIsActive").checked,
-		updated_at: new Date().toISOString()
-	};
+	const fileInput = document.getElementById("productImageFile");
+	const statusText = document.getElementById("uploadStatusText");
 
 	submitBtn.disabled = true;
-	submitBtn.textContent = "Đang lưu...";
 
 	try {
+		// Ảnh cũ (nếu đang sửa) hoặc rỗng (nếu thêm mới)
+		let imageUrl = document.getElementById("productImageUrl").value.trim() || null;
+
+		// Nếu admin có chọn file ảnh mới -> upload lên Cloudinary trước
+		if (fileInput && fileInput.files && fileInput.files[0]) {
+			submitBtn.textContent = "Đang tải ảnh lên...";
+			if (statusText) statusText.textContent = "Đang upload ảnh, vui lòng đợi...";
+
+			imageUrl = await uploadImageToCloudinary(fileInput.files[0]);
+
+			if (statusText) statusText.textContent = "";
+		}
+
+		const payload = {
+			name: document.getElementById("productName").value.trim(),
+			sku: document.getElementById("productSku").value.trim() || null,
+			category: document.getElementById("productCategory").value.trim() || null,
+			price: Number(document.getElementById("productPrice").value) || 0,
+			stock: Number(document.getElementById("productStock").value) || 0,
+			image_url: imageUrl,
+			badge: document.getElementById("productBadge").value.trim() || null,
+			description: document.getElementById("productDescription").value.trim() || null,
+			is_active: document.getElementById("productIsActive").checked,
+			updated_at: new Date().toISOString()
+		};
+
+		submitBtn.textContent = "Đang lưu...";
+
 		let error;
 
 		if (id) {
@@ -223,6 +286,19 @@ document.addEventListener("adminVerified", function (e) {
 	document.getElementById("productForm").addEventListener("submit", handleProductSubmit);
 	document.getElementById("searchInput").addEventListener("input", renderTable);
 	document.getElementById("categoryFilter").addEventListener("change", renderTable);
+
+	// Preview ảnh ngay khi admin chọn file
+	const imageFileInput = document.getElementById("productImageFile");
+	if (imageFileInput) {
+		imageFileInput.addEventListener("change", function (evt) {
+			const file = evt.target.files[0];
+			const preview = document.getElementById("productImagePreview");
+			if (file && preview) {
+				preview.src = URL.createObjectURL(file);
+				preview.classList.remove("d-none");
+			}
+		});
+	}
 
 	document.getElementById("adminLogoutBtn").addEventListener("click", async function (evt) {
 		evt.preventDefault();

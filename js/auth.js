@@ -1,16 +1,16 @@
 /* =========================================================
    ABRAHAM — AUTH MODULE
-   Yêu cầu: biến `supabaseClient` phải được khởi tạo TRƯỚC
-   khi file này được load (giữ nguyên trong file HTML chính,
-   nơi bạn đã có createClient(SUPABASE_URL, SUPABASE_KEY)).
+   Requires: `supabaseClient` must be initialized BEFORE
+   this file is loaded (keep it in the main HTML file,
+   where you already have createClient(SUPABASE_URL, SUPABASE_KEY)).
 
-   Cách dùng: thêm dòng này SAU script khởi tạo supabaseClient
+   Usage: add this line AFTER the supabaseClient init script
    <script src="js/auth.js"></script>
 ========================================================= */
 
 let isSignUpMode = false;
 
-/* ---------- Lấy role + tên hiển thị từ bảng profiles ---------- */
+/* ---------- Get role + display name from the profiles table ---------- */
 async function getUserRole(userId) {
 	const { data, error } = await supabaseClient
 		.from("profiles")
@@ -19,17 +19,18 @@ async function getUserRole(userId) {
 		.single();
 
 	if (error) {
-		console.error("Không lấy được profile:", error);
+		console.error("Failed to fetch profile:", error);
 		return { role: "customer", full_name: null };
 	}
 
 	return data;
 }
 
-/* ---------- Cập nhật giao diện navbar theo trạng thái đăng nhập ---------- */
+/* ---------- Update navbar UI based on auth state ---------- */
 async function setAuthUI(user) {
 	const authLabel = document.getElementById("authLabel");
 	const authTrigger = document.getElementById("authTrigger");
+	const adminNavItem = document.getElementById("adminNavItem");
 
 	if (!authLabel || !authTrigger) return;
 
@@ -48,24 +49,33 @@ async function setAuthUI(user) {
 			e.preventDefault();
 			handleLogout();
 		};
+
+		// Hiện nút Admin nếu đúng role
+		if (adminNavItem) {
+			adminNavItem.classList.toggle("d-none", profile.role !== "admin");
+		}
 	} else {
-		authLabel.textContent = "Đăng nhập";
+		authLabel.textContent = "Log In";
 		authTrigger.setAttribute("data-bs-toggle", "modal");
 		authTrigger.setAttribute("data-bs-target", "#authModal");
 		authTrigger.onclick = null;
+
+		// Chưa đăng nhập -> luôn ẩn nút Admin
+		if (adminNavItem) {
+			adminNavItem.classList.add("d-none");
+		}
 	}
 }
-
-/* ---------- Đăng xuất ---------- */
+/* ---------- Log out ---------- */
 async function handleLogout() {
 	const { error } = await supabaseClient.auth.signOut();
 
 	if (error) {
-		console.error("Lỗi đăng xuất:", error.message);
+		console.error("Logout error:", error.message);
 	}
 }
 
-/* ---------- Hiển thị / ẩn thông báo lỗi trong modal ---------- */
+/* ---------- Show / hide error message in the modal ---------- */
 function showAuthError(message) {
 	const errorBox = document.getElementById("authError");
 	if (!errorBox) return;
@@ -79,7 +89,7 @@ function hideAuthError() {
 	errorBox.classList.add("d-none");
 }
 
-/* ---------- Chuyển đổi giữa chế độ Đăng nhập / Đăng ký ---------- */
+/* ---------- Toggle between Log In / Sign Up mode ---------- */
 function toggleAuthMode() {
 	isSignUpMode = !isSignUpMode;
 
@@ -89,21 +99,21 @@ function toggleAuthMode() {
 	const switchLink = document.getElementById("authSwitchLink");
 
 	if (isSignUpMode) {
-		title.textContent = "Đăng ký";
-		submitBtn.textContent = "Đăng ký";
-		switchText.textContent = "Đã có tài khoản?";
-		switchLink.textContent = "Đăng nhập";
+		title.textContent = "Sign Up";
+		submitBtn.textContent = "Sign Up";
+		switchText.textContent = "Already have an account?";
+		switchLink.textContent = "Log In";
 	} else {
-		title.textContent = "Đăng nhập";
-		submitBtn.textContent = "Đăng nhập";
-		switchText.textContent = "Chưa có tài khoản?";
-		switchLink.textContent = "Đăng ký ngay";
+		title.textContent = "Log In";
+		submitBtn.textContent = "Log In";
+		switchText.textContent = "Don't have an account?";
+		switchLink.textContent = "Sign Up now";
 	}
 
 	hideAuthError();
 }
 
-/* ---------- Xử lý submit form đăng nhập / đăng ký ---------- */
+/* ---------- Handle login / sign-up form submit ---------- */
 async function handleAuthSubmit(event) {
 	event.preventDefault();
 	hideAuthError();
@@ -113,7 +123,7 @@ async function handleAuthSubmit(event) {
 	const submitBtn = document.getElementById("authSubmitBtn");
 
 	submitBtn.disabled = true;
-	submitBtn.textContent = isSignUpMode ? "Đang đăng ký..." : "Đang đăng nhập...";
+	submitBtn.textContent = isSignUpMode ? "Signing up..." : "Logging in...";
 
 	try {
 		if (isSignUpMode) {
@@ -124,7 +134,7 @@ async function handleAuthSubmit(event) {
 
 			if (error) throw error;
 
-			showAuthError("Đăng ký thành công! Kiểm tra email để xác nhận tài khoản (nếu bật xác thực email), sau đó đăng nhập lại.");
+			showAuthError("Sign-up successful! Check your email to confirm your account (if email confirmation is enabled), then log in.");
 		} else {
 			const { error } = await supabaseClient.auth.signInWithPassword({
 				email,
@@ -140,33 +150,33 @@ async function handleAuthSubmit(event) {
 			document.getElementById("authForm").reset();
 		}
 	} catch (err) {
-		showAuthError(err.message || "Có lỗi xảy ra, vui lòng thử lại.");
+		showAuthError(err.message || "Something went wrong, please try again.");
 	} finally {
 		submitBtn.disabled = false;
-		submitBtn.textContent = isSignUpMode ? "Đăng ký" : "Đăng nhập";
+		submitBtn.textContent = isSignUpMode ? "Sign Up" : "Log In";
 	}
 }
 
-/* ---------- Khởi tạo khi trang tải xong ---------- */
+/* ---------- Initialize on page load ---------- */
 document.addEventListener("DOMContentLoaded", function () {
 
-	// Kiểm tra session hiện có
+	// Check for an existing session
 	supabaseClient.auth.getSession().then(({ data }) => {
 		setAuthUI(data.session ? data.session.user : null);
 	});
 
-	// Tự động cập nhật UI mỗi khi trạng thái đăng nhập thay đổi
+	// Automatically update UI whenever auth state changes
 	supabaseClient.auth.onAuthStateChange((event, session) => {
 		setAuthUI(session ? session.user : null);
 	});
 
-	// Gắn sự kiện submit cho form auth (nếu modal có trong trang)
+	// Attach submit handler to the auth form (if the modal is present on the page)
 	const authForm = document.getElementById("authForm");
 	if (authForm) {
 		authForm.addEventListener("submit", handleAuthSubmit);
 	}
 
-	// Gắn sự kiện chuyển đổi Đăng nhập / Đăng ký
+	// Attach toggle handler for Log In / Sign Up switch
 	const switchLink = document.getElementById("authSwitchLink");
 	if (switchLink) {
 		switchLink.addEventListener("click", function (e) {

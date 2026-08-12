@@ -92,7 +92,7 @@
 		========================= */
 		.abx-toolbar {
 			display: grid;
-			grid-template-columns: minmax(280px, 1fr) auto 190px;
+			grid-template-columns: minmax(280px, 1fr) auto;
 			gap: 12px;
 			align-items: center;
 			padding: 14px;
@@ -195,32 +195,6 @@
 			box-shadow: 0 6px 16px rgba(9,41,87,.2);
 		}
 
-		.abx-sort {
-			position: relative;
-		}
-
-		.abx-sort > i {
-			position: absolute;
-			left: 15px;
-			top: 50%;
-			transform: translateY(-50%);
-			color: var(--abx-gold-dark);
-			pointer-events: none;
-			z-index: 2;
-		}
-
-		.abx-sort select {
-			width: 100%;
-			height: 52px;
-			padding: 0 14px 0 40px;
-			border: 1px solid rgba(9,41,87,.12);
-			border-radius: 13px;
-			background: #f8fafc;
-			color: var(--abx-navy);
-			font-size: 12px;
-			font-weight: 600;
-			outline: none;
-		}
 
 		.abx-result {
 			display: flex;
@@ -244,6 +218,7 @@
 			position: relative;
 			height: 100%;
 			overflow: hidden;
+			cursor: pointer;
 			background: #fff;
 			border: 1px solid rgba(9,41,87,.07);
 			border-radius: 20px;
@@ -255,6 +230,11 @@
 			transform: translateY(-8px);
 			border-color: rgba(242,183,43,.55);
 			box-shadow: 0 22px 52px rgba(9,41,87,.13);
+		}
+
+		.abx-card:focus-visible {
+			outline: 3px solid rgba(242,183,43,.35);
+			outline-offset: 4px;
 		}
 
 		.abx-card-image {
@@ -393,29 +373,13 @@
 
 		.abx-card-bottom {
 			display: flex;
-			justify-content: space-between;
-			align-items: flex-end;
+			justify-content: flex-end;
+			align-items: center;
 			gap: 12px;
 			padding-top: 15px;
 			border-top: 1px solid #edf1f5;
 		}
 
-		.abx-price {
-			display: flex;
-			flex-direction: column;
-			gap: 1px;
-		}
-
-		.abx-price small {
-			color: #98A2B3;
-			font-size: 9px;
-		}
-
-		.abx-price strong {
-			color: var(--abx-gold-dark);
-			font-size: 19px;
-			font-weight: 900;
-		}
 
 		.abx-detail {
 			display: inline-flex;
@@ -584,9 +548,6 @@
 			.abx-toolbar {
 				grid-template-columns: 1fr;
 			}
-			.abx-sort {
-				width: 100%;
-			}
 		}
 
 		@media (max-width: 767px) {
@@ -700,16 +661,6 @@
 					<button type="button" class="abx-filter-btn active" data-category="all">
 						Tất cả
 					</button>
-				</div>
-
-				<div class="abx-sort">
-					<i class="fa-solid fa-arrow-down-wide-short"></i>
-					<select id="product-sort">
-						<option value="default">Sắp xếp sản phẩm</option>
-						<option value="price-low">Giá thấp → cao</option>
-						<option value="price-high">Giá cao → thấp</option>
-						<option value="name-az">Tên A → Z</option>
-					</select>
 				</div>
 
 			</div>
@@ -888,14 +839,6 @@
 				.replaceAll('"', "&quot;")
 				.replaceAll("'", "&#039;");
 
-		function formatPrice(value) {
-			const number = Number(value || 0);
-
-			return new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD"
-			}).format(number);
-		}
 
 		function buildCategoryButtons(products) {
 			const categoryContainer = document.getElementById("category-buttons");
@@ -973,10 +916,8 @@
 
 		function applyFilters() {
 			const searchInput = document.getElementById("product-search");
-			const sortSelect = document.getElementById("product-sort");
 
 			const keyword = searchInput.value.trim().toLowerCase();
-			const sortValue = sortSelect.value;
 
 			let products = [...allProducts];
 
@@ -996,27 +937,6 @@
 				);
 			}
 
-			// SORT
-			if (sortValue === "price-low") {
-				products.sort(
-					(a, b) => Number(a.price || 0) - Number(b.price || 0)
-				);
-			}
-
-			if (sortValue === "price-high") {
-				products.sort(
-					(a, b) => Number(b.price || 0) - Number(a.price || 0)
-				);
-			}
-
-			if (sortValue === "name-az") {
-				products.sort((a, b) =>
-					String(a.name || "").localeCompare(
-						String(b.name || ""),
-						"vi"
-					)
-				);
-			}
 
 			// Nếu trang hiện tại vượt quá số trang thực tế (VD: search làm ít kết quả hơn) -> đưa về trang cuối hợp lệ
 			const totalPages = Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE));
@@ -1082,7 +1002,13 @@
 
 				return `
 					<div class="col-12 col-sm-6 col-lg-3">
-						<article class="abx-card">
+						<article
+							class="abx-card"
+							data-product-id="${escapeHtml(product.id)}"
+							tabindex="0"
+							role="link"
+							aria-label="Xem chi tiết ${name}"
+						>
 
 							${badge}
 
@@ -1116,17 +1042,10 @@
 								</p>
 
 								<div class="abx-card-bottom">
-
-									<div class="abx-price">
-										<small>Giá bán</small>
-										<strong>${formatPrice(product.price)}</strong>
-									</div>
-
-									<a href="#" class="abx-detail">
-										<span>Chi tiết</span>
+									<span class="abx-detail" aria-hidden="true">
+										<span>Xem chi tiết</span>
 										<i class="fa-solid fa-arrow-right"></i>
-									</a>
-
+									</span>
 								</div>
 
 							</div>
@@ -1136,9 +1055,33 @@
 				`;
 			}).join("");
 
+			// ===== CLICK TOÀN BỘ CARD -> TRANG CHI TIẾT =====
+			document.querySelectorAll(".abx-card").forEach(card => {
+				const openProductDetail = () => {
+					const productId = card.dataset.productId;
+					if (!productId) return;
+
+					window.location.href =
+						`product-detail.html?id=${encodeURIComponent(productId)}`;
+				};
+
+				card.addEventListener("click", function (event) {
+					// Nút yêu thích chỉ đổi trạng thái, không mở trang chi tiết
+					if (event.target.closest(".abx-heart")) return;
+					openProductDetail();
+				});
+
+				card.addEventListener("keydown", function (event) {
+					if (event.key === "Enter") {
+						openProductDetail();
+					}
+				});
+			});
+
 			// Wishlist visual toggle
 			document.querySelectorAll(".abx-heart").forEach(button => {
-				button.addEventListener("click", function () {
+				button.addEventListener("click", function (event) {
+					event.stopPropagation();
 					this.classList.toggle("active");
 
 					const icon = this.querySelector("i");
@@ -1263,7 +1206,6 @@
 		document.addEventListener("DOMContentLoaded", function () {
 			const searchInput = document.getElementById("product-search");
 			const clearSearch = document.getElementById("clear-search");
-			const sortSelect = document.getElementById("product-sort");
 
 			searchInput.addEventListener("input", function () {
 				currentPage = 1; // reset về trang 1 khi tìm kiếm
@@ -1277,10 +1219,6 @@
 				searchInput.focus();
 			});
 
-			sortSelect.addEventListener("change", function () {
-				currentPage = 1; // reset về trang 1 khi đổi cách sắp xếp
-				applyFilters();
-			});
 
 			loadProducts();
 		});

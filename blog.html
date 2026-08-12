@@ -95,85 +95,14 @@
 					</div>
 				</div>
 
-				<div class="row">
-
-					<div class="col-12 col-sm-6 col-md-4 mb-5 d-flex">
-						<div class="post-entry h-100">
-							<a href="#" class="post-thumbnail"><img src="images/pic1.jpeg" alt="Bike tune-up checklist" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">5 Signs Your Bike Needs a Tune-Up</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Minh Tran</a></span> <span>on <a href="#">Jul 12, 2026</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-4 mb-5 d-flex">
-						<div class="post-entry h-100">
-							<a href="#" class="post-thumbnail"><img src="images/pic2.jpg" alt="Cyclist riding through the city" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">The Daily Commuter's Guide to a Smoother Ride</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Daniel Nguyen</a></span> <span>on <a href="#">Jul 05, 2026</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-4 mb-5 d-flex">
-						<div class="post-entry h-100">
-							<a href="#" class="post-thumbnail"><img src="images/pic3.png" alt="Bike fitting session" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">Why Bike Fit Matters More Than You Think</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Kevin Le</a></span> <span>on <a href="#">Jun 28, 2026</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-4 mb-5 d-flex">
-						<div class="post-entry h-100">
-							<a href="#" class="post-thumbnail"><img src="images/pic4.png" alt="Mechanic servicing bike brakes" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">Disc vs. Rim Brakes: What's Right for You?</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Sophia Reynolds</a></span> <span>on <a href="#">Jun 20, 2026</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-4 mb-5 d-flex">
-						<div class="post-entry h-100">
-							<a href="#" class="post-thumbnail"><img src="images/pic5.jpg" alt="Mountain biking on a trail" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">Trail-Ready: Prepping Your Mountain Bike for Spring</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Arjun Mehta</a></span> <span>on <a href="#">Jun 14, 2026</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-4 mb-5 d-flex">
-						<div class="post-entry h-100">
-							<a href="#" class="post-thumbnail"><img src="images/pic6.jpg" alt="Home bike maintenance tools" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">7 Maintenance Habits Every Rider Should Know</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Tom Baker</a></span> <span>on <a href="#">Jun 07, 2026</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
+				<!-- Bài viết được tải động từ Supabase -->
+				<div class="row" id="blogPostsRow">
+					<div class="col-12 text-center text-muted py-4">Đang tải bài viết...</div>
 				</div>
 
-				<div class="row">
+				<div class="row d-none" id="loadMoreRow">
 					<div class="col-12 text-center">
-						<a href="#" class="btn btn-white-outline">Load More Articles</a>
+						<a href="#" class="btn btn-white-outline" id="loadMoreBtn">Load More Articles</a>
 					</div>
 				</div>
 
@@ -199,6 +128,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+.blog-section .post-entry h3 a {
+    cursor: pointer;
 }
 </style>
 
@@ -438,10 +370,13 @@
 		</footer>
 		<!-- End Footer Section -->
 
-
 		<script src="js/bootstrap.bundle.min.js"></script>
 		<script src="js/tiny-slider.js"></script>
 		<script src="js/custom.js"></script>
+
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<script src="js/supabase.js"></script>
+		<script src="js/blog-list.js"></script>
 	</body>
 
 </html>

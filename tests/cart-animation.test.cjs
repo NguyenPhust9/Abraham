@@ -1,0 +1,13 @@
+﻿const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+let destination={left:1000,top:10,bottom:58,width:48,height:48},frames,options,thumbnail,pulses=0,clone;
+const pending=[];
+const cart={getBoundingClientRect:()=>destination,animate(){pulses++},cloneNode(){clone={classList:{add(){}},setAttribute(){},getBoundingClientRect:()=>({left:1000,top:16,width:48,height:48}),animate(){pulses++},remove(){this.removed=true}};return clone;}};
+const image={src:'/bike.png',getBoundingClientRect:()=>({left:100,top:400,width:200,height:180}),animate(){}};
+const button={closest:()=>({querySelector:()=>image})};
+let reduced=false;
+const context=vm.createContext({window:{innerHeight:800,matchMedia:()=>({matches:reduced})},document:{querySelector:()=>cart,body:{append(){}},createElement:()=>{thumbnail={setAttribute(){},animate(f,o){frames=f;options=o;return {finished:Promise.resolve()}},remove(){this.removed=true}};return thumbnail;}},setTimeout:fn=>pending.push(fn)});
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../js/cart-animation.js'),'utf8'),context);
+(async()=>{context.window.flyProductToCart(button);await Promise.resolve();assert.equal(thumbnail.src,'/bike.png');assert.equal(options.duration,780);assert.match(frames[0].transform,/164px, 454px/);assert.match(frames[2].transform,/988px, -2px/);assert(thumbnail.removed);assert.equal(pulses,1);
+destination={left:0,top:0,width:0,height:0,bottom:0};context.window.flyProductToCart(button);await Promise.resolve();assert(clone);pending.forEach(fn=>fn());assert(clone.removed);
+reduced=true;thumbnail=null;context.window.flyProductToCart(button);assert.equal(thumbnail,null);
+console.log('Passed thumbnail travel, destination pulse, cleanup, off-screen/mobile cart target and reduced motion fallback.');})().catch(error=>{console.error(error);process.exitCode=1});

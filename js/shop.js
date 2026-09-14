@@ -150,7 +150,16 @@ function filterShopProducts(products, filters) {
             if(event.target.closest("[data-reset-filters]")){reset();return;}
             if(event.target.closest("[data-retry]")){load();return;}
             const add=event.target.closest("[data-add-cart]");
-            if(add && !add.disabled){const product=products.find(p=>String(p.id)===add.dataset.addCart);if(!product)return;try{window.AbrahamCart.add(product);notice("Added to your cart.");}catch(error){notice(error.message);}return;}
+            if (add && !add.disabled) {
+                const product = products.find(p => String(p.id) === add.dataset.addCart);
+                if (!product) return;
+                try { window.AbrahamCart.add(product); }
+                catch (error) { notice(error.message); return; }
+                $("shop-notice").classList.add("d-none");
+                $("search-status").textContent = `${product.name || "Product"} added to your cart.`;
+                try { window.flyProductToCart?.(add); } catch (_) { /* Cart contents remain saved if animation is unavailable. */ }
+                return;
+            }
             const favorite=event.target.closest("[data-favorite]");
             if(favorite){const id=favorite.dataset.favorite;const next=favorites.includes(id)?favorites.filter(value=>value!==id):[...favorites,id];try{localStorage.setItem("abraham_favorites",JSON.stringify(next));favorites=next;render();}catch(_){notice("Unable to save favorites in this browser.");}}
         });

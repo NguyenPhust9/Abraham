@@ -426,6 +426,7 @@
         @media (max-width: 575px) { .abx-spec-list { grid-template-columns: 1fr; } }
     </style>
 <link rel="stylesheet" href="/css/navigation.css">
+<link rel="stylesheet" href="/css/product-gallery.css">
 </head>
 
 <body>
@@ -498,8 +499,13 @@
 					<div class="col-lg-6">
 						<div class="abx-product-media">
 							<span id="product-badge" class="abx-detail-badge d-none"></span>
-							<img id="product-image" src="/images/product-placeholder.svg" alt="Abraham Bike">
+							<img id="product-image" src="/images/product-placeholder.svg" alt="Abraham Bike" tabindex="0">
+                            <button type="button" id="product-image-zoom" class="abx-image-zoom" aria-label="Zoom product image" title="Zoom image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M16 16l5 5M7.5 10.5h6M10.5 7.5v6"/></svg></button>
+                            <button type="button" id="product-image-prev" class="abx-gallery-arrow abx-gallery-arrow--prev" aria-label="Previous product image" hidden>‹</button>
+                            <button type="button" id="product-image-next" class="abx-gallery-arrow abx-gallery-arrow--next" aria-label="Next product image" hidden>›</button>
+                            <span id="product-image-counter" class="abx-gallery-counter" role="status" aria-live="polite" hidden></span>
 						</div>
+                        <div id="product-thumbnails" class="abx-product-thumbnails" aria-label="Product images" hidden></div>
 					</div>
 
 					<div class="col-lg-6">
@@ -683,6 +689,9 @@
 
 	<script src="/js/frontend-language.js"></script>
     <script src="/js/product-url.js"></script>
+    <script src="/js/product-images.js"></script>
+    <script src="/js/product-gallery.js"></script>
+    <script src="/js/product-zoom.js"></script>
     <script src="js/product-specifications.js"></script>
 	<script>
 		const SUPABASE_URL = "https://bqowjqqnpeiwoaaczybg.supabase.co";
@@ -765,10 +774,7 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
 			document.getElementById("product-category").textContent = category;
 			document.getElementById("product-description").textContent = description;
             renderProductSpecifications(data.specifications);
-
-			const imageEl = document.getElementById("product-image");
-			imageEl.src = frontendProductImage(data.image_url);
-			imageEl.alt = name;
+            renderProductGallery(data);
 
 			const badgeEl = document.getElementById("product-badge");
 			if (data.badge) {
@@ -867,5 +873,12 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
 
 <script src="/js/auth.js"></script>
 <script src="/js/cart-store.js"></script>
+<dialog id="product-zoom-dialog" class="abx-zoom-dialog" aria-label="Enlarged product image">
+    <button type="button" id="product-zoom-close" class="abx-zoom-close" aria-label="Close zoom" autofocus>&times;</button>
+    <div class="abx-zoom-stage" id="product-zoom-stage"><img id="product-zoom-image" alt=""></div>
+    <button type="button" id="product-zoom-prev" class="abx-zoom-nav abx-zoom-nav--prev" aria-label="Previous image">?</button>
+    <button type="button" id="product-zoom-next" class="abx-zoom-nav abx-zoom-nav--next" aria-label="Next image">?</button>
+    <span id="product-zoom-counter" class="abx-zoom-count" role="status" aria-live="polite"></span>
+</dialog>
 </body>
 </html>

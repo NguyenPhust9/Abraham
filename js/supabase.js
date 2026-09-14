@@ -93,7 +93,7 @@ async function loadProducts() {
         <a class="product-item" href="#">
 
           <img
-            src="${product.image_url || "images/product-1.png"}"
+            src="${product.image_url || "/images/product-placeholder.svg"}"
             class="img-fluid product-thumbnail"
             alt="${product.name || "Abraham Bike"}"
           >

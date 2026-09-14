@@ -10,19 +10,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="author" content="Untree.co">
-<link rel="icon" type="image/png" href="images/favicon-abraham.png">  <meta name="description" content="Abraham" />
+  <meta name="author" content="Abraham">
+<link rel="icon" type="image/png" href="images/favicon-abraham.png">  <meta name="description" content="Review your Abraham bikes, update quantities and prepare your order.">
 
-  <meta name="description" content="" />
-  <meta name="keywords" content="bootstrap, bootstrap4" />
+  
+  
 
 		<!-- Bootstrap CSS -->
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 		<link href="css/tiny-slider.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
-		<title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+		<title>Shopping Cart — Abraham</title>
 	<link rel="stylesheet" href="/css/navigation.css">
+<link rel="stylesheet" href="/css/cart.css">
 </head>
 
 	<body>
@@ -61,133 +62,136 @@
 </nav>
 		<!-- End Header/Navigation -->
 
-		<!-- Start Hero Section -->
-			<div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Cart</h1>
-							</div>
-						</div>
-						<div class="col-lg-7">
-							
-						</div>
-					</div>
-				</div>
-			</div>
-		<!-- End Hero Section -->
-
-		
-
-		<main class="container py-5" id="cart-page">
- <div id="cart-error" class="alert alert-danger d-none" role="alert"></div>
- <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Total</th><th><span class="visually-hidden">Remove</span></th></tr></thead><tbody id="cart-items"></tbody></table></div>
- <div class="d-flex justify-content-between flex-wrap gap-3 mt-4"><a class="btn btn-outline-primary" href="/shop">Continue shopping</a><div class="text-end"><p class="fs-5 fw-bold">Total: <span id="cart-total">0đ</span></p><a class="btn btn-primary" href="/contact">Contact us to order</a></div></div>
+		<main class="cart-page" id="cart-page">
+ <div class="cart-container">
+  <div class="cart-breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/shop">Shop</a><span aria-hidden="true">/</span><span>Shopping cart</span></div>
+  <header class="cart-heading"><div><span class="cart-eyebrow">YOUR NEXT RIDE</span><h1>Shopping cart</h1><p>A few steps closer to your next adventure.</p></div><a class="cart-continue" href="/shop"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Continue shopping</a></header>
+  <div id="cart-error" class="cart-error d-none" role="alert"></div>
+  <div class="cart-layout" id="cart-layout">
+   <section class="cart-products-panel" aria-labelledby="cart-products-title">
+    <div class="cart-panel-heading"><h2 id="cart-products-title">Your items</h2><span id="cart-item-count" aria-live="polite">0 items</span></div>
+    <div class="cart-column-headings" aria-hidden="true"><span>Product</span><span>Price</span><span>Quantity</span><span>Total</span><span></span></div>
+    <div id="cart-items"></div>
+    <div class="cart-panel-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>Quantities and totals update automatically.</span></div>
+   </section>
+   <aside class="cart-summary" id="cart-summary" aria-labelledby="cart-summary-title">
+    <h2 id="cart-summary-title">Order summary</h2>
+    <dl><div><dt>Items <span id="cart-summary-count">(0)</span></dt><dd id="cart-subtotal">0đ</dd></div><div><dt>Delivery</dt><dd>Confirmed with your order</dd></div></dl>
+    <div class="cart-summary-total"><span>Total</span><strong id="cart-total" aria-live="polite">0đ</strong></div>
+    <a class="cart-order-button" href="/contact">Contact us to order <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    <p class="cart-order-note">Our team will confirm availability and delivery details with you.</p>
+    <div class="cart-help"><i class="fa-solid fa-headset" aria-hidden="true"></i><div><strong>Need a hand?</strong><span>We’re here to help you choose your ride.</span><a href="/contact">Talk to our team</a></div></div>
+   </aside>
+  </div>
+  <section id="cart-empty" class="cart-empty d-none" aria-labelledby="cart-empty-title"><div class="cart-empty-icon"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i></div><span class="cart-eyebrow">LET’S FIND YOUR RIDE</span><h2 id="cart-empty-title">Your cart is empty</h2><p>Explore our collection and add a bike you love.</p><a class="cart-order-button" href="/shop">Explore bikes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></section>
+ </div>
+ <div id="cart-notice" class="cart-notice" popover="manual" hidden role="status" aria-live="polite"><span class="cart-notice-icon"><i class="fa-solid fa-check" aria-hidden="true"></i></span><strong>Success</strong><p id="cart-notice-text"></p></div>
 </main>
 <!-- Start Footer Section -->
 		<footer class="footer-section">
-			<div class="container relative">
+		<div class="container relative">
 
-				<div class="sofa-img">
-					<img src="images/sofa.png" alt="Image" class="img-fluid">
-				</div>
+			<div class="sofa-img">
+			</div>
 
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="subscription-form">
-							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="subscription-form">
+						<h3 class="d-flex align-items-center">
+							<span class="me-1">
+								<img src="images/envelope-outline.svg" alt="Newsletter" class="img-fluid">
+							</span>
+							<span>Subscribe to Newsletter</span>
+						</h3>
 
-							<form action="#" class="row g-3">
-								<div class="col-auto">
-									<input type="text" class="form-control" placeholder="Enter your name">
-								</div>
-								<div class="col-auto">
-									<input type="email" class="form-control" placeholder="Enter your email">
-								</div>
-								<div class="col-auto">
-									<button class="btn btn-primary">
-										<span class="fa fa-paper-plane"></span>
-									</button>
-								</div>
-							</form>
-
-						</div>
+						<form action="#" class="row g-3">
+							<div class="col-auto">
+								<input type="text" class="form-control" placeholder="Enter your name">
+							</div>
+							<div class="col-auto">
+								<input type="email" class="form-control" placeholder="Enter your email">
+							</div>
+							<div class="col-auto">
+								<button class="btn btn-primary" type="submit">
+									<span class="fa fa-paper-plane"></span>
+								</button>
+							</div>
+						</form>
 					</div>
 				</div>
+			</div>
 
-				<div class="row g-5 mb-5">
-					<div class="col-lg-4">
-						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-						<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
+			<div class="row g-5 mb-5">
+				<div class="col-lg-4">
 
-						<ul class="list-unstyled custom-social">
-							<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
-						</ul>
-					</div>
-
-					<div class="col-lg-8">
-						<div class="row links-wrap">
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">About us</a></li>
-									<li><a href="#">Services</a></li>
-									<li><a href="#">Blog</a></li>
-									<li><a href="#">Contact us</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Support</a></li>
-									<li><a href="#">Knowledge base</a></li>
-									<li><a href="#">Live chat</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Our team</a></li>
-									<li><a href="#">Leadership</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Nordic Chair</a></li>
-									<li><a href="#">Kruzo Aero</a></li>
-									<li><a href="#">Ergonomic Chair</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
+					<ul class="list-unstyled custom-social">
+						<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+					</ul>
 				</div>
 
-				<div class="border-top copyright">
-					<div class="row pt-4">
-						<div class="col-lg-6">
-							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a>  <!-- License information: https://untree.co/license/ -->
-            </p>
+				<div class="col-lg-8">
+					<div class="row links-wrap">
+
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="/about">About us</a></li>
+								<li><a href="/services">Services</a></li>
+								<li><a href="/blog">Blog</a></li>
+								<li><a href="/contact">Contact us</a></li>
+							</ul>
 						</div>
 
-						<div class="col-lg-6 text-center text-lg-end">
-							<ul class="list-unstyled d-inline-flex ms-auto">
-								<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Support</a></li>
+								<li><a href="#">Knowledge base</a></li>
+								<li><a href="#">Live chat</a></li>
+							</ul>
+						</div>
+
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Jobs</a></li>
+								<li><a href="#">Our team</a></li>
+								<li><a href="#">Leadership</a></li>
 								<li><a href="#">Privacy Policy</a></li>
+							</ul>
+						</div>
+
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Nordic Road Bike</a></li>
+								<li><a href="#">Kruzo Aero Bike</a></li>
+								<li><a href="#">Trailhawk Mountain Bike</a></li>
 							</ul>
 						</div>
 
 					</div>
 				</div>
-
 			</div>
-		</footer>
+
+			<div class="border-top copyright">
+				<div class="row pt-4">
+					<div class="col-lg-6">
+						<p class="mb-2 text-center text-lg-start">
+							Abraham@2026
+						</p>
+					</div>
+
+					<div class="col-lg-6 text-center text-lg-end">
+						<ul class="list-unstyled d-inline-flex ms-auto">
+							<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</footer>
 		<!-- End Footer Section -->	
 
 

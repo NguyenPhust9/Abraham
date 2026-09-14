@@ -195,6 +195,8 @@
     }
   </style>
 <link rel="stylesheet" href="/css/admin-notifications.css">
+<link rel="stylesheet" href="/css/product-gallery.css">
+<link rel="stylesheet" href="/css/admin-pagination.css">
 </head>
 <body>
 
@@ -308,6 +310,10 @@
                 </tbody>
               </table>
             </div>
+            <div class="admin-product-pagination" id="adminProductPagination" hidden>
+              <div class="admin-product-page-summary"><span id="productPageInfo" role="status" aria-live="polite"></span><label for="productPageSize">Mỗi trang <select id="productPageSize"><option value="10">10</option><option value="20" selected>20</option><option value="50">50</option></select></label></div>
+              <nav id="productPageControls" aria-label="Phân trang sản phẩm admin"></nav>
+            </div>
           </div>
 
         </div>
@@ -420,16 +426,12 @@
               </div>
 
              <div class="col-md-8">
-  <label class="form-label">Hình ảnh sản phẩm</label>
-  <input type="file" class="form-control" id="productImageFile" accept="image/*">
+  <label class="form-label" for="productImageFile">Hình ảnh sản phẩm</label>
+  <input type="file" class="form-control" id="productImageFile" accept="image/*" multiple>
   <input type="hidden" id="productImageUrl">
-  <div class="mt-2 d-flex align-items-center gap-2">
-    <img id="productImagePreview" src="" alt="" class="d-none" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #E4E7EC;">
-    <button type="button" class="btn btn-sm btn-outline-danger d-none" id="removeProductImageBtn">
-      <i class="fa fa-trash me-1"></i>Xoá ảnh
-    </button>
-  </div>
-  <small class="text-muted" id="uploadStatusText"></small>
+  <div id="productImageGallery" class="admin-image-gallery"></div>
+  <small id="productImageCount" class="text-muted d-block mt-2"></small>
+  <small class="text-muted d-block" id="uploadStatusText" role="status"></small>
 </div>
               <div class="col-md-4">
                 <label class="form-label">Badge (nhãn nhỏ)</label>
@@ -561,6 +563,8 @@
 
   <script src="js/product-specifications.js"></script>
   <script src="/js/admin-notifications.js"></script>
+  <script src="/js/product-images.js"></script>
+  <script src="/js/admin-product-images.js"></script>
   <script src="js/admin.js"></script>
   <script src="js/admin-blog.js"></script>
 

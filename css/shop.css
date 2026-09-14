@@ -90,3 +90,6 @@
 .shop-banner-slogan::after { content:""; display:block; width:90px; height:4px; background:#ffbb28; margin:14px 0 0 auto; }
 @media (max-width:1000px) { .shop-banner-bike { right:60px; opacity:.85; } .shop-banner-slogan { display:none; } }
 @media (max-width:650px) { .shop-banner-bike { right:-110px; width:430px; height:310px; top:-20px; opacity:.55; } }
+.cart-flight-image { position:fixed; top:0; left:0; width:72px; height:72px; object-fit:contain; padding:5px; background:#fff; border:1px solid #e0e9f5; border-radius:14px; box-shadow:0 8px 24px #1437652e; pointer-events:none; z-index:2147483646; will-change:transform,opacity; }
+.cart-flight-target { position:fixed !important; top:16px; right:20px; width:48px; height:48px; display:flex; align-items:center; justify-content:center; background:#eaf2ff !important; border:1px solid #dce7f5; border-radius:50%; color:#153e78; box-shadow:0 5px 20px #14376520; z-index:2147483645; }
+.cart-flight-target svg { width:24px; height:24px; }

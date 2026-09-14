@@ -6,6 +6,8 @@
 
 let allProducts = [];
 let productModalInstance = null;
+let adminProductPage = 1;
+let adminProductPageSize = 20;
 
 /* ---------- Cấu hình Cloudinary (upload ảnh sản phẩm) ---------- */
 const CLOUDINARY_CLOUD_NAME = "desf1gsdl";
@@ -38,6 +40,7 @@ async function uploadImageToCloudinary(file) {
 /* ---------- Load toàn bộ sản phẩm ---------- */
 async function loadProducts() {
 	const tbody = document.getElementById("productsTableBody");
+    document.getElementById("adminProductPagination").hidden = true;
 	tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Đang tải dữ liệu...</td></tr>`;
 
 	const { data, error } = await supabaseClient
@@ -91,6 +94,13 @@ function renderTable() {
 		return matchKeyword && matchCategory;
 	});
 
+    const total = list.length;
+    const pages = Math.max(1, Math.ceil(total / adminProductPageSize));
+    adminProductPage = Math.min(Math.max(1, adminProductPage), pages);
+    renderAdminProductPagination(total, pages);
+    const start = (adminProductPage - 1) * adminProductPageSize;
+    list = list.slice(start, start + adminProductPageSize);
+
 	if (list.length === 0) {
 		tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Không tìm thấy sản phẩm nào.</td></tr>`;
 		return;
@@ -124,23 +134,36 @@ function renderTable() {
 	`).join("");
 }
 
+function renderAdminProductPagination(total, pages) {
+    document.getElementById("adminProductPagination").hidden = false;
+    const start = total ? (adminProductPage - 1) * adminProductPageSize + 1 : 0;
+    const end = Math.min(adminProductPage * adminProductPageSize, total);
+    document.getElementById("productPageInfo").textContent = `Hiển thị ${start}–${end} / ${total} sản phẩm`;
+    const controls = document.getElementById("productPageControls");
+    if (pages < 2) { controls.replaceChildren(); return; }
+    const visible = [...new Set([1, pages, adminProductPage - 1, adminProductPage, adminProductPage + 1])].filter(page => page >= 1 && page <= pages).sort((a,b) => a-b);
+    let previous = 0;
+    const buttons = visible.map(page => {
+        const dots = previous && page - previous > 1 ? '<span class="admin-page-dots" aria-hidden="true">…</span>' : "";
+        previous = page;
+        return `${dots}<button type="button" data-product-page="${page}" ${page === adminProductPage ? 'class="is-active" aria-current="page"' : ""} aria-label="Trang ${page}">${page}</button>`;
+    }).join("");
+    controls.innerHTML = `<button type="button" data-product-page="${adminProductPage-1}" ${adminProductPage===1 ? "disabled" : ""} aria-label="Trang trước">‹ Trước</button>${buttons}<button type="button" data-product-page="${adminProductPage+1}" ${adminProductPage===pages ? "disabled" : ""} aria-label="Trang sau">Sau ›</button>`;
+}
+
+function resetAdminProductPage() {
+    adminProductPage = 1;
+    renderTable();
+}
+
 /* ---------- Mở modal thêm mới ---------- */
 function openAddModal() {
 	document.getElementById("productForm").reset();
 	document.getElementById("productId").value = "";
 	document.getElementById("productImageUrl").value = "";
 
-	const preview = document.getElementById("productImagePreview");
-	if (preview) {
-		preview.src = "";
-		preview.classList.add("d-none");
-	}
-	const statusText = document.getElementById("uploadStatusText");
-	if (statusText) statusText.textContent = "";
-
-	// Ẩn nút xoá ảnh vì sản phẩm mới chưa có ảnh
-	const removeBtn = document.getElementById("removeProductImageBtn");
-	if (removeBtn) removeBtn.classList.add("d-none");
+    AdminProductImages.load(null);
+    document.getElementById("uploadStatusText").textContent = "";
 
 	document.getElementById("productIsActive").checked = true;
 	document.getElementById("productModalTitle").textContent = "Thêm sản phẩm";
@@ -168,24 +191,8 @@ function openEditModal(id) {
     document.getElementById("productImageFile").value = "";
 	document.getElementById("productIsActive").checked = !!product.is_active;
 
-	const preview = document.getElementById("productImagePreview");
-	const statusText = document.getElementById("uploadStatusText");
-	if (statusText) statusText.textContent = "";
-
-	// Hiện/ẩn nút xoá ảnh tuỳ sản phẩm có ảnh hay không
-	const removeBtn = document.getElementById("removeProductImageBtn");
-
-	if (preview) {
-		if (product.image_url) {
-			preview.src = product.image_url;
-			preview.classList.remove("d-none");
-			if (removeBtn) removeBtn.classList.remove("d-none");
-		} else {
-			preview.src = "";
-			preview.classList.add("d-none");
-			if (removeBtn) removeBtn.classList.add("d-none");
-		}
-	}
+    AdminProductImages.load(product);
+    document.getElementById("uploadStatusText").textContent = "";
 
 	document.getElementById("productModalTitle").textContent = "Sửa sản phẩm";
 	hideProductFormError();
@@ -231,24 +238,18 @@ async function handleProductSubmit(event) {
 
 	const id = document.getElementById("productId").value;
 	const submitBtn = document.getElementById("productSubmitBtn");
-	const fileInput = document.getElementById("productImageFile");
 	const statusText = document.getElementById("uploadStatusText");
 
 	submitBtn.disabled = true;
 
 	try {
-		// Ảnh cũ (nếu đang sửa và chưa bị xoá) hoặc rỗng (nếu thêm mới / đã bấm xoá ảnh)
-		let imageUrl = document.getElementById("productImageUrl").value.trim() || null;
-
-		// Nếu admin có chọn file ảnh mới -> upload lên Cloudinary trước
-		if (fileInput && fileInput.files && fileInput.files[0]) {
-			submitBtn.textContent = "Đang tải ảnh lên...";
-			if (statusText) statusText.textContent = "Đang upload ảnh, vui lòng đợi...";
-
-			imageUrl = await uploadImageToCloudinary(fileInput.files[0]);
-
-			if (statusText) statusText.textContent = "";
-		}
+        AdminProductImages.setBusy(true);
+        const imageUrls = await AdminProductImages.uploadAll(uploadImageToCloudinary, (index, total) => {
+            submitBtn.textContent = `Đang tải ảnh ${index}/${total}...`;
+            if (statusText) statusText.textContent = `Đang tải ảnh ${index}/${total}, vui lòng đợi...`;
+        });
+        const imageUrl = imageUrls[0] || null;
+        if (statusText) statusText.textContent = "";
 
         const specifications = { ...(allProducts.find(p => String(p.id) === id)?.specifications || {}) };
         for (const field of PRODUCT_SPEC_FIELDS) {
@@ -264,6 +265,7 @@ async function handleProductSubmit(event) {
 			price: Number(document.getElementById("productPrice").value) || 0,
 			stock: Number(document.getElementById("productStock").value) || 0,
 			image_url: imageUrl,
+            image_urls: imageUrls,
 			badge: document.getElementById("productBadge").value.trim() || null,
 			description: document.getElementById("productDescription").value.trim() || null,
 			specifications,
@@ -277,13 +279,16 @@ async function handleProductSubmit(event) {
 
 		if (id) {
 			// Sửa sản phẩm có sẵn
-			({ data: savedProduct, error } = await supabaseClient.from("products").update(payload).eq("id", id).select("id, specifications").single());
+			({ data: savedProduct, error } = await supabaseClient.from("products").update(payload).eq("id", id).select("id, specifications, image_urls").single());
 		} else {
 			// Thêm sản phẩm mới
-			({ data: savedProduct, error } = await supabaseClient.from("products").insert(payload).select("id, specifications").single());
+			({ data: savedProduct, error } = await supabaseClient.from("products").insert(payload).select("id, specifications, image_urls").single());
 		}
 
         if (error) {
+            if (["PGRST204", "42703"].includes(error.code) && /image_urls/i.test(error.message)) {
+                throw new Error("Cơ sở dữ liệu chưa có cột ảnh bổ sung. Chạy migrations/002_product_images.sql trong Supabase SQL Editor, rồi lưu lại.");
+            }
             if (["PGRST204", "42703"].includes(error.code) && /specifications/i.test(error.message)) {
                 throw new Error("Cơ sở dữ liệu chưa có cột thông số kỹ thuật. Chạy file migrations/001_product_specifications.sql trong Supabase SQL Editor, rồi lưu lại.");
             }
@@ -291,13 +296,16 @@ async function handleProductSubmit(event) {
         }
 
         if (!savedProduct) throw new Error("Chưa lưu được sản phẩm. Kiểm tra quyền admin hoặc tải lại danh sách sản phẩm.");
-        showAdminSuccess("Đã lưu sản phẩm và thông số kỹ thuật.");
+        showAdminSuccess("Đã lưu sản phẩm, hình ảnh và thông số kỹ thuật.");
+		AdminProductImages.setBusy(false);
 		productModalInstance.hide();
 		await loadProducts();
 
 	} catch (err) {
 		showProductFormError(err.message || "Có lỗi xảy ra, vui lòng thử lại.");
 	} finally {
+        AdminProductImages.setBusy(false);
+        if (statusText) statusText.textContent = "";
 		submitBtn.disabled = false;
 		submitBtn.textContent = "Lưu sản phẩm";
 	}
@@ -322,39 +330,23 @@ document.addEventListener("adminVerified", function (e) {
         const label = event.target.closest("div")?.querySelector("label")?.textContent || "Trường nhập liệu";
         showProductFormError(`${label}: ${event.target.validationMessage}`);
     }, true);
-	document.getElementById("searchInput").addEventListener("input", renderTable);
-	document.getElementById("categoryFilter").addEventListener("change", renderTable);
+	document.getElementById("searchInput").addEventListener("input", resetAdminProductPage);
+	document.getElementById("categoryFilter").addEventListener("change", resetAdminProductPage);
+    document.getElementById("productPageSize").addEventListener("change", function () {
+        const size = Number(this.value);
+        if (![10, 20, 50].includes(size)) return;
+        adminProductPageSize = size;
+        resetAdminProductPage();
+    });
+    document.getElementById("productPageControls").addEventListener("click", function (event) {
+        const button = event.target.closest("button[data-product-page]");
+        if (!button || button.disabled) return;
+        adminProductPage = Number(button.dataset.productPage);
+        renderTable();
+        document.getElementById("productsTableBody").closest(".admin-card").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
 
-	// Preview ảnh ngay khi admin chọn file
-	const imageFileInput = document.getElementById("productImageFile");
-	if (imageFileInput) {
-		imageFileInput.addEventListener("change", function (evt) {
-			const file = evt.target.files[0];
-			const preview = document.getElementById("productImagePreview");
-			const removeBtn = document.getElementById("removeProductImageBtn");
-			if (file && preview) {
-				preview.src = URL.createObjectURL(file);
-				preview.classList.remove("d-none");
-				if (removeBtn) removeBtn.classList.remove("d-none");
-			}
-		});
-	}
-
-	// Xoá ảnh sản phẩm (xoá preview + reset input, không xoá trên Cloudinary)
-	const removeImageBtn = document.getElementById("removeProductImageBtn");
-	if (removeImageBtn) {
-		removeImageBtn.addEventListener("click", function () {
-			document.getElementById("productImageUrl").value = "";
-			document.getElementById("productImageFile").value = "";
-
-			const preview = document.getElementById("productImagePreview");
-			if (preview) {
-				preview.src = "";
-				preview.classList.add("d-none");
-			}
-			removeImageBtn.classList.add("d-none");
-		});
-	}
+    AdminProductImages.init();
 
 	document.getElementById("adminLogoutBtn").addEventListener("click", async function (evt) {
 		evt.preventDefault();

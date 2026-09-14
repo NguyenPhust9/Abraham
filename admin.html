@@ -194,6 +194,7 @@
       .admin-main { padding: 20px; }
     }
   </style>
+<link rel="stylesheet" href="/css/admin-notifications.css">
 </head>
 <body>
 
@@ -215,7 +216,7 @@
           <a href="#" class="admin-nav-link" data-target="blogSection"><i class="fa fa-newspaper"></i> Blog</a>
         </nav>
         <div class="admin-nav back-link">
-          <a href="index.html"><i class="fa fa-arrow-left"></i> Về trang chủ</a>
+          <a href="/"><i class="fa fa-arrow-left"></i> Về trang chủ</a>
           <a href="#" id="adminLogoutBtn"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
         </div>
       </aside>
@@ -384,14 +385,14 @@
 
   <!-- ================= Modal Thêm / Sửa sản phẩm ================= -->
   <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="productModalTitle">Thêm sản phẩm</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <div id="productFormError" class="alert alert-danger d-none"></div>
+          <div id="productFormError" class="alert alert-danger d-none" role="alert"></div>
           <form id="productForm">
             <input type="hidden" id="productId">
 
@@ -411,7 +412,7 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label">Giá (VNĐ) *</label>
-                <input type="number" min="0" step="1000" class="form-control" id="productPrice" required>
+                <input type="number" min="0" step="1" class="form-control" id="productPrice" required>
               </div>
               <div class="col-md-4">
                 <label class="form-label">Tồn kho *</label>
@@ -440,15 +441,34 @@
                 <textarea class="form-control" id="productDescription" rows="3"></textarea>
               </div>
 
+              <div class="col-12"><fieldset class="border rounded p-3">
+                <legend class="float-none w-auto px-2 fs-6 fw-bold">Thông số kỹ thuật</legend>
+                <p class="text-muted small">Điền các thông số của xe. Mục để trống sẽ không hiển thị trên trang chi tiết.</p>
+                <div class="row g-3">
+                  <div class="col-md-6"><label class="form-label" for="productSpec_frame">Khung sườn</label><input type="text" class="form-control" id="productSpec_frame" maxlength="300" placeholder="VD: Thép"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_handlebar">Ghi đông</label><input type="text" class="form-control" id="productSpec_handlebar" maxlength="300" placeholder="VD: Cổ ngang"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_brakes">Phanh thắng</label><input type="text" class="form-control" id="productSpec_brakes" maxlength="300" placeholder="VD: Đĩa trước, đĩa sau"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_bottom_bracket">Cốt giữa</label><input type="text" class="form-control" id="productSpec_bottom_bracket" maxlength="300" placeholder="VD: Bạc đạn"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_fork">Phuộc</label><input type="text" class="form-control" id="productSpec_fork" maxlength="300" placeholder="VD: Phuộc nhún"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_crankset">Giò đĩa</label><input type="text" class="form-control" id="productSpec_crankset" maxlength="300" placeholder="VD: Cốt vuông"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_chainring">Đĩa</label><input type="text" class="form-control" id="productSpec_chainring" maxlength="300" placeholder="VD: Rời"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_rim">Vành</label><input type="text" class="form-control" id="productSpec_rim" maxlength="300" placeholder="VD: Thép"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_tires">Bánh xe</label><input type="text" class="form-control" id="productSpec_tires" maxlength="300" placeholder="VD: 26 × 2.125"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_basket">Rổ</label><input type="text" class="form-control" id="productSpec_basket" maxlength="300" placeholder="VD: Rổ sắt"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_paint">Sơn</label><input type="text" class="form-control" id="productSpec_paint" maxlength="300" placeholder="VD: Sơn tĩnh điện 3 lớp chống trầy"></div>
+                  <div class="col-md-6"><label class="form-label" for="productSpec_packing">Quy cách</label><input type="text" class="form-control" id="productSpec_packing" maxlength="300" placeholder="VD: 1 xe/thùng"></div>
+                </div>
+              </fieldset></div>
+
               <div class="col-12 form-check ps-4">
                 <input type="checkbox" class="form-check-input" id="productIsActive" checked>
                 <label class="form-check-label" for="productIsActive">Đang bán (hiển thị ngoài shop)</label>
               </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2 mt-4" id="postFormActions">
+            <div class="d-flex justify-content-end gap-2 mt-4" id="productFormActions">
   <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
-  <button type="submit" class="btn btn-abx-gold" id="postSubmitBtn">Lưu bài viết</button>
+  <button type="submit" class="btn btn-abx-gold" id="productSubmitBtn">Lưu sản phẩm</button>
 </div>
           </form>
         </div>
@@ -515,6 +535,8 @@
   <textarea id="postContent" class="d-none"></textarea>
 </div>
 
+              
+
               <div class="col-12 form-check ps-4">
                 <input type="checkbox" class="form-check-input" id="postIsPublished" checked>
                 <label class="form-check-label" for="postIsPublished">Xuất bản (hiển thị công khai trên trang Blog)</label>
@@ -537,6 +559,8 @@
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
+  <script src="js/product-specifications.js"></script>
+  <script src="/js/admin-notifications.js"></script>
   <script src="js/admin.js"></script>
   <script src="js/admin-blog.js"></script>
 
@@ -571,5 +595,11 @@
     }
   });
 </script>
+<div id="admin-success-popup" class="admin-success-popup" popover="manual" hidden>
+  <button type="button" id="admin-success-close" class="admin-success-close" aria-label="Đóng thông báo">&times;</button>
+  <div class="admin-success-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></div>
+  <h2>Thành công</h2>
+  <p id="admin-success-message" role="status" aria-live="polite" aria-atomic="true"></p>
+</div>
 </body>
 </html>

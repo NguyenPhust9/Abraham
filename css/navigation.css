@@ -1,0 +1,29 @@
+
+.abx-navigation { padding: 22px 16px; background: #f8fafc; color: #153354; }
+.abx-navigation-shell { width: 100%; max-width: 1680px; margin: auto; background: #fff; border: 1px solid #f0f3f7; border-radius: 26px; padding: 16px 22px; box-shadow: 0 15px 40px rgba(20,42,70,.08); }
+.abx-navigation-content { gap: 20px; justify-content: space-between; }
+.abx-navigation-links { display: flex; align-items: center; gap: 6px; list-style: none; padding: 0; margin: 0; }
+.abx-navigation svg { width: 24px; height: 24px; flex-shrink: 0; }
+.abx-navigation-link { position: relative; display: flex; align-items: center; gap: 12px; padding: 20px 16px; border-radius: 18px; color: #63718a; font-size: 16px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background .2s, color .2s; }
+.abx-navigation-link:hover { background: #f5f8fc; color: #0059e8; }
+.abx-navigation-link.is-active { color: #0059e8; background: #f2f7ff; }
+.abx-navigation-link.is-active::after { content: ""; position: absolute; bottom: 0; left: 24px; right: 24px; height: 3px; border-radius: 3px; background: #0059e8; }
+.abx-navigation-actions { display: flex; gap: 22px; align-items: center; border-left: 1px solid #e6ebf2; padding-left: 26px; }
+.abx-admin-link { display: inline-flex; gap: 10px; align-items: center; padding: 14px 22px; border-radius: 40px; background: linear-gradient(120deg,#ffc766,#ffb535); color: #173453; font-weight: 700; text-decoration: none; }
+.abx-admin-link:hover { background: #ffb535; color: #173453; }
+.abx-navigation-circle { width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: #eaf2ff; color: #153e78; flex-shrink: 0; }
+.abx-account-trigger { display: flex; align-items: center; gap: 12px; border: 0; background: transparent; color: #203858; font: inherit; font-weight: 600; padding: 0; text-align: left; }
+.abx-account-trigger #authLabel { max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.abx-account-trigger #accountChevron svg { width: 18px; height: 18px; }
+.abx-account-trigger::after { display: none; }
+.abx-account-menu { border: 1px solid #e6ebf2; border-radius: 16px; padding: 10px; box-shadow: 0 14px 36px #15335418; margin-top: 16px !important; }
+.abx-account-menu .dropdown-item { border-radius: 8px; padding: 10px 14px; }
+.abx-navigation a:focus-visible,.abx-navigation button:focus-visible { outline: 3px solid #ffbd45; outline-offset: 4px; }
+.abx-mobile-brand { display: none; color: #16365b; letter-spacing: .14em; font-weight: 800; text-decoration: none; }
+.abx-menu-toggle { border: 1px solid #dce6f1; padding: 8px; color: #16365b; }
+@media (min-width:1200px) and (max-width:1450px) { .abx-navigation-link { gap: 8px; padding: 18px 10px; font-size: 14px; } .abx-navigation-actions { gap: 12px; padding-left: 16px; } .abx-account-trigger #authLabel { max-width: 170px; font-size: 14px; } .abx-admin-link { padding: 12px 16px; } }
+@media (max-width:1199px) { .abx-navigation-shell { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 16px; } .abx-mobile-brand { display: block; } .abx-navigation-content { width: 100%; } .abx-navigation-links { padding-top: 18px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); } .abx-navigation-link { padding: 16px 12px; font-size: 14px; gap: 10px; } .abx-navigation-actions { border-left: 0; border-top: 1px solid #e6ebf2; padding: 18px 0 0; margin-top: 16px; flex-wrap: wrap; } }
+@media (max-width:575px) { .abx-navigation { padding: 12px; } .abx-navigation-shell { border-radius: 20px; } .abx-navigation-links { grid-template-columns: repeat(2,minmax(0,1fr)); } .abx-navigation-actions { gap: 14px; } .abx-account { flex: 1; min-width: 0; } .abx-account-trigger #authLabel { max-width: 145px; font-size: 13px; } .abx-admin-link { font-size: 13px; padding: 12px 14px; } .abx-navigation-circle { width: 42px; height: 42px; } }
+.abx-cart-link { position:relative; text-decoration:none; }
+.abx-cart-count { position:absolute; top:-2px; right:-3px; min-width:20px; height:20px; padding:0 5px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#ffb923; color:#082b70; font-size:11px; font-weight:700; border:2px solid #fff; }
+.abx-cart-count[hidden] { display:none; }

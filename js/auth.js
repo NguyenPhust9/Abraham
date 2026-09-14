@@ -36,25 +36,31 @@ async function setAuthUI(user) {
 
 	if (user) {
 		const profile = await getUserRole(user.id);
-		const displayName = profile.full_name || user.email.split("@")[0];
+		const displayName = profile.full_name || user.email?.split("@")[0] || "Account";
 
+		authTrigger.setAttribute("aria-label", "Account menu");
+        authTrigger.setAttribute("data-bs-toggle", "dropdown");
+        authTrigger.setAttribute("aria-expanded", "false");
+        document.getElementById("accountChevron")?.classList.remove("d-none");
+        authTrigger.title = "Account menu";
 		authLabel.textContent = profile.role === "admin"
 			? `${displayName} (Admin)`
 			: displayName;
 
-		authTrigger.removeAttribute("data-bs-toggle");
+
 		authTrigger.removeAttribute("data-bs-target");
 		authTrigger.href = "#";
-		authTrigger.onclick = function (e) {
-			e.preventDefault();
-			handleLogout();
-		};
+		authTrigger.onclick = null;
 
 		// Hiện nút Admin nếu đúng role
 		if (adminNavItem) {
 			adminNavItem.classList.toggle("d-none", profile.role !== "admin");
 		}
 	} else {
+		authTrigger.setAttribute("aria-label", "Log in");
+        document.getElementById("accountChevron")?.classList.add("d-none");
+        authTrigger.removeAttribute("aria-expanded");
+        authTrigger.title = "Log in";
 		authLabel.textContent = "Log In";
 		authTrigger.setAttribute("data-bs-toggle", "modal");
 		authTrigger.setAttribute("data-bs-target", "#authModal");
@@ -167,8 +173,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Automatically update UI whenever auth state changes
 	supabaseClient.auth.onAuthStateChange((event, session) => {
-		setAuthUI(session ? session.user : null);
+		// Run profile queries after the auth callback returns.
+        setTimeout(() => setAuthUI(session ? session.user : null).catch(err => console.error("Account display error:", err)), 0);
 	});
+
+	document.getElementById("accountLogout")?.addEventListener("click", handleLogout);
 
 	// Attach submit handler to the auth form (if the modal is present on the page)
 	const authForm = document.getElementById("authForm");

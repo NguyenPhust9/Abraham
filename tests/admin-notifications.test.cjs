@@ -1,0 +1,14 @@
+﻿const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const handlers={},timers=new Map();let next=0,ready,showCalls=0,open=false;
+const classes=new Set();
+const popup={hidden:true,classList:{add:k=>classes.add(k),remove:k=>classes.delete(k)},matches:()=>open,showPopover(){open=true;showCalls++},hidePopover(){open=false},addEventListener:(name,fn)=>handlers[name]=fn};
+const message={textContent:''};const close={addEventListener:(name,fn)=>handlers.close=fn};
+const ctx=vm.createContext({window:{},document:{getElementById:id=>({'admin-success-popup':popup,'admin-success-message':message,'admin-success-close':close}[id]),addEventListener:(name,fn)=>{if(name==='DOMContentLoaded')ready=fn;else handlers[name]=fn;}},setTimeout:fn=>{const id=++next;timers.set(id,fn);return id;},clearTimeout:id=>timers.delete(id)});
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../js/admin-notifications.js'),'utf8'),ctx);ready();
+ctx.window.showAdminSuccess('Đã lưu sản phẩm.');assert.equal(popup.hidden,false);assert.equal(open,true);assert.equal(showCalls,1);assert.equal(message.textContent,'Đã lưu sản phẩm.');assert.equal(timers.size,1);
+ctx.window.showAdminSuccess('Đã lưu bài viết.');assert.equal(showCalls,1);assert.equal(timers.size,1);assert.equal(message.textContent,'Đã lưu bài viết.');
+handlers.mouseenter();assert.equal(timers.size,0);handlers.mouseleave();assert.equal(timers.size,1);[...timers.values()][0]();assert.equal(popup.hidden,true);assert.equal(open,false);
+ctx.window.showAdminSuccess('<img src=x>');assert.equal(message.textContent,'<img src=x>');handlers.close();assert.equal(popup.hidden,true);assert.equal(timers.size,0);
+ctx.window.showAdminSuccess('Đã xoá.');handlers.keydown({key:'Escape'});assert.equal(popup.hidden,true);
+delete popup.showPopover;delete popup.hidePopover;ctx.window.showAdminSuccess('Fallback');assert.equal(popup.hidden,false);assert(classes.has('is-visible'));handlers.close();assert.equal(popup.hidden,true);
+console.log('Passed top-layer display, repeated notifications, auto-close, reading pause, close/Escape, safe text and fallback.');

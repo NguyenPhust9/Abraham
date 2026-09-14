@@ -29,10 +29,10 @@ function renderContentParagraphs(content) {
 
 /* ---------- Ước tính thời gian đọc (dựa trên số từ, ~200 từ/phút) ---------- */
 function estimateReadTime(content) {
-	if (!content) return "1 phút đọc";
+	if (!content) return "1 min read";
 	const words = content.trim().split(/\s+/).filter(Boolean).length;
 	const minutes = Math.max(1, Math.round(words / 200));
-	return `${minutes} phút đọc`;
+	return `${minutes} min read`;
 }
 
 /* ---------- Lấy chữ cái đầu để làm avatar tác giả ---------- */
@@ -49,7 +49,7 @@ function showError(message) {
 }
 
 function renderPost(post) {
-	document.title = `${post.title || "Bài viết"} — Abraham`;
+	document.title = `${post.title || "Blog post"} — Abraham`;
 
 	document.getElementById("postLoadingState").classList.add("d-none");
 	document.getElementById("postDetailWrap").classList.remove("d-none");
@@ -86,7 +86,7 @@ async function loadPost() {
 	const id = params.get("id");
 
 	if (!slug && !id) {
-		showError("Không tìm thấy bài viết. Thiếu thông tin bài viết trên đường dẫn.");
+		showError("Post not found. The post identifier is missing from the URL.");
 		return;
 	}
 
@@ -96,12 +96,12 @@ async function loadPost() {
 	const { data, error } = await query.maybeSingle();
 
 	if (error) {
-		showError("Không tải được bài viết: " + error.message);
+		showError("Unable to load posts: " + error.message);
 		return;
 	}
 
 	if (!data) {
-		showError("Bài viết không tồn tại hoặc chưa được xuất bản.");
+		showError("This post is unavailable or has not been published.");
 		return;
 	}
 

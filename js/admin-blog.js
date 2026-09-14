@@ -180,13 +180,18 @@ async function handleDeletePost(id) {
 	const confirmed = confirm(`Xoá bài viết "${post ? post.title : id}"? Hành động này không thể hoàn tác.`);
 	if (!confirmed) return;
 
-	const { error } = await supabaseClient.from("posts").delete().eq("id", id);
+	const { data: deletedPosts, error } = await supabaseClient.from("posts").delete().eq("id", id).select("id");
 
 	if (error) {
 		alert("Lỗi khi xoá: " + error.message);
 		return;
 	}
 
+    if (!deletedPosts?.length) {
+        alert("Chưa xoá được bài viết. Kiểm tra quyền admin hoặc tải lại danh sách.");
+        return;
+    }
+    showAdminSuccess("Đã xoá bài viết.");
 	await loadPosts();
 }
 
@@ -258,16 +263,18 @@ async function handlePostSubmit(event) {
 
 		submitBtn.textContent = "Đang lưu...";
 
-		let error;
+		let error, savedPost;
 
 		if (id) {
-			({ error } = await supabaseClient.from("posts").update(payload).eq("id", id));
+			({ data: savedPost, error } = await supabaseClient.from("posts").update(payload).eq("id", id).select("id").single());
 		} else {
-			({ error } = await supabaseClient.from("posts").insert(payload));
+			({ data: savedPost, error } = await supabaseClient.from("posts").insert(payload).select("id").single());
 		}
 
 		if (error) throw error;
+        if (!savedPost) throw new Error("Chưa lưu được bài viết. Kiểm tra quyền admin.");
 
+		showAdminSuccess("Đã lưu bài viết.");
 		postModalInstance.hide();
 		await loadPosts();
 

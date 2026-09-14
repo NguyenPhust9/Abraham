@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 	// 2. Chưa đăng nhập -> đá về trang chủ
 	if (!user) {
 		alert("Bạn cần đăng nhập để truy cập trang này.");
-		window.location.href = "index.html";
+		window.location.href = "/";
 		return;
 	}
 
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 	if (error || !profile || profile.role !== "admin") {
 		alert("Bạn không có quyền truy cập trang này.");
-		window.location.href = "index.html";
+		window.location.href = "/";
 		return;
 	}
 

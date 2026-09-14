@@ -162,6 +162,10 @@ function openEditModal(id) {
 	document.getElementById("productImageUrl").value = product.image_url || "";
 	document.getElementById("productBadge").value = product.badge || "";
 	document.getElementById("productDescription").value = product.description || "";
+    for (const field of PRODUCT_SPEC_FIELDS) {
+        document.getElementById(`productSpec_${field.key}`).value = product.specifications?.[field.key] || "";
+    }
+    document.getElementById("productImageFile").value = "";
 	document.getElementById("productIsActive").checked = !!product.is_active;
 
 	const preview = document.getElementById("productImagePreview");
@@ -194,13 +198,18 @@ async function handleDeleteProduct(id) {
 	const confirmed = confirm(`Xoá sản phẩm "${product ? product.name : id}"? Hành động này không thể hoàn tác.`);
 	if (!confirmed) return;
 
-	const { error } = await supabaseClient.from("products").delete().eq("id", id);
+	const { data: deletedProducts, error } = await supabaseClient.from("products").delete().eq("id", id).select("id");
 
 	if (error) {
 		alert("Lỗi khi xoá: " + error.message);
 		return;
 	}
 
+    if (!deletedProducts?.length) {
+        alert("Chưa xoá được sản phẩm. Kiểm tra quyền admin hoặc tải lại danh sách.");
+        return;
+    }
+    showAdminSuccess("Đã xoá sản phẩm.");
 	await loadProducts();
 }
 
@@ -209,6 +218,7 @@ function showProductFormError(message) {
 	const box = document.getElementById("productFormError");
 	box.textContent = message;
 	box.classList.remove("d-none");
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 function hideProductFormError() {
 	document.getElementById("productFormError").classList.add("d-none");
@@ -240,6 +250,13 @@ async function handleProductSubmit(event) {
 			if (statusText) statusText.textContent = "";
 		}
 
+        const specifications = { ...(allProducts.find(p => String(p.id) === id)?.specifications || {}) };
+        for (const field of PRODUCT_SPEC_FIELDS) {
+            const value = document.getElementById(`productSpec_${field.key}`).value.trim();
+            if (value) specifications[field.key] = value;
+            else delete specifications[field.key];
+        }
+
 		const payload = {
 			name: document.getElementById("productName").value.trim(),
 			sku: document.getElementById("productSku").value.trim() || null,
@@ -249,24 +266,32 @@ async function handleProductSubmit(event) {
 			image_url: imageUrl,
 			badge: document.getElementById("productBadge").value.trim() || null,
 			description: document.getElementById("productDescription").value.trim() || null,
+			specifications,
 			is_active: document.getElementById("productIsActive").checked,
 			updated_at: new Date().toISOString()
 		};
 
 		submitBtn.textContent = "Đang lưu...";
 
-		let error;
+		let error, savedProduct;
 
 		if (id) {
 			// Sửa sản phẩm có sẵn
-			({ error } = await supabaseClient.from("products").update(payload).eq("id", id));
+			({ data: savedProduct, error } = await supabaseClient.from("products").update(payload).eq("id", id).select("id, specifications").single());
 		} else {
 			// Thêm sản phẩm mới
-			({ error } = await supabaseClient.from("products").insert(payload));
+			({ data: savedProduct, error } = await supabaseClient.from("products").insert(payload).select("id, specifications").single());
 		}
 
-		if (error) throw error;
+        if (error) {
+            if (["PGRST204", "42703"].includes(error.code) && /specifications/i.test(error.message)) {
+                throw new Error("Cơ sở dữ liệu chưa có cột thông số kỹ thuật. Chạy file migrations/001_product_specifications.sql trong Supabase SQL Editor, rồi lưu lại.");
+            }
+            throw error;
+        }
 
+        if (!savedProduct) throw new Error("Chưa lưu được sản phẩm. Kiểm tra quyền admin hoặc tải lại danh sách sản phẩm.");
+        showAdminSuccess("Đã lưu sản phẩm và thông số kỹ thuật.");
 		productModalInstance.hide();
 		await loadProducts();
 
@@ -293,6 +318,10 @@ document.addEventListener("adminVerified", function (e) {
 
 	document.getElementById("openAddModalBtn").addEventListener("click", openAddModal);
 	document.getElementById("productForm").addEventListener("submit", handleProductSubmit);
+    document.getElementById("productForm").addEventListener("invalid", function (event) {
+        const label = event.target.closest("div")?.querySelector("label")?.textContent || "Trường nhập liệu";
+        showProductFormError(`${label}: ${event.target.validationMessage}`);
+    }, true);
 	document.getElementById("searchInput").addEventListener("input", renderTable);
 	document.getElementById("categoryFilter").addEventListener("change", renderTable);
 
@@ -330,6 +359,6 @@ document.addEventListener("adminVerified", function (e) {
 	document.getElementById("adminLogoutBtn").addEventListener("click", async function (evt) {
 		evt.preventDefault();
 		await supabaseClient.auth.signOut();
-		window.location.href = "index.html";
+		window.location.href = "/";
 	});
 });

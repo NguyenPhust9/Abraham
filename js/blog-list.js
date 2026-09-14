@@ -48,14 +48,14 @@ async function loadPublicPosts() {
 		.order("created_at", { ascending: false });
 
 	if (error) {
-		row.innerHTML = `<div class="col-12 text-center text-danger py-4">Không tải được bài viết: ${error.message}</div>`;
+		row.innerHTML = `<div class="col-12 text-center text-danger py-4">Unable to load posts: ${error.message}</div>`;
 		return;
 	}
 
 	publicPosts = data || [];
 
 	if (publicPosts.length === 0) {
-		row.innerHTML = `<div class="col-12 text-center text-muted py-4">Chưa có bài viết nào được đăng.</div>`;
+		row.innerHTML = `<div class="col-12 text-center text-muted py-4">No posts have been published yet.</div>`;
 		return;
 	}
 

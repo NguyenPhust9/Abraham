@@ -1,9 +1,15 @@
+function productSlug(name) {
+    return String(name || "san-pham").normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g, "d")
+        .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "san-pham";
+}
+
 export default async function handler(req, res) {
 	const SUPABASE_URL = "https://bqowjqqnpeiwoaaczybg.supabase.co";
 	const SUPABASE_KEY = "sb_publishable_xqesJg10fSssMRE6xyc3-A_J0y94QtK";
 
 	const [productsRes, postsRes] = await Promise.all([
-		fetch(`${SUPABASE_URL}/rest/v1/products?select=id,updated_at&is_active=eq.true`, {
+		fetch(`${SUPABASE_URL}/rest/v1/products?select=id,name,updated_at&is_active=eq.true`, {
 			headers: { apikey: SUPABASE_KEY }
 		}),
 		fetch(`${SUPABASE_URL}/rest/v1/posts?select=slug,updated_at&is_published=eq.true`, {
@@ -26,7 +32,7 @@ export default async function handler(req, res) {
 			</url>`),
 		...products.map(p => `
 			<url>
-				<loc>${baseUrl}/product-detail?id=${p.id}</loc>
+				<loc>${baseUrl}/san-pham/${productSlug(p.name)}-${encodeURIComponent(p.id)}</loc>
 				<lastmod>${new Date(p.updated_at).toISOString()}</lastmod>
 				<changefreq>weekly</changefreq>
 			</url>`),

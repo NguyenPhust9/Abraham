@@ -47,7 +47,7 @@ async function loadProducts() {
     productList.innerHTML = `
       <div class="col-12 text-center">
         <p style="color: red;">
-          Lỗi Supabase: ${error.message}
+          Unable to load products: ${error.message}
         </p>
       </div>
     `;
@@ -65,7 +65,7 @@ async function loadProducts() {
     productList.innerHTML = `
       <div class="col-12 text-center">
         <p>
-          Đã kết nối Supabase nhưng chưa có sản phẩm.
+          No products are available yet.
         </p>
       </div>
     `;

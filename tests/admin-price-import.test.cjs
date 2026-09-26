@@ -1,0 +1,18 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const context=vm.createContext({console});
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../js/admin-price-import.js'),'utf8'),context);
+const api=context.AdminPriceImport;
+assert.equal(api.parsePrice('1.250.000đ'),1250000);
+assert.equal(api.parsePrice('1,250,000'),1250000);
+assert.equal(api.parsePrice(990000),990000);
+const products=[{id:1,sku:'AB-01',name:'Bike A',price:1},{id:2,sku:'AB-02',name:'Bike B',price:2}];
+let result=api.prepareRows([{'Mã sản phẩm':'ab-01','Giá VNĐ':'2.500.000'},{'Mã sản phẩm':'AB-02','Giá VNĐ':0}],products);
+assert.equal(result.fatalError,'');assert.equal(result.rows[0].product.id,1);assert.equal(result.rows[0].price,2500000);assert.equal(result.rows[1].price,0);
+result=api.prepareRows([{ID:2,Price:300},{ID:2,Price:400},{ID:9,Price:-1}],products);
+assert.equal(result.rows[0].error,'');assert.match(result.rows[1].error,/trùng/);assert.match(result.rows[2].error,/chỉ có ID/);
+assert.match(api.prepareRows([{Name:'Bike'}],products).fatalError,/SKU\/ID/);
+result=api.prepareRows([{'Mã hàng hóa':'','Đơn giá bán':''},{'Mã hàng hóa':'AB-01','Đơn giá bán':3660000}],products);
+assert.equal(result.fatalError,'');assert.equal(result.rows.length,1);assert.equal(result.rows[0].rowNumber,3);assert.equal(result.rows[0].price,3660000);
+result=api.prepareRows([{'Mã hàng hóa':'NEW-01','Tên hàng':'Xe mới','Cuối kỳ':12,'Đơn giá bán':1990000}],products);
+assert.equal(result.rows[0].error,'');assert.equal(result.rows[0].action,'create');assert.equal(result.rows[0].name,'Xe mới');assert.equal(result.rows[0].stock,12);
+console.log('Passed Excel price parsing, Vietnamese headers, SKU/ID matching, validation and duplicate detection.');

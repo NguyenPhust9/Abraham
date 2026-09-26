@@ -12,5 +12,8 @@ function frontendValue(value) {
     return key ? FRONTEND_VALUES[key] : text;
 }
 function frontendProductImage(url) {
-    return !url || /(?:^|\/)update\.png(?:[?#].*)?$/.test(url) ? "/images/product-placeholder.svg" : url;
+    let language = "en";
+    try { language = localStorage.getItem("abraham-language") || "en"; } catch (error) {}
+    const placeholder = language === "vi" ? "/images/product-placeholder-vi.svg" : language === "zh" ? "/images/product-placeholder-zh.svg" : "/images/product-placeholder.svg";
+    return !url || /(?:^|\/)update\.png(?:[?#].*)?$/.test(url) ? placeholder : url;
 }

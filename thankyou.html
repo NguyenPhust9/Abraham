@@ -23,9 +23,10 @@
 		<link href="css/style.css" rel="stylesheet">
 		<title>Thank You ? Abraham</title>
 	<link rel="stylesheet" href="/css/navigation.css">
+	<link rel="stylesheet" href="/css/thankyou.css">
 </head>
 
-	<body>
+	<body class="thankyou-page">
 
 		<!-- Start Header/Navigation -->
 		<nav class="abx-navigation navbar navbar-expand-xl" aria-label="Main navigation">
@@ -61,29 +62,11 @@
 </nav>
 		<!-- End Header/Navigation -->
 
-		<!-- Start Hero Section -->
-			<div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Cart</h1>
-							</div>
-						</div>
-						<div class="col-lg-7">
-							
-						</div>
-					</div>
-				</div>
-			</div>
-		<!-- End Hero Section -->
-
-		
-
 		<div class="untree_co-section">
     <div class="container">
       <div class="row">
-        <div class="col-md-12 text-center pt-5">
+        <div class="col-md-12 text-center">
+          <section class="thankyou-card">
           <span class="display-3 thankyou-icon text-primary">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cart-check mb-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M11.354 5.646a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L8 8.293l2.646-2.647a.5.5 0 0 1 .708 0z"/>
@@ -91,8 +74,11 @@
             </svg>
           </span>
           <h2 class="display-3 text-black">Thank you!</h2>
-          <p class="lead mb-5">You order was successfuly completed.</p>
-          <p><a href="/shop" class="btn btn-sm btn-outline-black">Back to shop</a></p>
+          <p class="lead">Your order has been placed successfully.</p>
+          <p class="thankyou-reference d-none" id="thankyouOrderReference"></p>
+          <p class="thankyou-message">We have received your order and will contact you to confirm delivery details.</p>
+          <div class="thankyou-actions"><a href="/shop" class="btn btn-black">Continue shopping</a><a href="/" class="btn btn-outline-black">Back to home</a></div>
+          </section>
         </div>
       </div>
     </div>
@@ -243,6 +229,7 @@
 <script src="/js/supabase.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/cart-store.js"></script>
+<script src="/js/thankyou.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,10 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const listeners={};const window={};const document={addEventListener:(name,fn)=>listeners[name]=fn};
+const context=vm.createContext({window,document,console});
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../js/checkout.js'),'utf8'),context);
+const html=window.CheckoutPage.orderRows([{name:'Bike <A>',image_url:'/bike-a.jpg',price:1000000,quantity:2},{name:'Bike B',price:500000,quantity:1}]);
+assert.match(html,/Bike &lt;A&gt;/);assert.match(html,/2,500,000đ/);assert.match(html,/checkout-order-product/);assert.match(html,/bike-a\.jpg/);assert.match(html,/product-placeholder\.svg/);
+const values={c_country:'Vietnam',c_fname:'An',c_lname:'Nguyen',c_address:'1 Road',c_state_country:'HCM',c_email_address:'a@example.com',c_phone:'0901'};
+const doc={getElementById:id=>({value:values[id]||'',checkValidity:()=>id!=='c_email_address'||values[id].includes('@')})};
+assert.equal(window.CheckoutPage.validate(doc).valid,true);values.c_address='';assert.equal(window.CheckoutPage.validate(doc).valid,false);
+console.log('Passed checkout order totals, escaping and required delivery-field validation.');

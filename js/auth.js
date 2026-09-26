@@ -10,6 +10,71 @@
 
 let isSignUpMode = false;
 
+function continueAfterLogin() {
+	const afterLogin = sessionStorage.getItem("abraham_after_login");
+	if (!afterLogin) return false;
+
+	sessionStorage.removeItem("abraham_after_login");
+	const destination = new URL(afterLogin, window.location.origin);
+	if (destination.pathname !== window.location.pathname || destination.search !== window.location.search) {
+		window.location.assign(destination.href);
+	}
+	return true;
+}
+
+async function handleOAuthLogin(provider, button) {
+	hideAuthError();
+	const originalText = button.textContent;
+	button.disabled = true;
+	button.textContent = "Connecting...";
+
+	try {
+		if (!sessionStorage.getItem("abraham_after_login")) {
+			sessionStorage.setItem("abraham_after_login", window.location.pathname + window.location.search);
+		}
+
+		const { error } = await supabaseClient.auth.signInWithOAuth({
+			provider,
+			options: {
+				redirectTo: window.location.origin + window.location.pathname + window.location.search
+			}
+		});
+		if (error) throw error;
+	} catch (error) {
+		button.disabled = false;
+		button.textContent = originalText;
+		showAuthError(error.message || `Unable to connect with ${provider}. Please try again.`);
+	}
+}
+
+function addOAuthButtons() {
+	const form = document.getElementById("authForm");
+	if (!form || document.getElementById("authSocialLogin")) return;
+
+	const socialLogin = document.createElement("div");
+	socialLogin.id = "authSocialLogin";
+	socialLogin.className = "mt-3";
+	socialLogin.innerHTML = `
+		<div class="d-flex align-items-center gap-2 mb-3" aria-hidden="true">
+			<span class="border-top flex-grow-1"></span><span class="text-muted small">OR CONTINUE WITH</span><span class="border-top flex-grow-1"></span>
+		</div>
+		<div class="d-grid gap-2">
+			<button type="button" class="btn btn-outline-secondary auth-oauth-button" data-auth-provider="google"><i class="fa-brands fa-google me-2" aria-hidden="true"></i>Continue with Google</button>
+		</div>`;
+	form.insertAdjacentElement("afterend", socialLogin);
+	socialLogin.querySelectorAll("[data-auth-provider]").forEach(button => {
+		button.addEventListener("click", () => handleOAuthLogin(button.dataset.authProvider, button));
+	});
+}
+
+function addOrderHistoryLink() {
+	const cartLink = document.querySelector('.abx-account-menu a[href="/cart"]');
+	if (!cartLink || document.querySelector('.abx-account-menu a[href="/orders"]')) return;
+	const item = document.createElement("li");
+	item.innerHTML = '<a class="dropdown-item" href="/orders">Order history</a>';
+	cartLink.closest("li").insertAdjacentElement("afterend", item);
+}
+
 /* ---------- Get role + display name from the profiles table ---------- */
 async function getUserRole(userId) {
 	const { data, error } = await supabaseClient
@@ -154,6 +219,9 @@ async function handleAuthSubmit(event) {
 			if (modalInstance) modalInstance.hide();
 
 			document.getElementById("authForm").reset();
+
+			// Continue the action that required authentication (for example checkout).
+			continueAfterLogin();
 		}
 	} catch (err) {
 		showAuthError(err.message || "Something went wrong, please try again.");
@@ -169,6 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Check for an existing session
 	supabaseClient.auth.getSession().then(({ data }) => {
 		setAuthUI(data.session ? data.session.user : null);
+		if (data.session?.user) continueAfterLogin();
 	});
 
 	// Automatically update UI whenever auth state changes
@@ -184,6 +253,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (authForm) {
 		authForm.addEventListener("submit", handleAuthSubmit);
 	}
+	addOAuthButtons();
+	addOrderHistoryLink();
 
 	// Attach toggle handler for Log In / Sign Up switch
 	const switchLink = document.getElementById("authSwitchLink");

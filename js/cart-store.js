@@ -32,7 +32,8 @@
             save(items);
         },
         quantity(id,quantity) {const items=read();const item=items.find(item=>String(item.id)===String(id));if(!item)return;const amount=Number(quantity);if(!Number.isInteger(amount)||amount<1||amount>item.stock)throw new Error("Choose a quantity within available stock.");item.quantity=amount;save(items);},
-        remove(id) {save(read().filter(item=>String(item.id)!==String(id)));}
+        remove(id) {save(read().filter(item=>String(item.id)!==String(id)));},
+        clear() {save([]);}
     };
     document.addEventListener("DOMContentLoaded",updateBadge);
     window.addEventListener("abraham:cart-updated",updateBadge);

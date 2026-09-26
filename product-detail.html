@@ -59,11 +59,17 @@
 			align-items: center;
 			gap: 9px;
 			margin-bottom: 28px;
+			padding: 11px 18px;
+			border: 1px solid rgba(9,41,87,.14);
+			border-radius: 999px;
+			background: #fff;
 			color: var(--abx-navy);
-			font-size: 12px;
+			font-size: 13px;
 			font-weight: 800;
 			text-decoration: none;
 			letter-spacing: .3px;
+			box-shadow: 0 8px 20px rgba(9,41,87,.08);
+			transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
 		}
 
 		.abx-back i {
@@ -72,8 +78,14 @@
 		}
 
 		.abx-back:hover {
-			color: var(--abx-gold-dark);
+			color: var(--abx-navy);
+			background: var(--abx-gold-light);
+			border-color: var(--abx-gold);
+			transform: translateY(-2px);
+			box-shadow: 0 12px 24px rgba(9,41,87,.13);
 		}
+
+		.abx-back:focus-visible { outline: 3px solid var(--abx-gold); outline-offset: 3px; }
 
 		.abx-back:hover i {
 			transform: translateX(-3px);
@@ -263,10 +275,14 @@
 		}
 
 		.abx-primary-btn {
+			border: 0;
 			background: linear-gradient(135deg, var(--abx-gold-light), var(--abx-gold));
 			color: var(--abx-navy);
 			box-shadow: 0 9px 24px rgba(242,183,43,.22);
+			cursor: pointer;
 		}
+
+		.abx-primary-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
 		.abx-primary-btn:hover {
 			color: var(--abx-navy);
@@ -553,10 +569,10 @@
 							</div>
 
 							<div class="abx-actions">
-								<a href="/contact" class="abx-primary-btn">
-									<i class="fa-solid fa-message"></i>
-									Contact us
-								</a>
+								<button type="button" class="abx-primary-btn" id="product-add-order">
+									<i class="fa-solid fa-cart-shopping"></i>
+									<span>Add to order</span>
+								</button>
 
 								<a href="/shop" class="abx-secondary-btn">
 									<i class="fa-solid fa-grid-2"></i>
@@ -792,6 +808,19 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
 				stockEl.classList.add("out");
 				stockLabelEl.textContent = "Out of stock";
 			}
+
+			const addOrderButton = document.getElementById("product-add-order");
+			addOrderButton.disabled = stock <= 0;
+			if (stock <= 0) addOrderButton.querySelector("span").textContent = "Out of stock";
+			addOrderButton.addEventListener("click", function () {
+				try {
+					window.AbrahamCart.add(data);
+					window.location.href = "/cart";
+				} catch (cartError) {
+					errorEl.classList.remove("d-none");
+					errorMessageEl.textContent = cartError.message || "Unable to add this product to your order.";
+				}
+			}, { once: true });
 
 			detailEl.classList.remove("d-none");
 

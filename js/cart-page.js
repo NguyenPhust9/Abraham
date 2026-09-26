@@ -57,6 +57,24 @@
         restoreFocus(focusAttribute, id, step);
     }
     document.addEventListener("DOMContentLoaded", () => {
+        const checkoutButton = document.querySelector?.("#cart-summary .cart-order-button");
+        if (checkoutButton) {
+            checkoutButton.href = "/checkout";
+            checkoutButton.innerHTML = 'Proceed to checkout <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
+            checkoutButton.removeAttribute("onclick");
+            checkoutButton.addEventListener("click", async event => {
+                event.preventDefault();
+                const { data } = await supabaseClient.auth.getSession();
+                if (data.session?.user) {
+                    window.location.href = "/checkout";
+                    return;
+                }
+                sessionStorage.setItem("abraham_after_login", "/checkout");
+                bootstrap.Modal.getOrCreateInstance(document.getElementById("authModal")).show();
+            });
+        }
+        const checkoutNote = document.querySelector?.("#cart-summary .cart-order-note");
+        if (checkoutNote) checkoutNote.textContent = "Enter your delivery address and confirm your order in the next step.";
         render();
         $("cart-items").addEventListener("click", event => {
             const remove = event.target.closest("[data-cart-remove]");

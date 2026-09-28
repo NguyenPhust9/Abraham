@@ -25,7 +25,7 @@ function filterShopProducts(products, filters) {
 (() => {
     const PAGE_SIZE = 12;
     let products = [], page = 1, loaded = false, noticeTimer;
-    const filters = { keyword: "", categories: new Set(), availability: "in", minPrice: 0, maxPrice: Infinity, sort: "newest" };
+    const filters = { keyword: "", categories: new Set(), availability: "all", minPrice: 0, maxPrice: Infinity, sort: "newest" };
     let favorites = [];
     try { favorites = JSON.parse(localStorage.getItem("abraham_favorites") || "[]"); if (!Array.isArray(favorites)) favorites = []; } catch (_) { favorites = []; }
     const $ = id => document.getElementById(id);
@@ -109,15 +109,26 @@ function filterShopProducts(products, filters) {
         filters.keyword=""; filters.categories.clear(); filters.minPrice=0; filters.maxPrice=Infinity; page=1;
         $("product-search").value=""; $("price-min").value=0; $("price-max").value=$("price-range").max; $("price-range").value=$("price-range").max;
         $("shop-filter-error").classList.add("d-none");
-        syncCategories(); availability("in");
+        syncCategories(); availability("all");
+    }
+    async function fetchAllShopProducts() {
+        const batchSize = 1000;
+        const result = [];
+        for (let from = 0; ; from += batchSize) {
+            const {data,error} = await supabaseClient.from("products").select("*")
+                .order("id",{ascending:false}).range(from,from+batchSize-1);
+            if (error) throw error;
+            const batch = Array.isArray(data) ? data : [];
+            result.push(...batch);
+            if (batch.length < batchSize) break;
+        }
+        return result;
     }
     async function load() {
         loaded = false;
         $("product-list").innerHTML = '<div class="shop-state" role="status"><div class="spinner-border spinner-border-sm" aria-hidden="true"></div><p>Loading products...</p></div>';
         try {
-            const {data,error} = await supabaseClient.from("products").select("*").order("id",{ascending:false});
-            if (error) throw error;
-            products = (Array.isArray(data) ? data : []).filter(p=>p.is_active!==false);
+            products = (await fetchAllShopProducts()).filter(p=>p.is_active!==false);
             const maxPrice = Math.max(10000000,...products.map(p=>Number(p.price)||0));
             $("price-range").max = Math.ceil(maxPrice/1000)*1000;
             $("price-range").value = $("price-range").max;
@@ -128,7 +139,7 @@ function filterShopProducts(products, filters) {
         }
     }
     document.addEventListener("DOMContentLoaded", () => {
-        $("in-stock-only").checked=true; $("availability-all").checked=false; $("availability-out").checked=false;
+        $("availability-all").checked=true; $("in-stock-only").checked=false; $("availability-out").checked=false;
         $("shop-search-form").addEventListener("submit",event=>{event.preventDefault(); filters.keyword=$("product-search").value;page=1;render();});
         $("product-search").addEventListener("input",()=>{filters.keyword=$("product-search").value;page=1;render();});
         $("category-buttons").addEventListener("click",event=>{const button=event.target.closest("button[data-category]");if(!button)return;filters.categories.clear();if(button.dataset.category!=="all")filters.categories.add(button.dataset.category);syncCategories();page=1;render();});

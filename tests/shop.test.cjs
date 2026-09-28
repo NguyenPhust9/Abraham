@@ -28,7 +28,7 @@ async function testShop() {
     const get = id => { if (!nodes.has(id)) nodes.set(id, node()); return nodes.get(id); };
     let ready;
     const context = vm.createContext({
-        window: { supabase: { createClient: () => ({ from: () => ({ select() { return this; }, order: async () => ({ data: products, error: null }) }) }) }, AbrahamCart: { add() {} } },
+        window: { supabase: { createClient: () => ({ from: () => ({ select() { return this; }, order() { return this; }, range: async (from, to) => ({ data: products.slice(from, to + 1), error: null }) }) }) }, AbrahamCart: { add() {} } },
         document: { getElementById: get, addEventListener: (event, callback) => { ready = callback; } },
         localStorage: storage(), console, setTimeout, clearTimeout
     });
@@ -44,8 +44,9 @@ async function testShop() {
     assert.deepEqual(ids({ categories: new Set(['City']) }), [3]);
     ready();
     await new Promise(resolve => setImmediate(resolve));
-    assert.equal(get('in-stock-only').checked, true);
-    assert.equal(get('product-count').textContent, 2);
+    assert.equal(get('availability-all').checked, true);
+    assert.equal(get('in-stock-only').checked, false);
+    assert.equal(get('product-count').textContent, 4);
     assert.match(get('product-list').innerHTML, />0đ</);
     assert.match(get('product-list').innerHTML, /City &lt;bike&gt;/);
     assert.match(get('product-list').innerHTML, /\/san-pham\/road-bike-1/);
@@ -60,8 +61,8 @@ async function testShop() {
     get('shop-filter-form').handlers.submit({ preventDefault() {} });
     assert.match(get('shop-filter-error').textContent, /valid price range/);
     get('shop-reset').handlers.click();
-    assert.equal(get('product-count').textContent, 2);
-    assert.equal(get('in-stock-only').checked, true);
+    assert.equal(get('product-count').textContent, 4);
+    assert.equal(get('availability-all').checked, true);
 }
 function testCart() {
     const callbacks = {}, localStorage = storage();

@@ -1278,3 +1278,35 @@ a.more:hover,
   max-width: none !important;
   display: block;
 }
+/* Password visibility control in the shared login modal */
+.auth-password-field {
+	position: relative;
+}
+
+.auth-password-field .form-control {
+	padding-right: 3rem;
+}
+
+.auth-password-toggle {
+	position: absolute;
+	top: 50%;
+	right: .75rem;
+	transform: translateY(-50%);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	border: 0;
+	border-radius: .375rem;
+	background: transparent;
+	color: #667085;
+	cursor: pointer;
+}
+
+.auth-password-toggle:hover,
+.auth-password-toggle:focus-visible {
+	color: #092957;
+	background: #eef2f7;
+}

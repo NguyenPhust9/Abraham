@@ -160,6 +160,37 @@ function hideAuthError() {
 	errorBox.classList.add("d-none");
 }
 
+/* ---------- Show / hide the password being entered ---------- */
+function addPasswordVisibilityToggle() {
+	const passwordInput = document.getElementById("authPassword");
+	if (!passwordInput || document.getElementById("authPasswordToggle")) return;
+
+	const wrapper = document.createElement("div");
+	wrapper.className = "auth-password-field";
+	passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+	wrapper.appendChild(passwordInput);
+
+	const toggle = document.createElement("button");
+	toggle.type = "button";
+	toggle.id = "authPasswordToggle";
+	toggle.className = "auth-password-toggle";
+	toggle.setAttribute("aria-controls", "authPassword");
+	toggle.setAttribute("aria-pressed", "false");
+	toggle.setAttribute("aria-label", "Hiện mật khẩu");
+	toggle.title = "Hiện mật khẩu";
+	toggle.innerHTML = '<i class="fa-regular fa-eye" aria-hidden="true"></i>';
+	wrapper.appendChild(toggle);
+
+	toggle.addEventListener("click", function () {
+		const showPassword = passwordInput.type === "password";
+		passwordInput.type = showPassword ? "text" : "password";
+		toggle.setAttribute("aria-pressed", String(showPassword));
+		toggle.setAttribute("aria-label", showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+		toggle.title = showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu";
+		toggle.innerHTML = `<i class="fa-regular ${showPassword ? "fa-eye-slash" : "fa-eye"}" aria-hidden="true"></i>`;
+	});
+}
+
 /* ---------- Toggle between Log In / Sign Up mode ---------- */
 function toggleAuthMode() {
 	isSignUpMode = !isSignUpMode;
@@ -253,6 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (authForm) {
 		authForm.addEventListener("submit", handleAuthSubmit);
 	}
+	addPasswordVisibilityToggle();
 	addOAuthButtons();
 	addOrderHistoryLink();
 

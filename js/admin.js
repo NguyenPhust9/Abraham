@@ -38,15 +38,32 @@ async function uploadImageToCloudinary(file) {
 }
 
 /* ---------- Load toàn bộ sản phẩm ---------- */
+async function fetchAllProducts() {
+	const batchSize = 1000;
+	const products = [];
+
+	for (let from = 0; ; from += batchSize) {
+		const { data, error } = await supabaseClient
+			.from("products")
+			.select("*")
+			.order("id", { ascending: true })
+			.range(from, from + batchSize - 1);
+
+		if (error) return { data: null, error };
+		const batch = data || [];
+		products.push(...batch);
+		if (batch.length < batchSize) break;
+	}
+
+	return { data: products, error: null };
+}
+
 async function loadProducts() {
 	const tbody = document.getElementById("productsTableBody");
     document.getElementById("adminProductPagination").hidden = true;
 	tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Đang tải dữ liệu...</td></tr>`;
 
-	const { data, error } = await supabaseClient
-		.from("products")
-		.select("*")
-		.order("id", { ascending: true });
+	const { data, error } = await fetchAllProducts();
 
 	if (error) {
 		tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">Lỗi tải dữ liệu: ${error.message}</td></tr>`;

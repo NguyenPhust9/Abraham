@@ -32,7 +32,7 @@ async function testShop() {
         document: { getElementById: get, addEventListener: (event, callback) => { ready = callback; } },
         localStorage: storage(), console, setTimeout, clearTimeout
     });
-    for (const file of ['frontend-language.js', 'product-url.js', 'shop.js']) vm.runInContext(source(file), context);
+    for (const file of ['frontend-language.js', 'product-url.js', 'product-variants.js', 'shop.js']) vm.runInContext(source(file), context);
     const filters = { keyword: '', categories: new Set(), availability: 'in', minPrice: 0, maxPrice: Infinity, sort: 'newest' };
     const ids = options => Array.from(context.filterShopProducts(products, { ...filters, ...options }), product => product.id);
     assert.deepEqual(ids({}), [3, 1]);

@@ -48,7 +48,7 @@
 		}
 
 		.abx-detail-page {
-			padding: 78px 0 105px;
+			padding: 28px 0 80px;
 			background:
 				radial-gradient(circle at 90% 8%, rgba(242,183,43,.09), transparent 28%),
 				linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
@@ -85,23 +85,47 @@
 			box-shadow: 0 12px 24px rgba(9,41,87,.13);
 		}
 
+		.abx-detail-page > .container {
+			width: 100%;
+			max-width: none;
+			padding-right: clamp(12px, 2vw, 32px);
+			padding-left: clamp(12px, 2vw, 32px);
+		}
+
 		.abx-back:focus-visible { outline: 3px solid var(--abx-gold); outline-offset: 3px; }
 
 		.abx-back:hover i {
 			transform: translateX(-3px);
 		}
 
+		.abx-breadcrumb {
+			display: flex;
+			align-items: center;
+			gap: 9px;
+			min-width: 0;
+			margin-bottom: 16px;
+			color: #7b8799;
+			font-size: 13px;
+		}
+		.abx-breadcrumb ol { display: flex; align-items: center; gap: 9px; min-width: 0; margin: 0; padding: 0; list-style: none; }
+		.abx-breadcrumb li { display: inline-flex; align-items: center; min-width: 0; }
+		.abx-breadcrumb li + li::before { content: "/"; margin-right: 9px; color: #b0bac8; }
+		.abx-breadcrumb a { color: #52657d; font-weight: 650; text-decoration: none; }
+		.abx-breadcrumb a:hover { color: var(--abx-navy); text-decoration: underline; }
+		.abx-breadcrumb [aria-current="page"] { overflow: hidden; color: var(--abx-navy); font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+
 		.abx-detail-shell {
 			overflow: hidden;
 			background: #fff;
 			border: 1px solid rgba(9,41,87,.08);
-			border-radius: 26px;
+			border-radius: 14px;
 			box-shadow: 0 22px 60px rgba(9,41,87,.09);
 		}
 
 		.abx-product-media {
 			position: relative;
-			min-height: 560px;
+			min-height: 680px;
+			height: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -127,7 +151,7 @@
 			position: relative;
 			z-index: 2;
 			width: 100%;
-			max-height: 450px;
+			max-height: 600px;
 			object-fit: contain;
 		}
 
@@ -146,7 +170,7 @@
 		}
 
 		.abx-product-content {
-			padding: 58px 56px;
+			padding: clamp(38px, 4vw, 72px);
 		}
 
 		.abx-eyebrow {
@@ -401,8 +425,10 @@
 		}
 
 		@media (max-width: 991px) {
+			.abx-detail-page { padding-top: 36px; }
 			.abx-product-media {
 				min-height: 430px;
+				height: auto;
 			}
 
 			.abx-product-content {
@@ -483,6 +509,14 @@
 	<main class="abx-detail-page">
 		<div class="container">
 
+			<nav class="abx-breadcrumb" aria-label="Breadcrumb">
+				<ol>
+					<li><a href="/">Trang chủ</a></li>
+					<li><a href="/shop">Cửa hàng</a></li>
+					<li id="product-breadcrumb-name" aria-current="page">Sản phẩm</li>
+				</ol>
+			</nav>
+
 			<a href="/shop" class="abx-back">
 				<i class="fa-solid fa-arrow-left"></i>
 				Back to the collection
@@ -539,6 +573,11 @@
 								<span class="abx-stock-dot"></span>
 								<span id="product-stock-label">In stock</span>
 							</div>
+
+							<section id="product-variants" class="abx-variants d-none" aria-labelledby="product-variants-title">
+								<h2 id="product-variants-title">Màu sắc</h2>
+								<div id="product-variant-options" class="abx-variant-options"></div>
+							</section>
 
 							<p id="product-description" class="abx-description"></p>
                             <section id="product-specifications" class="abx-specifications d-none" aria-labelledby="product-specifications-title">
@@ -705,6 +744,7 @@
 
 	<script src="/js/frontend-language.js"></script>
     <script src="/js/product-url.js"></script>
+    <script src="/js/product-variants.js"></script>
     <script src="/js/product-images.js"></script>
     <script src="/js/product-gallery.js"></script>
     <script src="/js/product-zoom.js"></script>
@@ -725,6 +765,47 @@
 				.replaceAll(">", "&gt;")
 				.replaceAll('"', "&quot;")
 				.replaceAll("'", "&#039;");
+
+		async function loadProductVariants(product) {
+			const info = window.ProductVariants.productVariantInfo(product);
+			if (!info.base || !product.sku) return;
+			const { data, error } = await supabaseClient.from("products")
+				.select("id, sku, name, image_url, stock, price, is_active")
+				.ilike("sku", `${info.base}%`)
+				.eq("is_active", true)
+				.order("id", { ascending: true });
+			if (error || !data) return;
+			const variants = data.filter(item => window.ProductVariants.productVariantInfo(item).key === info.key);
+			if (variants.length < 2) return;
+
+			const section = document.getElementById("product-variants");
+			const options = document.getElementById("product-variant-options");
+			options.innerHTML = variants.map(variant => {
+				const variantInfo = window.ProductVariants.productVariantInfo(variant);
+				const selected = String(variant.id) === String(product.id);
+				const unavailable = Number(variant.stock || 0) <= 0;
+				return `<a href="${escapeHtml(getProductUrl(variant))}" class="abx-variant-option${selected ? " is-selected" : ""}${unavailable ? " is-out" : ""}" ${selected ? 'aria-current="true"' : ""}>
+					<img src="${escapeHtml(frontendProductImage(variant.image_url))}" alt="" loading="lazy">
+					<span><strong>${escapeHtml(variantInfo.color)}</strong><small>${unavailable ? "Hết hàng" : "Còn hàng"}</small></span>
+				</a>`;
+			}).join("");
+			const mainImage = document.getElementById("product-image");
+			const selectedImage = mainImage.src;
+			const selectedAlt = mainImage.alt;
+			options.querySelectorAll(".abx-variant-option").forEach((option, index) => {
+				const preview = () => {
+					mainImage.src = frontendProductImage(variants[index].image_url);
+					mainImage.alt = variants[index].name || product.name || "Abraham Bike";
+				};
+				option.addEventListener("pointerenter", preview);
+				option.addEventListener("focus", preview);
+			});
+			options.addEventListener("pointerleave", () => {
+				mainImage.src = selectedImage;
+				mainImage.alt = selectedAlt;
+			});
+			section.classList.remove("d-none");
+		}
 
 		async function loadProductDetail() {
 			const params = new URLSearchParams(window.location.search);
@@ -787,10 +868,12 @@ document.getElementById("meta-og-title").setAttribute("content", `${name} — Ab
 document.getElementById("meta-og-description").setAttribute("content", metaDescription);
 document.getElementById("meta-og-image").setAttribute("content", frontendProductImage(data.image_url));
 			document.getElementById("product-name").textContent = name;
+			document.getElementById("product-breadcrumb-name").textContent = name;
 			document.getElementById("product-category").textContent = category;
 			document.getElementById("product-description").textContent = description;
             renderProductSpecifications(data.specifications);
             renderProductGallery(data);
+			loadProductVariants(data);
 
 			const badgeEl = document.getElementById("product-badge");
 			if (data.badge) {
@@ -825,26 +908,31 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
 			detailEl.classList.remove("d-none");
 
 			// Tải sản phẩm tương tự (cùng danh mục)
-			loadRelatedProducts(data.category, data.id);
+			loadRelatedProducts(data.category, data);
 		}
 
-		async function loadRelatedProducts(category, currentId) {
+		async function loadRelatedProducts(category, currentProduct) {
 			if (!category) return;
 
 			const { data, error } = await supabaseClient
 				.from("products")
 				.select("*")
 				.eq("category", category)
-				.neq("id", currentId)
+				.neq("id", currentProduct.id)
 				.eq("is_active", true)
-				.limit(4);
+				.limit(24);
 
 			if (error || !data || data.length === 0) return;
+			const currentKey = window.ProductVariants.productVariantInfo(currentProduct).key;
+			const related = window.ProductVariants.groupProductVariants(data)
+				.filter(product => window.ProductVariants.productVariantInfo(product).key !== currentKey)
+				.slice(0, 4);
+			if (!related.length) return;
 
 			const sectionEl = document.getElementById("related-products-section");
 			const listEl = document.getElementById("related-products-list");
 
-			listEl.innerHTML = data.map(product => {
+			listEl.innerHTML = related.map(product => {
 				const name = escapeHtml(product.name || "Abraham Bike");
 				const cat = escapeHtml(frontendCategory(product.category || "Abraham Bike"));
 				const image = escapeHtml(frontendProductImage(product.image_url));

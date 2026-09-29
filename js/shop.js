@@ -13,13 +13,14 @@ function filterShopProducts(products, filters) {
             && (filters.availability === "all" || (filters.availability === "in" ? stock > 0 : !(stock > 0)))
             && price >= filters.minPrice && price <= filters.maxPrice;
     });
-    return result.sort((a, b) => {
+    result.sort((a, b) => {
         if (filters.sort === "price-asc") return (Number(a.price) || 0) - (Number(b.price) || 0);
         if (filters.sort === "price-desc") return (Number(b.price) || 0) - (Number(a.price) || 0);
         if (filters.sort === "name") return String(a.name || "").localeCompare(String(b.name || ""), "en");
         const time = product => Date.parse(product.created_at || product.updated_at || "") || 0;
         return time(b) - time(a) || (Number(b.id) || 0) - (Number(a.id) || 0);
     });
+    return window.ProductVariants.groupProductVariants(result);
 }
 
 (() => {
@@ -64,7 +65,9 @@ function filterShopProducts(products, filters) {
     }
     function card(product) {
         const inStock = Number(product.stock || 0) > 0;
-        const name = product.name || "Abraham Bike";
+        const variantCount = product._variants?.length || 1;
+        const variantInfo = window.ProductVariants.productVariantInfo(product);
+        const name = variantCount > 1 ? window.ProductVariants.formatBaseName(variantInfo.base) : (product.name || "Abraham Bike");
         const url = getProductUrl(product);
         const badge = frontendValue(product.badge || "");
         const badgeStyle = /sale/i.test(badge) ? "is-sale" : /hot|best seller/i.test(badge) ? "is-hot" : "";
@@ -78,6 +81,7 @@ function filterShopProducts(products, filters) {
             <div class="shop-product-body">
                 <span class="shop-product-category">${escape(frontendCategory(product.category || "Bikes"))}</span>
                 <h2><a href="${escape(url)}">${escape(name)}</a></h2>
+                ${variantCount > 1 ? `<span class="shop-product-variants"><i class="fa-solid fa-palette" aria-hidden="true"></i>${variantCount} màu</span>` : ""}
                 <strong class="shop-product-price">${money(product.price)}</strong>
                 <span class="shop-product-stock ${inStock ? "" : "is-out"}">${inStock ? "In stock" : "Out of stock"}</span>
                 <div class="shop-product-actions"><a class="shop-detail-button" href="${escape(url)}">View details</a><button type="button" class="shop-cart-button" data-add-cart="${escape(product.id)}" ${inStock ? "" : "disabled"}><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>${inStock ? "Add to cart" : "Out of stock"}</button></div>

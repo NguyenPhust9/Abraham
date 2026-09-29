@@ -1,6 +1,12 @@
 (function() {
 	'use strict';
 
+	/* Use the same Abraham logo treatment as the home-page header. */
+	document.querySelectorAll('.abx-mobile-brand').forEach(function(brand) {
+		brand.innerHTML = '<img src="/images/logoabraham.png" alt="Abraham Bike">';
+		brand.setAttribute('aria-label', 'Abraham Bike – Trang chủ');
+	});
+
 	/* Keep the shared navigation state consistent on every page. */
 	var syncActiveNavigation = function() {
 		var path = window.location.pathname.replace(/\/+$/, '') || '/';
@@ -56,6 +62,10 @@
 			'Shipping & Payment':['Giao hàng và thanh toán','配送与付款'],'Review Order':['Kiểm tra đơn hàng','核对订单'],'Complete Order':['Hoàn tất đơn hàng','完成订单'],'Your information is secure':['Thông tin của bạn được bảo mật','您的信息安全无忧'],'We protect your privacy':['Chúng tôi bảo vệ quyền riêng tư của bạn','我们保护您的隐私'],'Select a country':['Chọn quốc gia','选择国家'],'Company Name':['Tên công ty','公司名称'],'State / Country':['Tỉnh/Quốc gia','省/国家'],'Email Address':['Địa chỉ email','电子邮箱'],'Create an account?':['Tạo tài khoản?','创建账户？'],'Ship To A Different Address?':['Giao đến địa chỉ khác?','配送到其他地址？'],'Have a coupon code?':['Bạn có mã giảm giá?','有优惠码吗？'],'Apply':['Áp dụng','应用'],'Review your selected products':['Kiểm tra sản phẩm đã chọn','核对所选商品'],'Cart Subtotal':['Tạm tính giỏ hàng','购物车小计'],'Order Total':['Tổng đơn hàng','订单总额'],'Direct Bank Transfer':['Chuyển khoản ngân hàng','银行转账'],'Cheque Payment':['Thanh toán bằng séc','支票付款'],'Paypal':['PayPal','PayPal'],'Your order has been placed successfully.':['Đơn hàng của bạn đã được đặt thành công.','您的订单已成功提交。'],'Back to home':['Về trang chủ','返回首页'],'Track and review all orders placed with your account.':['Theo dõi và xem lại tất cả đơn hàng trong tài khoản.','跟踪并查看账户中的所有订单。'],'Log in to view your orders':['Đăng nhập để xem đơn hàng','登录查看订单'],'Your order history is securely linked to your account.':['Lịch sử đơn hàng được liên kết an toàn với tài khoản của bạn.','订单记录已安全关联到您的账户。'],'Your completed orders will appear here.':['Các đơn hàng đã hoàn tất sẽ xuất hiện tại đây.','已完成的订单将显示在此处。'],'Start shopping':['Bắt đầu mua sắm','开始购物']
 		};
 		Object.assign(pageTranslations, {
+			'Premium bicycles and expert service, built for every rider. Certified technicians, genuine parts, and care backed by precision — since day one.':['Xe đạp cao cấp và dịch vụ chuyên nghiệp dành cho mọi người đi xe. Kỹ thuật viên được chứng nhận, linh kiện chính hãng và quy trình chăm sóc chính xác ngay từ ngày đầu tiên.','为每位骑手提供高品质自行车与专业服务。认证技师、正品配件，以及从第一天起始终精准可靠的养护。'],
+			'— Get in Touch —':['— LIÊN HỆ VỚI CHÚNG TÔI —','— 联系我们 —'],'Visit, Call, or Write to Us':['Ghé thăm, gọi điện hoặc nhắn cho chúng tôi','到访、致电或留言'],'Our service center and showroom are open six days a week. Drop by for a fitting, a repair, or just to talk bikes.':['Trung tâm dịch vụ và showroom mở cửa sáu ngày mỗi tuần. Hãy ghé qua để căn chỉnh, sửa chữa hoặc đơn giản là trò chuyện về xe đạp.','服务中心与展厅每周开放六天。欢迎前来进行车辆适配、维修，或聊聊自行车。'],'Showroom & Service Center':['Showroom và Trung tâm dịch vụ','展厅与服务中心'],'128 Nguyen Van Linh, District 7, Ho Chi Minh City':['128 Nguyễn Văn Linh, Quận 7, Thành phố Hồ Chí Minh','胡志明市第七郡阮文灵路128号'],'Mon – Sat, 8:00 AM – 6:30 PM':['Thứ Hai – Thứ Bảy, 8:00 – 18:30','周一至周六，8:00–18:30'],'Sunday: Service by appointment':['Chủ nhật: Phục vụ theo lịch hẹn','周日：预约服务'],'Tell us what your bike needs — we\'ll follow up with the next available slot.':['Hãy cho chúng tôi biết chiếc xe của bạn cần gì — chúng tôi sẽ phản hồi với lịch trống gần nhất.','请告诉我们您的自行车需要什么服务，我们会提供最近的可预约时间。'],
+			'Certified safety standard':['Tiêu chuẩn an toàn được chứng nhận','认证安全标准'],
+			'The Details That Turn A Bike Into A Better Ride.':['Những chi tiết tạo nên một hành trình tốt hơn.','让自行车带来更佳骑行体验的细节。'],'01 / FRAME':['01 / KHUNG XE','01 / 车架'],'02 / DRIVE':['02 / TRUYỀN ĐỘNG','02 / 传动'],'03 / CONTROL':['03 / KIỂM SOÁT','03 / 操控'],'04 / COMFORT':['04 / THOẢI MÁI','04 / 舒适'],'Made To Move':['Sinh ra để chuyển động','为前行而生'],'One Brand. Different Ways To Ride.':['Một thương hiệu. Nhiều phong cách đạp xe.','一个品牌，多种骑行方式。'],'Urban Ride':['Đạp xe đô thị','城市骑行'],'Daily Commute':['Đi lại hằng ngày','日常通勤'],'Comfortable, dependable mobility for the rhythm of everyday city life.':['Phương tiện thoải mái, đáng tin cậy cho nhịp sống đô thị hằng ngày.','舒适可靠的出行方式，融入日常城市节奏。'],'Road Experience':['Trải nghiệm đường trường','公路体验'],'Ride For Fitness':['Đạp xe rèn luyện','健身骑行'],'A responsive setup for riders who want to go farther and keep improving.':['Thiết lập nhạy bén cho người muốn đi xa hơn và không ngừng tiến bộ.','灵敏配置，适合希望骑得更远并不断进步的骑手。'],'Weekend Adventure':['Phiêu lưu cuối tuần','周末探险'],'Explore More':['Khám phá nhiều hơn','探索更多'],'Ready for slower roads, longer routes, and the journeys you ride just for yourself.':['Sẵn sàng cho những con đường yên bình, hành trình dài hơn và những chuyến đi dành riêng cho bạn.','从容应对宁静道路、更长路线，以及只属于自己的旅程。'],'We always put transparency and honesty first, building lasting trust with our customers.':['Chúng tôi luôn đặt sự minh bạch và trung thực lên hàng đầu, xây dựng niềm tin lâu dài với khách hàng.','我们始终将透明与诚信放在首位，与客户建立长久信任。'],'We build our reputation through the outstanding quality of our products and services.':['Chúng tôi xây dựng uy tín bằng chất lượng vượt trội của sản phẩm và dịch vụ.','我们以卓越的产品与服务品质建立信誉。'],'We continuously strive to deliver the best value to our customers, partners, and community.':['Chúng tôi không ngừng nỗ lực mang lại giá trị tốt nhất cho khách hàng, đối tác và cộng đồng.','我们持续努力，为客户、合作伙伴和社区创造最佳价值。'],
 			'For more than two decades, Abraham has focused on one thing: building dependable bicycles that make everyday riding easier, safer, and more enjoyable.':['Trong hơn hai thập kỷ, Abraham luôn tập trung vào một điều: tạo ra những chiếc xe đạp đáng tin cậy, giúp việc di chuyển hằng ngày dễ dàng, an toàn và thú vị hơn.','二十多年来，Abraham 始终专注于打造可靠的自行车，让日常骑行更轻松、更安全、更愉悦。'],
 			'Abraham was created with a straightforward belief: a good bicycle should feel reliable from the first pedal stroke and remain a trusted companion for the journeys that follow.':['Abraham được hình thành từ một niềm tin giản dị: một chiếc xe tốt phải mang lại cảm giác đáng tin cậy ngay từ vòng đạp đầu tiên và luôn là người bạn đồng hành trên những hành trình tiếp theo.','Abraham 源于一个朴素的信念：好自行车应从第一脚踩踏起就值得信赖，并在往后的旅程中始终相伴。'],
 			'Over the years, that belief has shaped how we approach design, engineering, product development, distribution, and after-sales care. We continue to improve the details that matter most to riders: comfort, control, durability, and confidence.':['Qua nhiều năm, niềm tin ấy định hình cách chúng tôi thiết kế, kỹ thuật, phát triển sản phẩm, phân phối và chăm sóc sau bán hàng. Chúng tôi không ngừng hoàn thiện những yếu tố quan trọng nhất: sự thoải mái, khả năng kiểm soát, độ bền và sự tự tin.','多年来，这一信念塑造了我们的设计、工程、产品开发、销售与售后服务。我们持续改进骑手最重视的细节：舒适、操控、耐用与信心。'],
@@ -126,10 +136,23 @@
 		var originalText = new WeakMap();
 		var translateString = function(source, index) {
 			var key = source.replace(/\s+/g, ' ').trim(), translated = translations[key];
+			/* Some redesigned pages use Vietnamese directly in the markup. Resolve
+			   those labels back to their English key so every language remains usable. */
+			if (!translated) {
+				Object.keys(translations).some(function(englishKey) {
+					var values = translations[englishKey];
+					if (values[0] === key || values[1] === key) {
+						translated = values;
+						key = englishKey;
+						return true;
+					}
+					return false;
+				});
+			}
 			if (translated) {
 				var leading = (source.match(/^\s*/) || [''])[0];
 				var trailing = (source.match(/\s*$/) || [''])[0];
-				return leading + translated[index] + trailing;
+				return leading + (index === -1 ? key : translated[index]) + trailing;
 			}
 			var size = key.match(/^(\d+|700C)-inch Bikes$/i) || key.match(/^(700C) Bikes$/i);
 			if (size) return index === 0 ? 'Xe đạp ' + size[1] + ' inch' : size[1] + ' 英寸自行车';
@@ -150,7 +173,7 @@
 			(root || document.body).querySelectorAll('[placeholder]').forEach(function(element) {
 				if (!element.dataset.i18nPlaceholder) element.dataset.i18nPlaceholder = element.getAttribute('placeholder');
 				var source = element.dataset.i18nPlaceholder;
-				var placeholders = {'Search products...':['Tìm kiếm sản phẩm...','搜索商品……'],'Enter your name':['Nhập tên của bạn','输入您的姓名'],'Enter your email':['Nhập email của bạn','输入您的邮箱'],'Write your message...':['Nhập nội dung tin nhắn...','请输入留言……']};
+				var placeholders = {'Search products...':['Tìm kiếm sản phẩm...','搜索商品……'],'Enter your name':['Nhập tên của bạn','输入您的姓名'],'Enter your email':['Nhập email của bạn','输入您的邮箱'],'Write your message...':['Nhập nội dung tin nhắn...','请输入留言……'],'Tell us about your bike and what it needs...':['Hãy cho chúng tôi biết tình trạng và nhu cầu của chiếc xe...','请告诉我们您的自行车情况和所需服务……']};
 				element.setAttribute('placeholder', index >= 0 && placeholders[source] ? placeholders[source][index] : source);
 			});
 		};
@@ -189,7 +212,7 @@
 			if (option) applyLanguage(option.getAttribute('data-language'));
 		});
 		var saved = 'en';
-		try { saved = window.localStorage.getItem('abraham-language') || 'en'; } catch (error) {}
+		try { saved = window.localStorage.getItem('abraham-language') || 'vi'; } catch (error) {}
 		applyLanguage(saved);
 	};
 	initLanguagePicker();

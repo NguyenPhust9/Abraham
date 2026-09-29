@@ -1310,3 +1310,35 @@ a.more:hover,
 	color: #092957;
 	background: #eef2f7;
 }
+.shop-product-variants {
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+	margin-bottom: .35rem;
+	color: #667085;
+	font-size: .82rem;
+	font-weight: 600;
+}
+
+.abx-variants { margin: 1.25rem 0; }
+.abx-variants h2 { margin: 0 0 .7rem; color: var(--abx-navy, #092957); font-size: 1rem; font-weight: 800; }
+.abx-variant-options { display: flex; flex-wrap: wrap; gap: .65rem; }
+.abx-variant-option {
+	display: inline-flex;
+	align-items: center;
+	gap: .55rem;
+	min-width: 135px;
+	padding: .45rem .65rem;
+	border: 1px solid #d9e1ec;
+	border-radius: .65rem;
+	background: #fff;
+	color: #334155;
+	text-decoration: none;
+}
+.abx-variant-option:hover { border-color: #0d6efd; color: #092957; }
+.abx-variant-option.is-selected { border: 2px solid #0d6efd; background: #eff6ff; }
+.abx-variant-option.is-out { opacity: .58; }
+.abx-variant-option img { width: 42px; height: 42px; border-radius: .4rem; object-fit: contain; background: #f8fafc; }
+.abx-variant-option span { display: grid; line-height: 1.2; }
+.abx-variant-option strong { font-size: .86rem; }
+.abx-variant-option small { margin-top: .2rem; color: #64748b; font-size: .72rem; }

@@ -23,7 +23,8 @@ function gallery() {
  c.renderProductGallery({name:'Road bike',image_url:'/a.jpg',image_urls:['/a.jpg','/b.jpg','/c.jpg']});
  assert.equal(get('product-image').src,'/a.jpg');assert.equal(get('product-thumbnails').children.length,3);assert.equal(get('product-thumbnails').hidden,false);
  get('product-thumbnails').children[2].handlers.click();assert.equal(get('product-image').src,'/c.jpg');assert.equal(get('product-image-counter').textContent,'3 / 3');
- get('product-image-next').onclick();assert.equal(get('product-image').src,'/a.jpg');get('product-image').onkeydown({key:'ArrowLeft',preventDefault(){}});assert.equal(get('product-image').src,'/c.jpg');
+ get('product-thumbnails').children[1].handlers.pointerenter();assert.equal(get('product-image').src,'/b.jpg');
+ get('product-image-next').onclick();assert.equal(get('product-image').src,'/c.jpg');get('product-image').onkeydown({key:'ArrowLeft',preventDefault(){}});assert.equal(get('product-image').src,'/b.jpg');
  c.renderProductGallery({name:'Legacy',image_url:'images/update.png'});assert.equal(get('product-image').src,'/images/product-placeholder.svg');assert.equal(get('product-thumbnails').hidden,true);
  c.renderProductGallery({name:'No photos'});assert.equal(get('product-image').src,'/images/product-placeholder.svg');
 }

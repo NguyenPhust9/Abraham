@@ -21,7 +21,11 @@
             const button = document.createElement("button"); button.type = "button"; button.setAttribute("aria-label", `View image ${index + 1} of ${name}`);
             const image = document.createElement("img"); image.src = url; image.alt = ""; image.loading = "lazy";
             image.onerror = () => { image.onerror = null; image.src = "/images/product-placeholder.svg"; };
-            button.append(image); button.addEventListener("click", () => select(index)); thumbs.append(button); buttons.push(button);
+            button.append(image);
+            button.addEventListener("click", () => select(index));
+            button.addEventListener("pointerenter", () => select(index));
+            button.addEventListener("focus", () => select(index));
+            thumbs.append(button); buttons.push(button);
         });
         thumbs.hidden = prev.hidden = next.hidden = counter.hidden = urls.length < 2;
         prev.onclick = () => select(selected - 1); next.onclick = () => select(selected + 1);

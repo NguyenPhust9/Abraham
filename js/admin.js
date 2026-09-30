@@ -176,6 +176,8 @@ function resetAdminProductPage() {
 /* ---------- Mở modal thêm mới ---------- */
 function openAddModal() {
 	document.getElementById("productForm").reset();
+    document.getElementById("productStock").disabled = false;
+    document.getElementById("productStock").title = "";
 	document.getElementById("productId").value = "";
 	document.getElementById("productImageUrl").value = "";
 
@@ -199,6 +201,9 @@ function openEditModal(id) {
 	document.getElementById("productCategory").value = product.category || "";
 	document.getElementById("productPrice").value = product.price || 0;
 	document.getElementById("productStock").value = product.stock || 0;
+    document.getElementById("productStock").disabled = Boolean(product.amis_stock_synced_at);
+    document.getElementById("productStock").title = product.amis_stock_synced_at
+        ? "Tồn kho được đồng bộ tự động từ AMIS, kho " + product.amis_stock_code : "";
 	document.getElementById("productImageUrl").value = product.image_url || "";
 	document.getElementById("productBadge").value = product.badge || "";
 	document.getElementById("productDescription").value = product.description || "";
@@ -291,6 +296,8 @@ async function handleProductSubmit(event) {
 		};
 
 		submitBtn.textContent = "Đang lưu...";
+        // Do not send a stale editor value back over an AMIS snapshot.
+        if (id && allProducts.find(p => String(p.id) === id)?.amis_stock_synced_at) delete payload.stock;
 
 		let error, savedProduct;
 

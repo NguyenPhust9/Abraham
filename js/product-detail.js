@@ -161,10 +161,10 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
 
 			if (stock > 0) {
 				stockEl.classList.remove("out");
-				stockLabelEl.textContent = "Còn hàng";
+				stockLabelEl.textContent = `Còn hàng · Tồn kho: ${stock.toLocaleString('vi-VN')}`;
 			} else {
 				stockEl.classList.add("out");
-				stockLabelEl.textContent = "Hết hàng";
+				stockLabelEl.textContent = `Hết hàng · Tồn kho: ${stock.toLocaleString('vi-VN')}`;
 			}
 
 			const addOrderButton = document.getElementById("product-add-order");

@@ -17,6 +17,16 @@ function detailFavorites() {
 }
 
 function renderDetailExtras(product) {
+  let syncLabel = document.getElementById('stock-sync-label');
+  if (!syncLabel) {
+    syncLabel = document.createElement('p');
+    syncLabel.id = 'stock-sync-label';
+    syncLabel.className = 'stock-sync-label';
+    document.getElementById('product-stock').after(syncLabel);
+  }
+  const syncedAt = new Date(product.amis_stock_synced_at || '');
+  syncLabel.hidden = !Number.isFinite(syncedAt.getTime());
+  if (!syncLabel.hidden) syncLabel.textContent = `Kho ${product.amis_stock_code || 'AMIS'} · Cập nhật ${syncedAt.toLocaleString('vi-VN')}`;
   document.getElementById('product-price').textContent = detailMoney(product.price);
   document.getElementById('breadcrumb-category').textContent = product.category || 'Xe đạp Abraham';
   document.getElementById('description-title').textContent = product.name || 'Xe đạp Abraham';

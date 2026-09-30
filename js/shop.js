@@ -26,7 +26,7 @@ function filterShopProducts(products, filters) {
 (() => {
     const PAGE_SIZE = 12;
     let products = [], page = 1, loaded = false, noticeTimer;
-    const filters = { keyword: "", categories: new Set(), availability: "all", minPrice: 0, maxPrice: Infinity, sort: "newest" };
+    const filters = { keyword: new URLSearchParams(location.search).get("q") || "", categories: new Set(), availability: "all", minPrice: 0, maxPrice: Infinity, sort: "newest" };
     let favorites = [];
     try { favorites = JSON.parse(localStorage.getItem("abraham_favorites") || "[]"); if (!Array.isArray(favorites)) favorites = []; } catch (_) { favorites = []; }
     const $ = id => document.getElementById(id);
@@ -143,6 +143,7 @@ function filterShopProducts(products, filters) {
         }
     }
     document.addEventListener("DOMContentLoaded", () => {
+        $("product-search").value = filters.keyword;
         $("availability-all").checked=true; $("in-stock-only").checked=false; $("availability-out").checked=false;
         $("shop-search-form").addEventListener("submit",event=>{event.preventDefault(); filters.keyword=$("product-search").value;page=1;render();});
         $("product-search").addEventListener("input",()=>{filters.keyword=$("product-search").value;page=1;render();});

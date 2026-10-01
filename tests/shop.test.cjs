@@ -30,7 +30,7 @@ async function testShop() {
     const context = vm.createContext({
         window: { supabase: { createClient: () => ({ from: () => ({ select() { return this; }, order() { return this; }, range: async (from, to) => ({ data: products.slice(from, to + 1), error: null }) }) }) }, AbrahamCart: { add() {} } },
         document: { getElementById: get, addEventListener: (event, callback) => { ready = callback; } },
-        localStorage: storage(), console, setTimeout, clearTimeout
+        localStorage: storage(), console, setTimeout, clearTimeout, URLSearchParams, location: { search: '' }
     });
     for (const file of ['frontend-language.js', 'product-url.js', 'product-variants.js', 'shop.js']) vm.runInContext(source(file), context);
     const filters = { keyword: '', categories: new Set(), availability: 'in', minPrice: 0, maxPrice: Infinity, sort: 'newest' };

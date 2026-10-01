@@ -14,16 +14,19 @@ const SUPABASE_URL = "https://bqowjqqnpeiwoaaczybg.supabase.co";
 				.replaceAll('"', "&quot;")
 				.replaceAll("'", "&#039;");
 
+        const detailProductCache = new Map();
+        let currentDetailProductId = null;
 		async function loadProductVariants(product) {
 			const info = window.ProductVariants.productVariantInfo(product);
 			if (!info.base || !product.sku) return;
 			const { data, error } = await supabaseClient.from("products")
-				.select("id, sku, name, image_url, stock, price, is_active")
+				.select("*")
 				.ilike("sku", `${info.base}%`)
 				.eq("is_active", true)
 				.order("id", { ascending: true });
-			if (error || !data) return;
+			if (error || !data || String(currentDetailProductId) !== String(product.id)) return;
 			const variants = data.filter(item => window.ProductVariants.productVariantInfo(item).key === info.key);
+			variants.forEach(variant => detailProductCache.set(String(variant.id), variant));
 			if (variants.length < 2) return;
 
 			const section = document.getElementById("product-variants");
@@ -55,6 +58,22 @@ const SUPABASE_URL = "https://bqowjqqnpeiwoaaczybg.supabase.co";
             };
             options.querySelectorAll(".abx-variant-option").forEach((option, index) => {
                 const variant = variants[index];
+                option.addEventListener("click", event => {
+                    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    if (String(currentDetailProductId) === String(variant.id)) return;
+                    hovered = null;
+                    focused = null;
+                    originalImage = null;
+                    window.history.pushState(null, "", getProductUrl(variant));
+                    renderProductDetail(variant, false);
+                    options.querySelectorAll(".abx-variant-option").forEach((link, itemIndex) => {
+                        const selected = itemIndex === index;
+                        link.classList.toggle("is-selected", selected);
+                        if (selected) link.setAttribute("aria-current", "true");
+                        else link.removeAttribute("aria-current");
+                    });
+                });
                 option.addEventListener("pointerenter", event => {
                     if (event.pointerType === "touch") return;
                     hovered = variant;
@@ -79,6 +98,11 @@ const SUPABASE_URL = "https://bqowjqqnpeiwoaaczybg.supabase.co";
 		async function loadProductDetail() {
 			const params = new URLSearchParams(window.location.search);
 			const productId = getProductIdFromPath(window.location.pathname) || params.get("id");
+            const requestPath = window.location.pathname + window.location.search;
+            if (detailProductCache.has(String(productId))) {
+                renderProductDetail(detailProductCache.get(String(productId)));
+                return;
+            }
 
 			const loadingEl = document.getElementById("product-loading");
 			const errorEl = document.getElementById("product-error");
@@ -97,6 +121,7 @@ const SUPABASE_URL = "https://bqowjqqnpeiwoaaczybg.supabase.co";
 				.select("*")
 				.eq("id", productId)
 				.maybeSingle();
+            if (window.location.pathname + window.location.search !== requestPath) return;
 
 			loadingEl.classList.add("d-none");
 
@@ -108,6 +133,17 @@ const SUPABASE_URL = "https://bqowjqqnpeiwoaaczybg.supabase.co";
 				return;
 			}
 
+            renderProductDetail(data);
+        }
+
+        function renderProductDetail(data, refreshVariants = true) {
+            currentDetailProductId = data.id;
+            detailProductCache.set(String(data.id), data);
+            const errorEl = document.getElementById("product-error");
+            const errorMessageEl = document.getElementById("product-error-message");
+            const detailEl = document.getElementById("product-detail");
+            document.getElementById("product-loading").classList.add("d-none");
+            errorEl.classList.add("d-none");
 			const canonicalPath = getProductUrl(data);
             const canonicalUrl = new URL(canonicalPath, window.location.origin).href;
             document.getElementById("product-canonical").href = canonicalUrl;
@@ -148,9 +184,13 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
                 document.getElementById('product-image').src = '/images/product-placeholder-vi.svg';
                 document.querySelector('#product-thumbnails img').src = '/images/product-placeholder-vi.svg';
             }
-			loadProductVariants(data);
+            if (refreshVariants) {
+                document.getElementById("product-variants").classList.add("d-none");
+                loadProductVariants(data);
+            }
 
 			const badgeEl = document.getElementById("product-badge");
+            badgeEl.classList.add("d-none");
 			if (data.badge) {
 				badgeEl.textContent = frontendValue(data.badge);
 				badgeEl.classList.remove("d-none");
@@ -169,8 +209,8 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
 
 			const addOrderButton = document.getElementById("product-add-order");
 			addOrderButton.disabled = stock <= 0;
-			if (stock <= 0) addOrderButton.querySelector("span").textContent = "Hết hàng";
-			addOrderButton.addEventListener("click", function () {
+			addOrderButton.querySelector("span").textContent = stock <= 0 ? "Hết hàng" : "Thêm vào giỏ hàng";
+			addOrderButton.onclick = function () {
 				try {
 					window.AbrahamCart.add(data);
 					window.location.href = "/cart";
@@ -178,13 +218,15 @@ document.getElementById("meta-og-image").setAttribute("content", frontendProduct
 					errorEl.classList.remove("d-none");
 					errorMessageEl.textContent = cartError.message || "Chưa thể thêm sản phẩm vào giỏ hàng.";
 				}
-			}, { once: true });
+			};
 
 			detailEl.classList.remove("d-none");
 
 			// Tải sản phẩm tương tự (cùng danh mục)
-			loadRelatedProducts(data.category, data);
+			if (refreshVariants) loadRelatedProducts(data.category, data);
 		}
+
+        window.addEventListener("popstate", loadProductDetail);
 
 		async function loadRelatedProducts(category, currentProduct) {
 			if (!category) return;

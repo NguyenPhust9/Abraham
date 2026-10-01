@@ -59,9 +59,6 @@
   document.getElementById('dealer-search').addEventListener('submit', event => {
     event.preventDefault();
     const city = document.getElementById('dealer-city').value;
-    const query = encodeURIComponent(`Xe đạp Abraham ${city}`);
-    document.getElementById('dealer-map').src = `https://maps.google.com/maps?q=${query}&output=embed`;
-    document.getElementById('dealer-map-link').href = `https://www.google.com/maps/search/?api=1&query=${query}`;
-    document.getElementById('dealer-status').textContent = `Kết quả tìm kiếm Google Maps tại ${city}. Liên hệ Abraham để xác nhận đại lý.`;
+    window.location.href = `/dealers?city=${encodeURIComponent(city)}`;
   });
 })();

@@ -1,0 +1,13 @@
+.abx-floating-contact { position: fixed; right: 18px; top: 50%; z-index: 1040; display: flex; flex-direction: column; gap: 10px; padding: 10px; border: 1px solid #e4e9f0; border-radius: 28px; background: rgba(255,255,255,.96); box-shadow: 0 12px 34px rgba(9,41,87,.16); transform: translateY(-50%); backdrop-filter: blur(8px); }
+.abx-contact-button { position: relative; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 4px solid rgba(255,255,255,.72); border-radius: 50%; color: #fff; text-decoration: none; box-shadow: 0 5px 13px rgba(9,41,87,.2); transition: transform .2s ease, box-shadow .2s ease; }
+.abx-contact-button:hover { color: #fff; transform: translateX(-4px) scale(1.06); box-shadow: 0 8px 18px rgba(9,41,87,.27); }
+.abx-contact-button:focus-visible { outline: 3px solid #ffb62e; outline-offset: 3px; }
+.abx-contact-button::before { content: attr(data-contact-label); position: absolute; right: calc(100% + 12px); top: 50%; padding: 8px 11px; border-radius: 8px; background: #0070B8; color: #fff; font-size:14px; font-weight: 700; line-height: 1; white-space: nowrap; opacity: 0; pointer-events: none; transform: translate(8px,-50%); transition: opacity .18s, transform .18s; }
+.abx-contact-button:hover::before,.abx-contact-button:focus-visible::before { opacity: 1; transform: translate(0,-50%); }
+.abx-contact-button i { font-size: 23px; }
+.abx-contact-phone { background: linear-gradient(145deg,#20c766,#079943); }
+.abx-contact-zalo { background: linear-gradient(145deg,#0070B8,#0070B8); }
+.abx-contact-zalo span { font: 800 13px/1 "Bricolage Grotesque",sans-serif; letter-spacing: -.5px; }
+.abx-contact-messenger { background: linear-gradient(145deg,#0070B8,#9d35dc); }
+@media (max-width:767px) { .abx-floating-contact { right: 10px; top: auto; bottom: 18px; flex-direction: row; padding: 7px; border-radius: 24px; transform: none; } .abx-contact-button { width: 44px; height: 44px; } .abx-contact-button::before { display: none; } .abx-contact-button:hover { transform: translateY(-3px) scale(1.04); } }
+.abx-contact-button svg{width:25px;height:25px;display:block;flex-shrink:0}

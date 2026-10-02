@@ -44,20 +44,18 @@ function filterShopProducts(products, filters) {
     }
 
     function renderCategories() {
-        const count = id => window.ProductVariants.groupProductVariants(products.filter(product => window.ShopCategories.matches(product, new Set([id])))).length;
-        const option = category => {
-            const age = category.label.match(/^(.*?)\s*(\(\d+-\d+\s+[^)]+\))$/);
-            const text = age ? `${escape(age[1])}<small class="shop-category-age">${escape(age[2])}</small>` : escape(category.label);
-            return `<label class="shop-check" for="shop-category-${category.id}"><input type="checkbox" id="shop-category-${category.id}" value="${category.id}"><span class="shop-category-text">${text}</span><span class="shop-category-count shop-muted">(${count(category.id)})</span></label>`;
-        };
-        $("category-buttons").innerHTML = '<button type="button" data-category="all" class="is-selected">All</button>' + window.ShopCategories.tree.map(category => `<button type="button" data-category="${category.id}">${escape(category.label)}</button>`).join("");
-        $("shop-category-options").innerHTML = window.ShopCategories.tree.map(category => category.children
-            ? `<details class="shop-category-group shop-category-expandable" open><summary>${option(category)}<span class="shop-category-chevron" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span></summary><div class="shop-category-children">${category.children.map(option).join("")}</div></details>`
-            : `<div class="shop-category-group">${option(category)}</div>`).join("");
-        $("in-stock-count").textContent = `(${products.filter(p => Number(p.stock || 0) > 0).length})`;
+        const categoryIcon = id => `<i class="fa-solid ${id === 'parts' ? 'fa-screwdriver-wrench' : id === 'all' ? 'fa-grip' : 'fa-bicycle'}" aria-hidden="true"></i>`;
+        const categoryButton = category => `<button type="button" data-category="${category.id}">${categoryIcon(category.id)}<span>${escape(category.label)}</span></button>`;
+        $("category-buttons").innerHTML = '<button type="button" data-category="all" class="is-selected"><i class="fa-solid fa-grip" aria-hidden="true"></i><span>All</span></button>' + window.ShopCategories.tree.map(category => category.children
+            ? `<details class="shop-category-dropdown"><summary data-category-group="${category.id}">${categoryIcon(category.id)}<span>${escape(category.label)}</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="shop-category-menu">${categoryButton(category)}${category.children.map(categoryButton).join("")}</div></details>`
+            : categoryButton(category)).join("");
+
     }
     function syncCategories() {
-        $("shop-category-options").querySelectorAll("input").forEach(input => input.checked = filters.categories.has(input.value));
+        $("category-buttons").querySelectorAll("[data-category-group]").forEach(summary => {
+            const group = window.ShopCategories.tree.find(category => category.id === summary.dataset.categoryGroup);
+            summary.classList.toggle("is-selected", filters.categories.has(group.id) || group.children.some(child => filters.categories.has(child.id)));
+        });
         $("category-buttons").querySelectorAll("button").forEach(button => {
             const selected = button.dataset.category === "all" ? filters.categories.size === 0 : filters.categories.has(button.dataset.category);
             button.classList.toggle("is-selected", selected);
@@ -147,8 +145,16 @@ function filterShopProducts(products, filters) {
         $("product-search").value = filters.keyword;
         $("shop-search-form").addEventListener("submit",event=>{event.preventDefault(); filters.keyword=$("product-search").value;page=1;render();});
         $("product-search").addEventListener("input",()=>{filters.keyword=$("product-search").value;page=1;render();});
-        $("category-buttons").addEventListener("click",event=>{const button=event.target.closest("button[data-category]");if(!button)return;filters.categories.clear();if(button.dataset.category!=="all")filters.categories.add(button.dataset.category);syncCategories();page=1;render();});
-        $("shop-category-options").addEventListener("change",()=>{filters.categories=new Set([...$("shop-category-options").querySelectorAll("input:checked")].map(input=>input.value));syncCategories();page=1;render();});
+        $("category-buttons").addEventListener("click",event=>{const button=event.target.closest("button[data-category]");if(!button)return;filters.categories.clear();if(button.dataset.category!=="all")filters.categories.add(button.dataset.category);syncCategories();$("category-buttons").querySelectorAll("details").forEach(menu=>menu.open=false);page=1;render();});
+        $("category-buttons").addEventListener("toggle",event=>{
+            if(event.target.open) $("category-buttons").querySelectorAll("details").forEach(menu=>{if(menu!==event.target)menu.open=false;});
+        },true);
+        document.addEventListener("click",event=>{
+            if(!$("category-buttons").contains(event.target)) $("category-buttons").querySelectorAll("details").forEach(menu=>menu.open=false);
+        });
+        $("category-buttons").addEventListener("keydown",event=>{
+            if(event.key==="Escape") { const menu=event.target.closest("details"); if(menu){menu.open=false;menu.querySelector("summary").focus();} }
+        });
         $("price-range").addEventListener("input",()=>$("price-max").value=$("price-range").value);
         $("price-max").addEventListener("input",()=>$("price-range").value=$("price-max").value);
         $("shop-filter-form").addEventListener("submit",event=>{

@@ -2,7 +2,7 @@ footer.footer,
 footer.footer-section,
 footer.detail-footer {
   background: #fff;
-  color: #111;
+  color: #526778;
   border-top: 1px solid #e5e7eb;
 }
 footer.footer h2,
@@ -19,7 +19,7 @@ footer.detail-footer p,
 footer.detail-footer a:not(.footer-social-link),
 footer .footer-bottom,
 footer .footer-picture {
-  color: #111;
+  color: #526778;
 }
 footer .footer-bottom {
   border-color: #e5e7eb;
@@ -112,4 +112,68 @@ footer a.footer-social-link:hover,
 }
 footer a[href*="tiktok.com"] svg {
   filter: drop-shadow(-1px -1px 0 #25F4EE) drop-shadow(1px 1px 0 #FE2C55);
+}
+
+/* Homepage footer shared by all public pages. */
+footer.site-footer {
+  width: min(1280px, 92%);
+  max-width: 1280px;
+  margin-inline: auto;
+  padding: 30px 0 0;
+  font: 14px/1.65 "Bricolage Grotesque", "Segoe UI", sans-serif;
+}
+footer.site-footer .container {
+  width: 100%;
+  max-width: none;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 2.2vw, 32px);
+}
+footer.site-footer .footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.25fr;
+  gap: 36px;
+  padding-bottom: 30px;
+}
+footer.site-footer .footer-grid > div { min-width: 0; }
+footer.site-footer h2 {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.22;
+  letter-spacing: 0;
+}
+footer.site-footer p { margin: 8px 0 10px; font-size: 14px; }
+footer.site-footer a:not(.footer-social-link):not(.back-top) {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  text-decoration: none;
+}
+footer.site-footer .footer-bottom {
+  position: relative;
+  padding-block: 17px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 14px;
+}
+footer.site-footer .back-top {
+  position: absolute;
+  right: 16px;
+  bottom: 15px;
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #0070B8;
+  color: #fff;
+  text-decoration: none;
+}
+@media(max-width:960px) {
+  footer.site-footer .footer-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 28px; }
+}
+@media(max-width:600px) {
+  footer.site-footer .footer-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 25px; }
+  footer.site-footer .footer-brand,
+  footer.site-footer .footer-grid > div:last-child { grid-column: 1 / -1; }
+  footer.site-footer .footer-bottom { text-align: left; padding-right: 60px; }
 }

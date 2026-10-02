@@ -54,7 +54,12 @@ async function testShop() {
     assert.deepEqual(grouped({ availability: 'all' }), [12, 10]);
     ready();
     await new Promise(resolve => setImmediate(resolve));
-    assert.match(get('shop-category-options').innerHTML, /<small class="shop-category-age">/);
+    assert.match(get('category-buttons').innerHTML, /shop-category-dropdown/);
+    assert.match(get('category-buttons').innerHTML, /data-category="kids-12"/);
+    assert.match(get('category-buttons').innerHTML, /data-category="parts-electric"/);
+    get('category-buttons').handlers.click({ target: { closest() { return { dataset: { category: 'kids-12' } }; } } });
+    assert.equal(get('product-count').textContent, 0);
+    get('category-buttons').handlers.click({ target: { closest() { return { dataset: { category: 'all' } }; } } });
     assert.equal(get('product-count').textContent, 2);
     assert.match(get('product-list').innerHTML, />0đ</);
     assert.match(get('product-list').innerHTML, /City &lt;bike&gt;/);

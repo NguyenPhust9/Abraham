@@ -38,23 +38,7 @@
 	/* Shared EN / 中文 / VI language picker beside the account button. */
 
 
-	var initFloatingContact = function() {
-		if (typeof document.querySelector !== 'function' || document.getElementById('abrahamFloatingContact')) return;
-		var contact = document.createElement('aside');
-		contact.id = 'abrahamFloatingContact';
-		contact.className = 'abx-floating-contact notranslate';
-		contact.setAttribute('translate', 'no');
-		contact.setAttribute('aria-label', 'Liên hệ nhanh');
-		contact.innerHTML =
-			'<a class="abx-contact-button abx-contact-phone" href="tel:0901184998" aria-label="Gọi Hotline 0901 184 998" data-contact-label="Hotline: 0901 184 998">' +
-			'<i class="fa-solid fa-phone" aria-hidden="true"></i></a>' +
-			'<a class="abx-contact-button abx-contact-zalo" href="https://zalo.me/1075006016291309696" target="_blank" rel="noopener noreferrer" aria-label="Nhắn tin qua Zalo" data-contact-label="Nhắn tin Zalo">' +
-			'<span aria-hidden="true">Zalo</span></a>' +
-			'<a class="abx-contact-button abx-contact-messenger" href="https://www.facebook.com/abraham.com.vn" target="_blank" rel="noopener noreferrer" aria-label="Nhắn tin qua Messenger" data-contact-label="Nhắn tin Messenger">' +
-			'<i class="fa-brands fa-facebook-messenger" aria-hidden="true"></i></a>';
-		document.body.appendChild(contact);
-	};
-	initFloatingContact();
+
 
 	var tinyslider = function() {
 		var el = document.querySelectorAll('.testimonial-slider');

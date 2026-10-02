@@ -1,0 +1,18 @@
+const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm'), assert = require('node:assert/strict');
+const context = vm.createContext({}); context.window = context;
+vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/shop-categories.js'), 'utf8'), context);
+const api = context.ShopCategories;
+const assigned = product => Array.from(api.categories(product));
+assert.deepEqual(assigned({ category: 'Xe đạp 16' }), ['kids', 'kids-16']);
+assert.deepEqual(assigned({ sku: 'DS20 - Đen' }), ['kids', 'kids-20']);
+assert.deepEqual(assigned({ category: 'Phụ Tùng IC' }), ['parts', 'parts-electric']);
+assert.deepEqual(assigned({ category: 'Phụ Tùng Xe Đạp' }), ['parts', 'parts-bike']);
+assert.deepEqual(assigned({ category: 'Xe đạp 26' }), ['mtb']);
+assert.deepEqual(assigned({ category: 'Xe đạp 700C' }), ['road']);
+assert.deepEqual(assigned({ category: 'Xe đạp 24' }), ['city']);
+assert.deepEqual(assigned({ category: 'Xe đạp Touring', sku: 'DS20' }), ['touring']);
+assert.deepEqual(assigned({ category: 'Xe đạp gấp' }), ['folding']);
+assert(api.matches({ category: 'Xe đạp 12' }, new Set(['kids'])));
+assert(!api.matches({ category: 'Xe đạp 12' }, new Set(['kids-14'])));
+assert(api.matches({ category: 'Phụ Tùng Sạc' }, new Set(['parts'])));
+console.log('Passed category hierarchy, temporary assignments and explicit admin overrides.');

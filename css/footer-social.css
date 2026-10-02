@@ -1,0 +1,115 @@
+footer.footer,
+footer.footer-section,
+footer.detail-footer {
+  background: #fff;
+  color: #111;
+  border-top: 1px solid #e5e7eb;
+}
+footer.footer h2,
+footer.footer h3,
+footer.footer p,
+footer.footer a:not(.footer-social-link),
+footer.footer-section h2,
+footer.footer-section h3,
+footer.footer-section p,
+footer.footer-section a:not(.footer-social-link),
+footer.detail-footer h2,
+footer.detail-footer h3,
+footer.detail-footer p,
+footer.detail-footer a:not(.footer-social-link),
+footer .footer-bottom,
+footer .footer-picture {
+  color: #111;
+}
+footer .footer-bottom {
+  border-color: #e5e7eb;
+}
+
+footer .footer-logo-link {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 16px;
+}
+footer img.footer-brand-logo {
+  display: block;
+  width: 150px;
+  height: 85px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: none;
+}
+
+footer .social-links,
+footer .footer-social-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+footer a.footer-social-link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid rgba(128, 153, 180, .3);
+  border-radius: 50%;
+  background: #fff;
+  color: #0070B8;
+  text-decoration: none;
+  transition: background .2s, color .2s, transform .2s;
+}
+footer a.footer-social-link:hover {
+  background: #0070B8;
+  color: #fff;
+  transform: translateY(-2px);
+}
+footer a.footer-social-link:focus-visible {
+  outline: 3px solid #f2b72b;
+  outline-offset: 3px;
+}
+footer .footer-social-link svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* Keep platform colors distinct from the site's primary blue. */
+footer a[href*="facebook.com"],
+footer .custom-social a:has(.fa-facebook-f) {
+  --social-color: #1877F2;
+}
+footer a[href*="zalo.me"] {
+  --social-color: #0068FF;
+}
+footer a[href*="tiktok.com"] {
+  --social-color: #111111;
+}
+footer .custom-social a:has(.fa-twitter) {
+  --social-color: #1DA1F2;
+}
+footer .custom-social a:has(.fa-instagram) {
+  --social-color: #E4405F;
+}
+footer .custom-social a:has(.fa-linkedin) {
+  --social-color: #0A66C2;
+}
+footer a.footer-social-link,
+.footer-section .custom-social li a {
+  color: #fff;
+  background: var(--social-color, #0070B8);
+  border-color: var(--social-color, #0070B8);
+}
+footer a.footer-social-link:hover,
+.footer-section .custom-social li a:hover {
+  background: var(--social-color, #0070B8);
+  color: #fff;
+  transform: translateY(-2px);
+}
+footer a[href*="tiktok.com"] svg {
+  filter: drop-shadow(-1px -1px 0 #25F4EE) drop-shadow(1px 1px 0 #FE2C55);
+}

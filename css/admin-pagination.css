@@ -2,11 +2,11 @@
 .admin-product-pagination[hidden] { display:none; }
 .admin-product-page-summary { display:flex; flex-wrap:wrap; align-items:center; gap:18px; color:#77859a; font-size:12px; }
 .admin-product-page-summary label { display:flex; align-items:center; gap:8px; margin:0; }
-.admin-product-page-summary select { border:1px solid #dce4ef; border-radius:8px; padding:7px 10px; background:#fff; color:#173f72; font-size:12px; }
+.admin-product-page-summary select { border:1px solid #dce4ef; border-radius:8px; padding:7px 10px; background:#fff; color:#0070B8; font-size:12px; }
 #productPageControls { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-#productPageControls button { min-width:34px; height:34px; border:1px solid #dce4ef; border-radius:8px; padding:0 10px; background:#fff; color:#173f72; font-size:12px; }
+#productPageControls button { min-width:34px; height:34px; border:1px solid #dce4ef; border-radius:8px; padding:0 10px; background:#fff; color:#0070B8; font-size:12px; }
 #productPageControls button:hover:not(:disabled) { background:#edf4ff; }
-#productPageControls button.is-active { color:#fff; background:#113c77; border-color:#113c77; }
+#productPageControls button.is-active { color:#fff; background:#0070B8; border-color:#0070B8; }
 #productPageControls button:disabled { opacity:.4; cursor:not-allowed; }
 #productPageControls button:focus-visible,.admin-product-page-summary select:focus-visible { outline:2px solid #ffbc37; outline-offset:3px; }
 .admin-page-dots { color:#8995a8; padding:0 3px; }

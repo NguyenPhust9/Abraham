@@ -9,7 +9,7 @@ function filterShopProducts(products, filters) {
         const price = Math.max(0, Number(product.price) || 0);
         return product.is_active !== false
             && (!keyword || String(product.name || "").toLowerCase().includes(keyword))
-            && (!filters.categories.size || filters.categories.has(String(product.category || "").trim()))
+            && window.ShopCategories.matches(product, filters.categories)
             && stock > 0
             && price >= filters.minPrice && price <= filters.maxPrice;
     });
@@ -44,11 +44,16 @@ function filterShopProducts(products, filters) {
     }
 
     function renderCategories() {
-        const counts = new Map();
-        products.forEach(product => { const category = String(product.category || "").trim(); if (category) counts.set(category, (counts.get(category) || 0) + 1); });
-        const categories = [...counts.keys()].sort((a,b) => frontendCategory(a).localeCompare(frontendCategory(b), "en", {numeric:true}));
-        $("category-buttons").innerHTML = '<button type="button" data-category="all" class="is-selected">All</button>' + categories.map(category => `<button type="button" data-category="${escape(category)}">${escape(frontendCategory(category))}</button>`).join("");
-        $("shop-category-options").innerHTML = categories.length ? categories.map((category, index) => `<label class="shop-check" for="shop-category-${index}"><input type="checkbox" id="shop-category-${index}" value="${escape(category)}"><span>${escape(frontendCategory(category))} <span class="shop-muted">(${counts.get(category)})</span></span></label>`).join("") : '<p class="shop-muted">No categories available.</p>';
+        const count = id => window.ProductVariants.groupProductVariants(products.filter(product => window.ShopCategories.matches(product, new Set([id])))).length;
+        const option = category => {
+            const age = category.label.match(/^(.*?)\s*(\([^)]*tu?i\))$/);
+            const text = age ? `${escape(age[1])}<small class="shop-category-age">${escape(age[2])}</small>` : escape(category.label);
+            return `<label class="shop-check" for="shop-category-${category.id}"><input type="checkbox" id="shop-category-${category.id}" value="${category.id}"><span class="shop-category-text">${text}</span><span class="shop-category-count shop-muted">(${count(category.id)})</span></label>`;
+        };
+        $("category-buttons").innerHTML = '<button type="button" data-category="all" class="is-selected">All</button>' + window.ShopCategories.tree.map(category => `<button type="button" data-category="${category.id}">${escape(category.label)}</button>`).join("");
+        $("shop-category-options").innerHTML = window.ShopCategories.tree.map(category => category.children
+            ? `<details class="shop-category-group shop-category-expandable" open><summary>${option(category)}<span class="shop-category-chevron" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span></summary><div class="shop-category-children">${category.children.map(option).join("")}</div></details>`
+            : `<div class="shop-category-group">${option(category)}</div>`).join("");
         $("in-stock-count").textContent = `(${products.filter(p => Number(p.stock || 0) > 0).length})`;
     }
     function syncCategories() {

@@ -101,6 +101,7 @@
 }
 
 /* Consistent public header across both markup variants. */
+.site-header,.abx-navigation{width:100%;max-width:none;margin-inline:0}
 .site-header,.abx-navigation{height:auto;min-height:76px;padding:0}
 .site-header .header-inner,.abx-navigation .abx-navigation-shell{width:min(1280px,92%);min-height:76px;height:auto;padding:0;gap:24px;box-sizing:border-box}
 .site-header .brand,.abx-navigation .abx-mobile-brand{width:112px;min-width:112px;flex:0 0 112px;margin-right:28px}

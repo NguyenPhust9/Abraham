@@ -7,6 +7,29 @@ body {
   font-size: var(--site-text-size) !important;
 }
 
+/* Swap the name and category sizes on featured product cards. */
+.featured .product-card h3,
+.featured .product-card h3 a {
+  font-size: var(--site-text-size) !important;
+}
+.featured .product-card > p {
+  font-size: 14px !important;
+}
+
+.categories .category-card h3 {
+  font-size: var(--site-text-size) !important;
+}
+.categories .category-card p {
+  font-size: 14px !important;
+}
+
+.values .value-grid h3 {
+  font-size: var(--site-text-size) !important;
+}
+.values .value-grid p {
+  font-size: 14px !important;
+}
+
 body :is(p, a, span, small, strong, b, em, label, input, select,
   textarea, button, li, dt, dd, td, th, figcaption, blockquote,
   summary, option, legend, div):not(

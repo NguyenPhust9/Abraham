@@ -6,7 +6,7 @@
 .thankyou-card .thankyou-icon svg { width:48px; height:48px; margin:0!important; }
 .thankyou-card h2 { margin-bottom:12px; color:#0070B8!important; font-size:38px; font-weight:800; }
 .thankyou-card .lead { margin-bottom:10px; color:#243f5c; font-size:18px; }
-.thankyou-reference { display:inline-block; margin:10px 0; padding:8px 14px; border-radius:20px; background:#eef6ff; color:#0070B8; font-size:12px; font-weight:700; }
+.thankyou-reference { display:inline-block; margin:10px 0; padding:8px 14px; border-radius:20px; background:#eef6ff; color:#0070B8; font-size:14px; font-weight:700; }
 .thankyou-message { max-width:450px; margin:14px auto 28px; color:#75879a; font-size:14px; line-height:1.7; }
 .thankyou-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
 .thankyou-actions .btn { min-width:160px; padding:12px 20px; border-radius:9px; font-weight:700; }

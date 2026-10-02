@@ -28,7 +28,7 @@ body {
   font-weight: 400;
   line-height: 28px;
   color: #6a6a6a;
-  font-size: 14px;
+  font-size:calc(14px + 2px);
   background-color: #FFFFFF; }
 
 a {
@@ -330,7 +330,7 @@ a {
     font-size: 14px;
     color: #0070B8; }
   .feature p {
-    font-size: 14px;
+    font-size:calc(14px + 2px);
     line-height: 22px;
     color: #6a6a6a; }
 
@@ -418,7 +418,7 @@ a {
   .popular-product .product-item-sm p {
     line-height: 1.4;
     margin-bottom: 10px;
-    font-size: 14px; }
+    font-size:calc(14px + 2px); }
   .popular-product .product-item-sm .thumbnail {
     margin-right: 10px;
     -webkit-box-flex: 0;
@@ -550,7 +550,7 @@ a {
       font-weight: 600;
       margin-bottom: 7px; }
     .blog-section .post-entry .post-content-entry .meta {
-      font-size: 14px; }
+      font-size:calc(14px + 2px); }
       .blog-section .post-entry .post-content-entry .meta a {
         font-weight: 600; }
   .blog-section .post-entry:hover .post-thumbnail img, .blog-section .post-entry:focus .post-thumbnail img {
@@ -694,7 +694,7 @@ textarea {
     border-width: 0px !important;
     vertical-align: middle;
     color: rgba(0, 0, 0, 0.8);
-    font-size: 18px; }
+    font-size:calc(18px + 2px); }
   .site-blocks-table td {
     padding: 20px;
     text-align: center;
@@ -1024,7 +1024,7 @@ a.more:hover,
 
 .testimonial-section .eyebrow-label {
     display: inline-block;
-    font-size: 12px;
+    font-size:calc(12px + 2px);
     font-weight: 700;
     letter-spacing: .12em;
     text-transform: uppercase;
@@ -1109,13 +1109,13 @@ a.more:hover,
 }
 
 .t-author .position {
-    font-size: 12.5px;
+    font-size:14px;
     color: #6a6a6a;
 }
 
 .t-stars {
     color: #F2B72B;
-    font-size: 13px;
+    font-size:14px;
     letter-spacing: 2px;
     margin-top: 3px;
 }
@@ -1316,7 +1316,7 @@ a.more:hover,
 	gap: .35rem;
 	margin-bottom: .35rem;
 	color: #667085;
-	font-size: .82rem;
+	font-size:14px;
 	font-weight: 600;
 }
 
@@ -1340,5 +1340,5 @@ a.more:hover,
 .abx-variant-option.is-out { opacity: .58; }
 .abx-variant-option img { width: 42px; height: 42px; border-radius: .4rem; object-fit: contain; background: #f8fafc; }
 .abx-variant-option span { display: grid; line-height: 1.2; }
-.abx-variant-option strong { font-size: .86rem; }
-.abx-variant-option small { margin-top: .2rem; color: #64748b; font-size: .72rem; }
+.abx-variant-option strong { font-size:14px; }
+.abx-variant-option small { margin-top: .2rem; color: #64748b; font-size:14px; }

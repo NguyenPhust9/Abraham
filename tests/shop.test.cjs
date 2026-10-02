@@ -54,6 +54,7 @@ async function testShop() {
     assert.deepEqual(grouped({ availability: 'all' }), [12, 10]);
     ready();
     await new Promise(resolve => setImmediate(resolve));
+    assert.match(get('shop-category-options').innerHTML, /<small class="shop-category-age">/);
     assert.equal(get('product-count').textContent, 2);
     assert.match(get('product-list').innerHTML, />0đ</);
     assert.match(get('product-list').innerHTML, /City &lt;bike&gt;/);

@@ -26,6 +26,7 @@
         $("cart-total").textContent = money(total);
         $("cart-layout").classList.toggle("d-none", items.length === 0);
         $("cart-empty").classList.toggle("d-none", items.length !== 0);
+        window.AbrahamLanguage?.refresh(document.getElementById("cart-page"));
     }
     function showError(text) {
         $("cart-error").textContent = text;

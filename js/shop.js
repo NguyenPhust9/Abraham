@@ -46,7 +46,7 @@ function filterShopProducts(products, filters) {
     function renderCategories() {
         const count = id => window.ProductVariants.groupProductVariants(products.filter(product => window.ShopCategories.matches(product, new Set([id])))).length;
         const option = category => {
-            const age = category.label.match(/^(.*?)\s*(\([^)]*tu?i\))$/);
+            const age = category.label.match(/^(.*?)\s*(\(\d+-\d+\s+[^)]+\))$/);
             const text = age ? `${escape(age[1])}<small class="shop-category-age">${escape(age[2])}</small>` : escape(category.label);
             return `<label class="shop-check" for="shop-category-${category.id}"><input type="checkbox" id="shop-category-${category.id}" value="${category.id}"><span class="shop-category-text">${text}</span><span class="shop-category-count shop-muted">(${count(category.id)})</span></label>`;
         };

@@ -36,12 +36,12 @@
       });
       const featured = [...leading, ...products.filter(p => !leading.includes(p))].slice(0, 12);
       if (!featured.length) {
-        track.innerHTML = '<div class="load-state"><p>Sản phẩm đang được cập nhật.</p><a class="button" href="/shop">Khám phá cửa hàng →</a></div>';
+        track.innerHTML = '<div class="load-state"><p>Sản phẩm đang được cập nhật.</p><a class="button" href="/shop">Khám phá cửa hàng</a></div>';
       } else {
         track.innerHTML = featured.map(product => {
           const href = escape(getProductUrl(product));
           const price = Number(product.price);
-          return `<article class="product-card"><a class="product-image" href="${href}"><img src="${escape(safeImage(product.image_url))}" alt="${escape(product.name)}" loading="lazy"></a><span class="product-label">ABRAHAM BIKE</span><h3 title="${escape(product.name)}"><a href="${href}">${escape(product.name)}</a></h3><p>${escape(product.category || 'Xe đạp Abraham')}</p><strong class="product-price">${Number.isFinite(price) && price > 0 ? price.toLocaleString('vi-VN') + '₫' : 'Liên hệ báo giá'}</strong><a class="button" href="${href}">Xem chi tiết <span>→</span></a></article>`;
+          return `<article class="product-card"><a class="product-image" href="${href}"><img src="${escape(safeImage(product.image_url))}" alt="${escape(product.name)}" loading="lazy"></a><span class="product-label">ABRAHAM BIKE</span><h3 title="${escape(product.name)}"><a href="${href}">${escape(product.name)}</a></h3><p>${escape(product.category || 'Xe đạp Abraham')}</p><strong class="product-price">${Number.isFinite(price) && price > 0 ? price.toLocaleString('vi-VN') + '₫' : 'Liên hệ báo giá'}</strong><a class="button" href="${href}">Xem chi tiết</a></article>`;
         }).join('');
       }
     } catch {

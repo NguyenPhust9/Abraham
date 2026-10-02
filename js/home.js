@@ -23,7 +23,7 @@
     const selected = languageData[code] || languageData.vi;
     document.documentElement.lang = code === 'zh' ? 'zh-CN' : code;
     languageTrigger.querySelector('img').src = selected.flag;
-    languageTrigger.querySelector('span').textContent = selected.label;
+    languageTrigger.querySelector('span').textContent = selected.name;
     languageTrigger.setAttribute('aria-label', `Ngôn ngữ: ${selected.name}`);
     languageMenu.querySelectorAll('[data-language]').forEach(button => button.classList.toggle('active', button.dataset.language === code));
     try { localStorage.setItem('abraham-language', code); } catch (error) {}

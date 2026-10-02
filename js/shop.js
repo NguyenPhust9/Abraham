@@ -20,13 +20,17 @@ function filterShopProducts(products, filters) {
         const time = product => Date.parse(product.created_at || product.updated_at || "") || 0;
         return time(b) - time(a) || (Number(b.id) || 0) - (Number(a.id) || 0);
     });
-    return window.ProductVariants.groupProductVariants(result);
+    const grouped = window.ProductVariants.groupProductVariants(result);
+    if (filters.sort === "newest") {
+        grouped.sort((a, b) => Number(Boolean(window.ProductVariants.productImage(b))) - Number(Boolean(window.ProductVariants.productImage(a))));
+    }
+    return grouped;
 }
 
 (() => {
     const PAGE_SIZE = 12;
     let products = [], page = 1, loaded = false, noticeTimer;
-    const filters = { keyword: new URLSearchParams(location.search).get("q") || "", categories: new Set(), availability: "all", minPrice: 0, maxPrice: Infinity, sort: "newest" };
+    const filters = { keyword: new URLSearchParams(location.search).get("q") || "", categories: new Set(), availability: "in", minPrice: 0, maxPrice: Infinity, sort: "newest" };
     let favorites = [];
     try { favorites = JSON.parse(localStorage.getItem("abraham_favorites") || "[]"); if (!Array.isArray(favorites)) favorites = []; } catch (_) { favorites = []; }
     const $ = id => document.getElementById(id);
@@ -74,7 +78,7 @@ function filterShopProducts(products, filters) {
         const liked = favorites.includes(String(product.id));
         return `<article class="shop-product-card">
             <div class="shop-product-media">
-                <a href="${escape(url)}" aria-label="View ${escape(name)}"><img src="${escape(frontendProductImage(product.image_url))}" alt="${escape(name)}" loading="lazy"></a>
+                <a href="${escape(url)}" aria-label="View ${escape(name)}"><img src="${escape(frontendProductImage(window.ProductVariants.productImage(product)))}" alt="${escape(name)}" loading="lazy"></a>
                 ${badge ? `<span class="shop-product-badge ${badgeStyle}">${escape(badge)}</span>` : ""}
                 <button type="button" class="shop-favorite" data-favorite="${escape(product.id)}" aria-label="${liked ? "Remove from" : "Add to"} favorites" aria-pressed="${liked}"><i class="fa-${liked ? "solid" : "regular"} fa-heart" aria-hidden="true"></i></button>
             </div>
@@ -144,7 +148,7 @@ function filterShopProducts(products, filters) {
     }
     document.addEventListener("DOMContentLoaded", () => {
         $("product-search").value = filters.keyword;
-        $("availability-all").checked=true; $("in-stock-only").checked=false; $("availability-out").checked=false;
+        $("availability-all").checked=false; $("in-stock-only").checked=true; $("availability-out").checked=false;
         $("shop-search-form").addEventListener("submit",event=>{event.preventDefault(); filters.keyword=$("product-search").value;page=1;render();});
         $("product-search").addEventListener("input",()=>{filters.keyword=$("product-search").value;page=1;render();});
         $("category-buttons").addEventListener("click",event=>{const button=event.target.closest("button[data-category]");if(!button)return;filters.categories.clear();if(button.dataset.category!=="all")filters.categories.add(button.dataset.category);syncCategories();page=1;render();});

@@ -17,11 +17,11 @@
    - `AMIS_CLIENT_ID`
    - `AMIS_CLIENT_SECRET`
    - `DATABASE_URL`: URI PostgreSQL của Supabase, dùng kết nối trực tiếp hoặc **Session pooler**, có quyền cập nhật bảng `public.products`. Không dùng Transaction pooler vì tác vụ giữ advisory lock theo phiên kết nối. Nếu runner không kết nối IPv6 trực tiếp được, dùng Session pooler IPv4.
-4. Vào **Actions → Sync AMIS inventory → Run workflow**, để `apply=false`. Xem báo cáo số SKU khớp, thay đổi và không khớp. Lỗi định dạng, thiếu trường số lượng, SKU trùng hoặc không có mã khớp sẽ dừng toàn bộ lượt chạy.
+4. Vào **Actions → Sync AMIS inventory → Run workflow**, để `apply=false`. Xem báo cáo số sản phẩm khớp, thay đổi và không khớp. Lỗi định dạng, thiếu trường số lượng, mã nguồn AMIS trùng hoặc không có mã khớp sẽ dừng toàn bộ lượt chạy. Các sản phẩm website trùng SKU nhận cùng số tồn từ AMIS.
 5. Chạy lại với `apply=true` để đồng bộ lần đầu, xác nhận tồn ở website khớp kho HCM 3.
 6. Trong **Settings → Secrets and variables → Actions → Variables**, thêm `AMIS_SYNC_ENABLED=true`. Khi đó lịch chạy ở phút **07, 22, 37, 52 mỗi giờ** sẽ ghi tồn tự động. Đổi biến thành `false` để dừng lịch.
 
-Khóa AMIS và mật khẩu database chỉ nằm trong Secrets, không đưa vào HTML/JavaScript trình duyệt hay commit lên Git. File `.env.example` chỉ liệt kê tên cấu hình; script đọc biến môi trường, không tự nạp `.env`.
+Local configuration: fill `.env` (ignored by Git). The sync script loads it automatically; existing environment variables take precedence. Both project Python servers block HTTP access to dotfiles. Keep AMIS credentials and database passwords out of frontend code and commits.
 
 ## Vận hành
 
@@ -40,7 +40,7 @@ python scripts/sync_amis_stock.py          # Xem trước, không ghi
 python scripts/sync_amis_stock.py --apply  # Ghi tồn từ AMIS
 ```
 
-Đặt ba biến môi trường bí mật ở trên và `AMIS_STOCK_CODE=HCM 3`. Không lưu file chứa mật khẩu trong thư mục website đang phục vụ bằng HTTP.
+For local runs, fill `AMIS_CLIENT_ID`, `AMIS_CLIENT_SECRET`, and `DATABASE_URL` in `.env`; keep `AMIS_STOCK_CODE=HCM 3`. Use `serve.py` or `dev_server.py`, which block access to this file.
 
 ## Kiểm tra
 
@@ -50,3 +50,7 @@ node --test tests/checkout.test.cjs
 ```
 
 Trước khi kích hoạt thật, kiểm tra một đơn thử trong môi trường thử nghiệm: số tồn trước/sau đặt đơn phải giữ nguyên. Các bài kiểm tra Python dùng phản hồi giả lập và không kết nối tài khoản AMIS/database thật.
+
+## Duplicate website SKUs and ledger response compatibility
+
+All website rows with the same normalized SKU receive the same AMIS stock quantity; stock is not divided between duplicate rows. Duplicate source codes still abort the sync. The ledger endpoint may return success=false with integer code=0 and valid inventory data. Only that endpoint is accepted in this case, with positive pagination metadata, full record-count validation, unique source codes, and integer stock quantities. Other failed responses remain errors.

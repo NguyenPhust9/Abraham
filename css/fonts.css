@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("../fonts/Bricolage_Grotesque/BricolageGrotesque-VariableFont_opsz,wdth,wght.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}
+
+:root {
+  --bs-body-font-family: "Bricolage Grotesque", "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  font-family: "Bricolage Grotesque", "Segoe UI", Arial, sans-serif;
+  font-optical-sizing: auto;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}

@@ -42,11 +42,21 @@ async function testShop() {
     assert.deepEqual(ids({ availability: 'all', sort: 'price-asc' }), [1, 5, 3, 2]);
     assert.deepEqual(ids({ availability: 'all', sort: 'price-desc', minPrice: 1000000 }), [2, 3]);
     assert.deepEqual(ids({ categories: new Set(['City']) }), [3]);
+    const colored = [
+        { id: 10, sku: 'BIKE - V\u00e0ng', stock: 4, image_url: '', created_at: '2026-04-01' },
+        { id: 11, sku: 'BIKE - \u0110\u1ecf', stock: 2, image_url: '/red.png', created_at: '2026-01-01' },
+        { id: 12, sku: 'OTHER', stock: 1, image_url: '', created_at: '2026-05-01' }
+    ];
+    const grouped = options => Array.from(context.filterShopProducts(colored, { ...filters, ...options }), p => p.id);
+    assert.deepEqual(grouped({}), [11, 12]);
+    colored[1].stock = 0;
+    assert.deepEqual(grouped({}), [12, 10]);
+    assert.deepEqual(grouped({ availability: 'all' }), [11, 12]);
     ready();
     await new Promise(resolve => setImmediate(resolve));
-    assert.equal(get('availability-all').checked, true);
-    assert.equal(get('in-stock-only').checked, false);
-    assert.equal(get('product-count').textContent, 4);
+    assert.equal(get('availability-all').checked, false);
+    assert.equal(get('in-stock-only').checked, true);
+    assert.equal(get('product-count').textContent, 2);
     assert.match(get('product-list').innerHTML, />0đ</);
     assert.match(get('product-list').innerHTML, /City &lt;bike&gt;/);
     assert.match(get('product-list').innerHTML, /\/san-pham\/road-bike-1/);

@@ -10,6 +10,9 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
     def send_head(self):
+        if any(part.startswith('.') for part in Path(self.translate_path(self.path)).relative_to(ROOT).parts):
+            self.send_error(404)
+            return None
         url = urlsplit(self.path)
         if re.fullmatch(r"/san-pham/[a-z0-9-]+-\d+/?", url.path):
             self.path = "/product-detail.html"

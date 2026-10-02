@@ -40,6 +40,12 @@
         return String(value ?? "").trim().replace(/^([a-z]+)(12|14|16|18|20|22|24|26|27|28)$/i, "$1-$2");
     }
 
+    function productImage(product) {
+        const images = [product?.image_url, ...(Array.isArray(product?.image_urls) ? product.image_urls : [])];
+        return images.find(url => typeof url === "string" && url.trim()
+            && !/product-placeholder\.svg(?:[?#]|$)/i.test(url.trim()))?.trim() || "";
+    }
+
     function groupProductVariants(products) {
         const groups = new Map();
         for (const product of products || []) {
@@ -48,10 +54,12 @@
             groups.get(info.key).push(product);
         }
         return [...groups.values()].map(variants => {
-            const representative = variants.find(product => Number(product.stock || 0) > 0) || variants[0];
+            const withImages = variants.filter(product => productImage(product));
+            const candidates = withImages.length ? withImages : variants;
+            const representative = candidates.find(product => Number(product.stock || 0) > 0) || candidates[0];
             return { ...representative, _variants: variants };
         });
     }
 
-    global.ProductVariants = { normalize, looksLikeColor, splitVariant, productVariantInfo, formatBaseName, groupProductVariants };
+    global.ProductVariants = { normalize, looksLikeColor, splitVariant, productVariantInfo, formatBaseName, productImage, groupProductVariants };
 })(typeof window !== "undefined" ? window : globalThis);

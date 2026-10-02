@@ -5,7 +5,7 @@
 * License: https://creativecommons.org/licenses/by/3.0/
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url("fonts.css");
 
 
 // Create SCSS variables
@@ -23,7 +23,7 @@ $lg: 992px;
 $xl: 1200px;
 $xxl: 1400px;
 
-$font-family: "Inter", sans-serif;
+$font-family: "Bricolage Grotesque", sans-serif;
 
 body {
 	overflow-x: hidden;

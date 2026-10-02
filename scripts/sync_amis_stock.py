@@ -5,14 +5,34 @@ import json
 import os
 import re
 import sys
+from pathlib import Path
 from decimal import Decimal, InvalidOperation
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, unquote
 from urllib.request import Request, urlopen
 
 
 class SyncError(Exception):
     pass
+
+
+def load_local_config():
+    config = Path(__file__).resolve().parents[1] / '.env'
+    if not config.is_file():
+        return
+    allowed = {'AMIS_API_BASE', 'AMIS_CLIENT_ID', 'AMIS_CLIENT_SECRET', 'AMIS_STOCK_CODE', 'DATABASE_URL'}
+    for line in config.read_text(encoding='utf-8-sig').splitlines():
+        line = line.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        name, value = line.split('=', 1)
+        name, value = name.strip(), value.strip()
+        if name not in allowed:
+            continue
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ('"', "'"):
+            value = value[1:-1]
+        if value and not os.environ.get(name):
+            os.environ[name] = value
 
 
 def normalize(value):
@@ -110,7 +130,15 @@ class Amis:
         if not isinstance(payload, dict):
             raise SyncError('AMIS response must be an object.')
         if field(payload, 'success') in (False, 'false', 'False', 0):
-            raise SyncError(f'AMIS rejected {path}, even though HTTP may have succeeded.')
+            # This ledger endpoint returns a false flag with code 0 and valid pages.
+            # Accept only this specific shape; inventory() verifies the full snapshot.
+            valid_ledger = (path == '/Stocks/product_ledger'
+                            and type(field(payload, 'code')) is int
+                            and field(payload, 'code') == 0
+                            and integer(field(payload, 'total_pages')) > 0
+                            and integer(field(payload, 'total_records')) > 0)
+            if not valid_ledger or not records(payload):
+                raise SyncError(f'AMIS rejected {path}, even though HTTP may have succeeded.')
         return payload
 
     def authenticate(self):
@@ -133,9 +161,16 @@ class Amis:
         all_rows = []
         seen = set()
         expected_pages = None
+        expected_records = None
         for page in range(1, 101):
             payload = self.request('/Stocks/product_ledger', params={'page': page, 'pageSize': 50, 'stockID': stock_id})
             rows = records(payload)
+            record_count = field(payload, 'total_records')
+            if record_count is not None:
+                record_count = integer(record_count)
+                if record_count < 1 or (expected_records is not None and expected_records != record_count):
+                    raise SyncError('AMIS record count changed or is invalid; retry next cycle.')
+                expected_records = record_count
             total = field(payload, 'total_pages')
             nested = decode(field(payload, 'data'))
             if total is None and isinstance(nested, dict):
@@ -163,6 +198,8 @@ class Amis:
             raise SyncError('Inventory exceeded 100 pages; no partial update is permitted.')
         if not all_rows:
             raise SyncError('AMIS inventory is empty; existing website stock is preserved.')
+        if expected_records is not None and len(all_rows) != expected_records:
+            raise SyncError('AMIS inventory count is incomplete; no stock will be changed.')
         return all_rows
 
 
@@ -187,8 +224,6 @@ def plan_updates(products, inventory):
         key = normalize(product['sku'])
         if not key:
             continue
-        if key in seen:
-            raise SyncError('Website contains duplicate normalized SKUs; fix these before syncing.')
         seen.add(key)
         item = inventory.get(key)
         if item is None:
@@ -227,7 +262,22 @@ def sync(connection, amis, warehouse, apply=False):
         connection.execute('SELECT pg_advisory_unlock(731904251)')
 
 
+def validate_database_project():
+    root = Path(__file__).resolve().parents[1]
+    website = root / 'js' / 'shop.js'
+    if not website.is_file():
+        raise SyncError('Cannot verify the website Supabase project.')
+    projects = set(re.findall(r'https://([a-z0-9]+)\.supabase\.co', website.read_text(encoding='utf-8')))
+    uri = urlsplit(os.environ['DATABASE_URL'])
+    host = re.fullmatch(r'db\.([a-z0-9]+)\.supabase\.co', uri.hostname or '')
+    user = re.fullmatch(r'postgres\.([a-z0-9]+)', unquote(uri.username or ''))
+    project = host.group(1) if host else user.group(1) if user else None
+    if not project or projects != {project}:
+        raise SyncError('DATABASE_URL does not match the website Supabase project. No connection or stock update was made.')
+
+
 def main():
+    load_local_config()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--apply', action='store_true', help='Write the validated AMIS snapshot to the database')
     args = parser.parse_args()
@@ -235,6 +285,7 @@ def main():
     missing = [name for name in required if not os.environ.get(name)]
     if missing:
         raise SyncError('Missing environment variables: ' + ', '.join(missing))
+    validate_database_project()
     try:
         import psycopg
     except ImportError:

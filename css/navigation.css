@@ -51,6 +51,6 @@
 .abx-contact-button i { font-size: 23px; }
 .abx-contact-phone { background: linear-gradient(145deg,#20c766,#079943); }
 .abx-contact-zalo { background: linear-gradient(145deg,#20b8e8,#0878c9); }
-.abx-contact-zalo span { font: 800 13px/1 Arial,sans-serif; letter-spacing: -.5px; }
+.abx-contact-zalo span { font: 800 13px/1 "Bricolage Grotesque",sans-serif; letter-spacing: -.5px; }
 .abx-contact-messenger { background: linear-gradient(145deg,#168aff,#9d35dc); }
 @media (max-width:767px) { .abx-floating-contact { right: 10px; top: auto; bottom: 18px; flex-direction: row; padding: 7px; border-radius: 24px; transform: none; } .abx-contact-button { width: 44px; height: 44px; } .abx-contact-button::before { display: none; } .abx-contact-button:hover { transform: translateY(-3px) scale(1.04); } }

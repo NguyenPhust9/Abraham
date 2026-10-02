@@ -84,7 +84,7 @@
 .shop-banner { position:relative; isolation:isolate; background:radial-gradient(ellipse at 85% 90%,#fff 0,transparent 48%),radial-gradient(ellipse at 40% 5%,#fff9 0,transparent 45%),linear-gradient(115deg,#eaf7ff,#cceafe 70%,#eaf7ff); }
 .shop-banner-copy { position:relative; z-index:2; }
 .shop-banner-bike { position:absolute; width:580px; height:390px; object-fit:contain; top:-45px; right:200px; z-index:0; }
-.shop-banner-slogan { position:absolute; right:5%; top:25px; color:#082b70; font-family:"Segoe Print","Comic Sans MS",cursive; font-size:32px; font-weight:700; line-height:.9; transform:rotate(-8deg); }
+.shop-banner-slogan { position:absolute; right:5%; top:25px; color:#082b70; font-family:"Bricolage Grotesque","Segoe UI",sans-serif; font-size:32px; font-weight:700; line-height:.9; transform:rotate(-8deg); }
 .shop-banner-slogan span { margin-left:24px; }
 .shop-banner-slogan::after { content:""; display:block; width:90px; height:4px; background:#ffbb28; margin:14px 0 0 auto; }
 @media (max-width:1000px) { .shop-banner-bike { right:60px; opacity:.85; } .shop-banner-slogan { display:none; } }

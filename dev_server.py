@@ -10,6 +10,12 @@ ROOT = Path(__file__).resolve().parent
 
 
 class AbrahamHandler(SimpleHTTPRequestHandler):
+    def send_head(self):
+        if any(part.startswith('.') for part in Path(self.translate_path(self.path)).relative_to(ROOT).parts):
+            self.send_error(404)
+            return None
+        return super().send_head()
+
     def end_headers(self):
         self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
         super().end_headers()

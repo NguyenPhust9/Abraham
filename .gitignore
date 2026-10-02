@@ -4,3 +4,5 @@
 __pycache__/
 *.pyc
 .venv/
+server.stdout.log
+server.stderr.log

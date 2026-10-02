@@ -21,3 +21,14 @@ assert.equal(api.productVariantInfo(grouped[0]).base, 'AURA-16');
 assert.equal(api.formatBaseName('FH12'), 'FH-12');
 assert.equal(api.formatBaseName('A700'), 'A700');
 console.log('Passed bicycle model grouping, color extraction, stock preference and non-color protection.');
+
+const imageVariants = [
+  { id: 20, sku: 'SAME', stock: 5, image_url: '  ' },
+  { id: 21, sku: 'SAME', stock: 3, image_url: '/red.png' }
+];
+assert.equal(api.groupProductVariants(imageVariants)[0].id, 21);
+imageVariants[1].stock = 0;
+assert.equal(api.groupProductVariants(imageVariants)[0].id, 21);
+assert.equal(api.productImage({ image_url: '/images/product-placeholder.svg', image_urls: ['/gallery.png'] }), '/gallery.png');
+assert.equal(api.productImage({ image_url: '   ' }), '');
+assert.equal(api.productImage({ image_url: '/images/product-placeholder.svg' }), '');

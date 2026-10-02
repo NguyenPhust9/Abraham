@@ -46,9 +46,13 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(summary['missing_on_website'], 1)
         self.assertEqual(summary['changed'], 1)
 
-    def test_duplicate_website_sku_aborts(self):
-        with self.assertRaises(SyncError):
-            plan_updates([{'id': 1, 'sku': 'A', 'stock': 1}, {'id': 2, 'sku': 'a', 'stock': 1}], {'a': {'stock': 3}})
+    def test_duplicate_website_sku_receives_same_source_stock(self):
+        updates, summary = plan_updates(
+            [{'id': 1, 'sku': ' A ', 'stock': 1}, {'id': 2, 'sku': 'a', 'stock': 1}],
+            {'a': {'stock': 3}})
+        self.assertEqual(updates, [(1, 3), (2, 3)])
+        self.assertEqual(summary['matched'], 2)
+        self.assertEqual(summary['changed'], 2)
 
     def test_zero_matches_aborts(self):
         with self.assertRaises(SyncError): plan_updates([], {'a': {'stock': 1}})
@@ -99,6 +103,24 @@ class ApiTests(unittest.TestCase):
             def read(self): return b'{"success":false,"data":[]}'
         with patch('sync_amis_stock.urlopen', return_value=Response()), self.assertRaises(SyncError):
             Amis('id', 'secret').request('/Stocks')
+
+    def test_ledger_false_flag_requires_zero_code_and_complete_metadata(self):
+        class Response:
+            def __init__(self, payload): self.payload = payload
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def read(self): return json.dumps(self.payload).encode()
+        payload = {'success': False, 'code': 0, 'total_pages': 1, 'total_records': 1,
+                   'data': [{'product_code': 'A', 'main_stock_quantity': 3}]}
+        with patch('sync_amis_stock.urlopen', return_value=Response(payload)):
+            self.assertEqual(Amis('id', 'secret').request('/Stocks/product_ledger'), payload)
+        for override in [{'code': 500}, {'code': False}, {'total_records': 0}, {'data': []}]:
+            with self.subTest(override=override), patch('sync_amis_stock.urlopen', return_value=Response({**payload, **override})), self.assertRaises(SyncError):
+                Amis('id', 'secret').request('/Stocks/product_ledger')
+
+    def test_inventory_record_count_must_match(self):
+        client = self.client([{'data': [{'code': 'A'}], 'total_pages': 1, 'total_records': 2}])
+        with self.assertRaises(SyncError): client.inventory('warehouse')
 
 
 class FakeConnection:

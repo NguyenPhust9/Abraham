@@ -4,7 +4,7 @@
 * Author URI: https://untree.co/
 * License: https://creativecommons.org/licenses/by/3.0/
 */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("fonts.css");
 
 :root {
   --gold: #F2B72B;
@@ -24,7 +24,7 @@ body {
   position: relative; }
 
 body {
-  font-family: "Inter", sans-serif;
+  font-family: "Bricolage Grotesque", sans-serif;
   font-weight: 400;
   line-height: 28px;
   color: #6a6a6a;
@@ -585,7 +585,7 @@ a {
     .footer-section .subscription-form .form-control {
       height: 50px;
       border-radius: 10px;
-      font-family: "Inter", sans-serif; }
+      font-family: "Bricolage Grotesque", sans-serif; }
       .footer-section .subscription-form .form-control:active, .footer-section .subscription-form .form-control:focus {
         outline: none;
         -webkit-box-shadow: none;
@@ -648,7 +648,7 @@ a {
 .form-control {
   height: 50px;
   border-radius: 10px;
-  font-family: "Inter", sans-serif; }
+  font-family: "Bricolage Grotesque", sans-serif; }
   .form-control:active, .form-control:focus {
     outline: none;
     -webkit-box-shadow: none;
@@ -1059,7 +1059,7 @@ a.more:hover,
 }
 
 .testimonial-card .quote-mark {
-    font-family: Georgia, serif;
+    font-family: "Bricolage Grotesque", sans-serif;
     font-size: 42px;
     line-height: 1;
     color: #F2B72B;

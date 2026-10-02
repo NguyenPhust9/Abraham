@@ -253,6 +253,25 @@ function hideProductFormError() {
 	document.getElementById("productFormError").classList.add("d-none");
 }
 
+async function prepareProductStockUpdate(id, payload) {
+    if (!id) return;
+    // The editor may have been opened before a background AMIS sync.
+    const { data: current, error } = await supabaseClient.from("products")
+        .select("stock, amis_stock_synced_at, amis_stock_code").eq("id", id).single();
+    if (error) throw error;
+    if (!current) throw new Error("Product no longer exists. Reload the product list.");
+    const stockInput = document.getElementById("productStock");
+    const original = allProducts.find(product => String(product.id) === String(id));
+    if (current.amis_stock_synced_at || stockInput.disabled || (original && Number(original.stock || 0) === payload.stock)) {
+        delete payload.stock;
+    }
+    if (current.amis_stock_synced_at) {
+        stockInput.value = current.stock ?? 0;
+        stockInput.disabled = true;
+        stockInput.title = "Tồn kho được đồng bộ từ AMIS, kho " + (current.amis_stock_code || "");
+    }
+}
+
 /* ---------- Submit form thêm / sửa ---------- */
 async function handleProductSubmit(event) {
 	event.preventDefault();
@@ -297,7 +316,7 @@ async function handleProductSubmit(event) {
 
 		submitBtn.textContent = "Đang lưu...";
         // Do not send a stale editor value back over an AMIS snapshot.
-        if (id && allProducts.find(p => String(p.id) === id)?.amis_stock_synced_at) delete payload.stock;
+        await prepareProductStockUpdate(id, payload);
 
 		let error, savedProduct;
 

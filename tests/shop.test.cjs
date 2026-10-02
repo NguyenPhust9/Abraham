@@ -36,11 +36,11 @@ async function testShop() {
     const filters = { keyword: '', categories: new Set(), availability: 'in', minPrice: 0, maxPrice: Infinity, sort: 'newest' };
     const ids = options => Array.from(context.filterShopProducts(products, { ...filters, ...options }), product => product.id);
     assert.deepEqual(ids({}), [3, 1]);
-    assert.deepEqual(ids({ availability: 'all' }), [3, 2, 1, 5]);
-    assert.deepEqual(ids({ availability: 'out' }), [2, 5]);
+    assert.deepEqual(ids({ availability: 'all' }), [3, 1]);
+    assert.deepEqual(ids({ availability: 'out' }), [3, 1]);
     assert.deepEqual(ids({ keyword: 'ROAD', availability: 'all', categories: new Set(['Road']), maxPrice: 0 }), [1]);
-    assert.deepEqual(ids({ availability: 'all', sort: 'price-asc' }), [1, 5, 3, 2]);
-    assert.deepEqual(ids({ availability: 'all', sort: 'price-desc', minPrice: 1000000 }), [2, 3]);
+    assert.deepEqual(ids({ availability: 'all', sort: 'price-asc' }), [1, 3]);
+    assert.deepEqual(ids({ availability: 'all', sort: 'price-desc', minPrice: 1000000 }), [3]);
     assert.deepEqual(ids({ categories: new Set(['City']) }), [3]);
     const colored = [
         { id: 10, sku: 'BIKE - V\u00e0ng', stock: 4, image_url: '', created_at: '2026-04-01' },
@@ -51,28 +51,19 @@ async function testShop() {
     assert.deepEqual(grouped({}), [11, 12]);
     colored[1].stock = 0;
     assert.deepEqual(grouped({}), [12, 10]);
-    assert.deepEqual(grouped({ availability: 'all' }), [11, 12]);
+    assert.deepEqual(grouped({ availability: 'all' }), [12, 10]);
     ready();
     await new Promise(resolve => setImmediate(resolve));
-    assert.equal(get('availability-all').checked, false);
-    assert.equal(get('in-stock-only').checked, true);
     assert.equal(get('product-count').textContent, 2);
     assert.match(get('product-list').innerHTML, />0đ</);
     assert.match(get('product-list').innerHTML, /City &lt;bike&gt;/);
     assert.match(get('product-list').innerHTML, /\/san-pham\/road-bike-1/);
-    get('in-stock-only').checked = false;
-    get('in-stock-only').handlers.change();
-    assert.equal(get('product-count').textContent, 4);
-    assert.match(get('product-list').innerHTML, /data-add-cart="2" disabled/);
-    get('availability-out').checked = true;
-    get('availability-out').handlers.change();
-    assert.equal(get('product-count').textContent, 2);
+    assert.doesNotMatch(get('product-list').innerHTML, /data-add-cart="2"/);
     get('price-min').value = '500'; get('price-max').value = '100';
     get('shop-filter-form').handlers.submit({ preventDefault() {} });
     assert.match(get('shop-filter-error').textContent, /valid price range/);
     get('shop-reset').handlers.click();
-    assert.equal(get('product-count').textContent, 4);
-    assert.equal(get('availability-all').checked, true);
+    assert.equal(get('product-count').textContent, 2);
 }
 function testCart() {
     const callbacks = {}, localStorage = storage();
@@ -90,4 +81,4 @@ function testCart() {
     assert.throws(() => cart.quantity(1, 5), /available stock/);
     cart.remove(1); assert.equal(cart.count(), 0);
 }
-(async () => { await testShop(); testCart(); console.log('Passed shop filters, availability defaults/toggles, sort, zero prices, safe product rendering, invalid range handling and cart operations.'); })().catch(error => { console.error(error); process.exitCode = 1; });
+(async () => { await testShop(); testCart(); console.log('Passed shop filters, in-stock-only visibility and reset, sort, zero prices, safe product rendering, invalid range handling and cart operations.'); })().catch(error => { console.error(error); process.exitCode = 1; });

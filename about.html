@@ -11,17 +11,27 @@
 
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/about-page.css">
-</head>
+<link rel="stylesheet" href="css/header.css?v=shared-2"></head>
 <body class="about-page">
   <a class="skip-link" href="#main">Đi đến nội dung chính</a>
-  <header class="site-header"><div class="header-inner">
-    <a class="brand" href="/" aria-label="Abraham Bike – Trang chủ"><img class="brand-logo" src="images/logoabraham.png" alt="Abraham Bike"></a>
-    <nav class="main-nav" aria-label="Điều hướng chính"><a href="/">Trang chủ</a><a href="/shop">Cửa hàng</a><a href="/about" aria-current="page">Về chúng tôi</a><a href="/services">Dịch vụ</a><a href="/blog">Bài viết</a><a href="/contact">Liên hệ</a></nav>
-    <div class="language-picker" id="language-picker"><button class="language-trigger" type="button" aria-expanded="false" aria-controls="language-menu" aria-label="Chọn ngôn ngữ"><img src="images/flags/vietnamese.svg" alt=""><span>VI</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg></button><div class="language-menu" id="language-menu" hidden><button type="button" data-language="vi"><img src="images/flags/vietnamese.svg" alt="">Tiếng Việt</button><button type="button" data-language="en"><img src="images/flags/english.svg" alt="">English</button><button type="button" data-language="zh"><img src="images/flags/chinese.svg" alt="">中文</button></div></div>
-    <button class="login-button" id="home-auth-trigger" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span id="home-auth-label">Đăng nhập</span></button>
-    <a class="button button-small" href="#about-cta">Tìm đại lý gần bạn</a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Mở menu</span></button>
-  </div><nav class="mobile-nav" id="mobile-nav" aria-label="Điều hướng di động"><a href="/">Trang chủ</a><a href="/shop">Cửa hàng</a><a href="/about" aria-current="page">Về chúng tôi</a><a href="/services">Dịch vụ</a><a href="/blog">Bài viết</a><a href="/contact">Liên hệ</a></nav></header>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Abraham Bike – Trang chủ"><img class="brand-logo" src="images/logoabraham.png" alt="Abraham Bike"></a>
+      <nav class="main-nav" aria-label="Điều hướng chính"><a href="/">Trang chủ</a><a href="/shop">Sản phẩm</a><a href="/about" aria-current="page">Về chúng tôi</a><a href="/dealers">Hệ thống đại lý</a><a href="/blog">Kiến thức</a><a href="/contact">Liên hệ</a></nav>
+      <form class="header-search" action="/shop" role="search"><label class="sr-only" for="home-search">Tìm kiếm sản phẩm</label><input id="home-search" name="q" placeholder="Tìm kiếm sản phẩm…" type="search"><button aria-label="Tìm kiếm" type="submit">⌕</button></form><div class="language-picker" id="language-picker">
+        <button class="language-trigger" type="button" aria-expanded="false" aria-controls="language-menu" aria-label="Chọn ngôn ngữ"><img src="images/flags/vietnamese.svg" alt=""><span>VI</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg></button>
+        <div class="language-menu" id="language-menu" hidden>
+          <button type="button" data-language="vi"><img src="images/flags/vietnamese.svg" alt="">Tiếng Việt</button>
+          <button type="button" data-language="en"><img src="images/flags/english.svg" alt="">English</button>
+          <button type="button" data-language="zh"><img src="images/flags/chinese.svg" alt="">中文</button>
+        </div>
+      </div>
+      <button class="login-button" id="home-auth-trigger" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span id="home-auth-label">Đăng nhập</span></button>
+
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Mở menu</span></button>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Điều hướng di động"><a href="/">Trang chủ</a><a href="/shop">Sản phẩm</a><a href="/about" aria-current="page">Về chúng tôi</a><a href="/dealers">Hệ thống đại lý</a><a href="/blog">Kiến thức</a><a href="/contact">Liên hệ</a></nav>
+  </header>
 
   <aside class="journey" aria-label="Tuyến đường đồng hành"><div class="journey-line"><div class="journey-progress"></div><svg class="journey-wheel" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="2"/><path d="M16 3v26M3 16h26M7 7l18 18M25 7 7 25"/></svg></div><div class="journey-stops"></div></aside>
   <aside class="floating-contact" aria-label="Liên hệ nhanh"><a class="contact-button contact-phone" href="tel:0901184998" aria-label="Gọi Hotline 0901 184 998" data-label="Hotline: 0901 184 998"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3 4 5c-1 7 8 16 15 15l2-3-5-3-2 3c-3-1-6-4-7-7l3-2z"/></svg></a><a class="contact-button contact-zalo" href="https://zalo.me/1075006016291309696" target="_blank" rel="noopener noreferrer" aria-label="Nhắn tin qua Zalo" data-label="Nhắn tin Zalo"><span>Zalo</span></a><a class="contact-button contact-messenger" href="https://www.facebook.com/abraham.com.vn" target="_blank" rel="noopener noreferrer" aria-label="Nhắn tin qua Messenger" data-label="Nhắn tin Messenger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-3-.5L4 22l1-4a8.4 8.4 0 0 1-2-5.5A8.5 8.5 0 0 1 12 4a8.5 8.5 0 0 1 9 7.5zM7 15l4-4 2 2 4-4"/></svg></a></aside>

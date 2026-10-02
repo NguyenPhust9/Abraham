@@ -13,7 +13,7 @@
 		path = path.replace(/\.html$/i, '');
 		var section = path;
 		if (path === '/index') section = '/';
-		if (path === '/product-detail') section = '/shop';
+		if (path === '/product-detail' || path.startsWith('/san-pham/') || path.startsWith('/product/')) section = '/shop';
 		if (path === '/blog-post') section = '/blog';
 
 		var links = document.querySelectorAll('.abx-navigation-link');
@@ -113,6 +113,7 @@
 		actions.insertBefore(picker, account);
 
 		var translations = {
+            'Products':['S\u1ea3n ph\u1ea9m','\u4ea7\u54c1'],'Dealers':['H\u1ec7 th\u1ed1ng \u0111\u1ea1i l\u00fd','\u7ecf\u9500\u5546\u7f51\u7edc'],'Knowledge':['Ki\u1ebfn th\u1ee9c','\u77e5\u8bc6'],
 			'Home':['Trang chủ','首页'],'Shop':['Cửa hàng','商店'],'About us':['Về chúng tôi','关于我们'],'Services':['Dịch vụ','服务'],'Blog':['Bài viết','博客'],'Contact us':['Liên hệ','联系我们'],'Log In':['Đăng nhập','登录'],'Log out':['Đăng xuất','退出登录'],'Your account':['Tài khoản của bạn','您的账户'],'View cart':['Xem giỏ hàng','查看购物车'],'Admin':['Quản trị','管理'],
 			'Ride Further,':['Đi xa hơn,','骑得更远，'],'Ride Better':['Trải nghiệm tốt hơn','骑得更好'],'Premium bicycles built for every kind of rider. From daily city commutes to weekend trail adventures, find the frame, fit, and components that keep you rolling.':['Xe đạp cao cấp dành cho mọi tay đua. Từ đi lại hằng ngày trong thành phố đến những chuyến phiêu lưu cuối tuần, hãy tìm khung xe, kích thước và linh kiện phù hợp để luôn vững bánh.','为各种骑行者打造的高品质自行车。从城市日常通勤到周末越野探险，找到合适的车架、尺寸和配件，让骑行一路顺畅。'],'Shop Now':['Mua ngay','立即购买'],'Explore':['Khám phá','探索'],
 			'Built with excellent components.':['Được chế tạo từ linh kiện chất lượng cao.','采用优质组件打造。'],'Every frame is tested for strength and comfort, paired with trusted gearing and brakes so you can ride with confidence, mile after mile.':['Mỗi khung xe đều được kiểm tra độ bền và sự thoải mái, kết hợp cùng bộ truyền động và phanh đáng tin cậy để bạn tự tin trên mọi hành trình.','每个车架都经过强度与舒适性测试，并配备可靠的变速和刹车系统，让您一路安心骑行。'],

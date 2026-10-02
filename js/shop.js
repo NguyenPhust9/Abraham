@@ -10,7 +10,7 @@ function filterShopProducts(products, filters) {
         return product.is_active !== false
             && (!keyword || String(product.name || "").toLowerCase().includes(keyword))
             && (!filters.categories.size || filters.categories.has(String(product.category || "").trim()))
-            && (filters.availability === "all" || (filters.availability === "in" ? stock > 0 : !(stock > 0)))
+            && stock > 0
             && price >= filters.minPrice && price <= filters.maxPrice;
     });
     result.sort((a, b) => {
@@ -30,7 +30,7 @@ function filterShopProducts(products, filters) {
 (() => {
     const PAGE_SIZE = 12;
     let products = [], page = 1, loaded = false, noticeTimer;
-    const filters = { keyword: new URLSearchParams(location.search).get("q") || "", categories: new Set(), availability: "in", minPrice: 0, maxPrice: Infinity, sort: "newest" };
+    const filters = { keyword: new URLSearchParams(location.search).get("q") || "", categories: new Set(), minPrice: 0, maxPrice: Infinity, sort: "newest" };
     let favorites = [];
     try { favorites = JSON.parse(localStorage.getItem("abraham_favorites") || "[]"); if (!Array.isArray(favorites)) favorites = []; } catch (_) { favorites = []; }
     const $ = id => document.getElementById(id);
@@ -42,14 +42,7 @@ function filterShopProducts(products, filters) {
         clearTimeout(noticeTimer);
         noticeTimer = setTimeout(() => $("shop-notice").classList.add("d-none"), 3500);
     }
-    function availability(value) {
-        filters.availability = value;
-        $("availability-all").checked = value === "all";
-        $("in-stock-only").checked = value === "in";
-        $("availability-out").checked = value === "out";
-        page = 1;
-        render();
-    }
+
     function renderCategories() {
         const counts = new Map();
         products.forEach(product => { const category = String(product.category || "").trim(); if (category) counts.set(category, (counts.get(category) || 0) + 1); });
@@ -57,7 +50,6 @@ function filterShopProducts(products, filters) {
         $("category-buttons").innerHTML = '<button type="button" data-category="all" class="is-selected">All</button>' + categories.map(category => `<button type="button" data-category="${escape(category)}">${escape(frontendCategory(category))}</button>`).join("");
         $("shop-category-options").innerHTML = categories.length ? categories.map((category, index) => `<label class="shop-check" for="shop-category-${index}"><input type="checkbox" id="shop-category-${index}" value="${escape(category)}"><span>${escape(frontendCategory(category))} <span class="shop-muted">(${counts.get(category)})</span></span></label>`).join("") : '<p class="shop-muted">No categories available.</p>';
         $("in-stock-count").textContent = `(${products.filter(p => Number(p.stock || 0) > 0).length})`;
-        $("out-stock-count").textContent = `(${products.filter(p => !(Number(p.stock || 0) > 0)).length})`;
     }
     function syncCategories() {
         $("shop-category-options").querySelectorAll("input").forEach(input => input.checked = filters.categories.has(input.value));
@@ -98,7 +90,7 @@ function filterShopProducts(products, filters) {
         const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
         page = Math.min(page, pages);
         $("product-count").textContent = filtered.length;
-        $("search-status").textContent = `${filtered.length} products. ${filters.availability === "in" ? "In stock only." : filters.availability === "out" ? "Out of stock only." : "All availability."}`;
+        $("search-status").textContent = `${filtered.length} products. In stock only.`;
         $("product-list").innerHTML = filtered.length ? filtered.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE).map(card).join("") : '<div class="shop-state"><h2>No products found</h2><p>Try a different search or adjust your filters.</p><button type="button" data-reset-filters>Reset filters</button></div>';
         renderPagination(pages);
     }
@@ -117,7 +109,7 @@ function filterShopProducts(products, filters) {
         filters.keyword=""; filters.categories.clear(); filters.minPrice=0; filters.maxPrice=Infinity; page=1;
         $("product-search").value=""; $("price-min").value=0; $("price-max").value=$("price-range").max; $("price-range").value=$("price-range").max;
         $("shop-filter-error").classList.add("d-none");
-        syncCategories(); availability("all");
+        syncCategories(); render();
     }
     async function fetchAllShopProducts() {
         const batchSize = 1000;
@@ -136,7 +128,7 @@ function filterShopProducts(products, filters) {
         loaded = false;
         $("product-list").innerHTML = '<div class="shop-state" role="status"><div class="spinner-border spinner-border-sm" aria-hidden="true"></div><p>Loading products...</p></div>';
         try {
-            products = (await fetchAllShopProducts()).filter(p=>p.is_active!==false);
+            products = (await fetchAllShopProducts()).filter(p=>p.is_active!==false && Number(p.stock || 0) > 0);
             const maxPrice = Math.max(10000000,...products.map(p=>Number(p.price)||0));
             $("price-range").max = Math.ceil(maxPrice/1000)*1000;
             $("price-range").value = $("price-range").max;
@@ -148,12 +140,10 @@ function filterShopProducts(products, filters) {
     }
     document.addEventListener("DOMContentLoaded", () => {
         $("product-search").value = filters.keyword;
-        $("availability-all").checked=false; $("in-stock-only").checked=true; $("availability-out").checked=false;
         $("shop-search-form").addEventListener("submit",event=>{event.preventDefault(); filters.keyword=$("product-search").value;page=1;render();});
         $("product-search").addEventListener("input",()=>{filters.keyword=$("product-search").value;page=1;render();});
         $("category-buttons").addEventListener("click",event=>{const button=event.target.closest("button[data-category]");if(!button)return;filters.categories.clear();if(button.dataset.category!=="all")filters.categories.add(button.dataset.category);syncCategories();page=1;render();});
         $("shop-category-options").addEventListener("change",()=>{filters.categories=new Set([...$("shop-category-options").querySelectorAll("input:checked")].map(input=>input.value));syncCategories();page=1;render();});
-        [["availability-all","all"],["in-stock-only","in"],["availability-out","out"]].forEach(([id,value])=>$(id).addEventListener("change",()=>availability($(id).checked?value:"all")));
         $("price-range").addEventListener("input",()=>$("price-max").value=$("price-range").value);
         $("price-max").addEventListener("input",()=>$("price-range").value=$("price-max").value);
         $("shop-filter-form").addEventListener("submit",event=>{

@@ -78,13 +78,13 @@
   function renderPreview() {
     const valid = preparedRows.filter(row => !row.error);
     const invalid = preparedRows.length - valid.length;
-    el("bulkPriceImportSummary").innerHTML = `<strong>${valid.length}</strong> sản phẩm sẽ cập nhật giá${invalid ? `, <strong class="text-danger">${invalid}</strong> dòng có lỗi` : ""}.`;
+    el("bulkPriceImportSummary").innerHTML = `<strong>${valid.length}</strong> sản phẩm sẽ cập nhật giá${invalid ? `, <strong class="text-danger">${invalid}</strong> dòng có lỗi sẽ được bỏ qua` : ""}.`;
     el("bulkPriceImportPreviewBody").innerHTML = preparedRows.map(row => `<tr class="${row.error ? "table-danger" : ""}">
       <td>${row.rowNumber}</td><td>${escapeHtml(row.product?.name || "—")}</td><td>${escapeHtml(row.sku || row.idText || "—")}</td>
       <td>${row.product ? formatVND(row.product.price) : "—"}</td><td>${Number.isFinite(row.price) ? formatVND(row.price) : "—"}</td>
       <td>${row.error ? escapeHtml(row.error) : '<span class="text-success">Sẵn sàng cập nhật</span>'}</td></tr>`).join("");
     el("bulkPriceImportPreviewWrap").classList.remove("d-none");
-    el("confirmBulkPriceImportBtn").disabled = !valid.length || invalid > 0;
+    el("confirmBulkPriceImportBtn").disabled = !valid.length;
   }
 
   async function handleFile(event) {
@@ -109,9 +109,11 @@
     const button = el("confirmBulkPriceImportBtn");
     button.disabled = true;
     let updated = 0;
+    const validRows = preparedRows.filter(item => !item.error);
+    const skipped = preparedRows.length - validRows.length;
     try {
-      for (const row of preparedRows.filter(item => !item.error)) {
-        button.textContent = `Đang cập nhật ${updated + 1}/${preparedRows.length}...`;
+      for (const row of validRows) {
+        button.textContent = `Đang cập nhật ${updated + 1}/${validRows.length}...`;
         const { data, error } = await supabaseClient.from("products")
           .update({ price: row.price, updated_at: new Date().toISOString() })
           .eq("id", row.product.id).select("id");
@@ -120,7 +122,7 @@
         updated += 1;
       }
       modal.hide();
-      showAdminSuccess(`Đã cập nhật giá cho ${updated} sản phẩm từ Excel.`);
+      showAdminSuccess(`Đã cập nhật giá cho ${updated} sản phẩm từ Excel${skipped ? `, bỏ qua ${skipped} dòng có lỗi` : ""}.`);
       await loadProducts();
     } catch (error) {
       showError(`Đã cập nhật ${updated} sản phẩm. ${error.message}`);

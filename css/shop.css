@@ -164,7 +164,7 @@
 .shop-filter-bar .shop-search { width:100%; margin:0; min-height:60px; padding:4px 4px 4px 14px; }
 .shop-filter-bar .shop-search button { min-height:50px; white-space:nowrap; }
 .shop-filter-controls { min-width:0; border-left:1px solid #e1edf8; padding-left:24px; }
-.shop-filter-controls form { display:grid; grid-template-columns:minmax(240px,1fr) auto auto; align-items:end; gap:12px; margin:0; }
+.shop-filter-controls form { display:grid; grid-template-columns:minmax(240px,1fr) auto auto auto; align-items:end; gap:12px; margin:0; }
 .shop-filter-controls fieldset { min-width:0; border:0; padding:0; margin:0; }
 .shop-filter-controls legend { float:none; font-size:14px; font-weight:700; margin:0 0 6px; line-height:1.4; }
 .shop-filter-controls input[type=range] { display:none; }
@@ -173,6 +173,8 @@
 .shop-filter-controls .shop-price-inputs input { height:48px; min-height:48px; margin:0; padding:10px 12px; border-radius:9px; }
 .shop-filter-controls .shop-apply { display:flex; align-items:center; justify-content:center; gap:8px; width:auto; min-height:48px; white-space:nowrap; padding:10px 16px; }
 .shop-filter-controls .shop-reset { display:flex; align-items:center; justify-content:center; gap:6px; width:auto; height:48px; margin:0; padding:10px 12px; border:1px solid #e1edf8; border-radius:9px; background:#f7faff; color:var(--shop-muted); white-space:nowrap; font-size:14px; }
+.shop-stock-toggle { display:flex; align-items:center; gap:8px; height:48px; margin:0; padding:0 12px; border:1px solid #e1edf8; border-radius:9px; background:#f7faff; color:var(--shop-blue); font-size:14px; font-weight:600; white-space:nowrap; cursor:pointer; }
+.shop-stock-toggle input { width:18px; height:18px; margin:0; accent-color:var(--shop-blue); cursor:pointer; }
 .shop-filter-controls .shop-filter-error { grid-column:1/-1; margin:0; }
 @media(max-width:1200px) {
   .shop-filter-bar { grid-template-columns:1fr; gap:16px; }
@@ -182,6 +184,7 @@
   .shop-filter-bar { padding:12px; }
   .shop-filter-controls form { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
   .shop-price-filter { grid-column:1/-1; }
+  .shop-stock-toggle { justify-content:center; }
   .shop-filter-controls .shop-reset { justify-content:center; white-space:normal; }
   .shop-category-pills > button,.shop-category-dropdown > summary { padding:10px 14px; }
 }

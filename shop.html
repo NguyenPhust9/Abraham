@@ -17,7 +17,7 @@
 
 	<title>Abraham — Premium Bicycles &amp; Riding Gear</title>
 <link rel="stylesheet" href="/css/navigation.css?v=min-text-14">
-<link rel="stylesheet" href="/css/shop.css?v=aligned-filters-8">
+<link rel="stylesheet" href="/css/shop.css?v=stock-filter-9">
 <link rel="stylesheet" href="/css/header.css?v=min-text-14"><link rel="stylesheet" href="/css/footer-social.css?v=shared-footer-3"><link rel="stylesheet" href="/css/floating-contact.css?v=1"></head>
 
 <body>
@@ -71,7 +71,7 @@
       <div class="shop-price-inputs"><label>Min<input id="price-min" type="number" min="0" step="1" value="0" inputmode="numeric"></label><label>Max<input id="price-max" type="number" min="0" step="1" value="10000000" inputmode="numeric"></label></div>
      </fieldset>
 
-
+     <label class="shop-stock-toggle" for="in-stock-only"><input type="checkbox" id="in-stock-only"><span>Chỉ hiện còn hàng</span></label>
 
      <button class="shop-apply" type="submit"><i class="fa-solid fa-filter" aria-hidden="true"></i><span>Apply filters</span></button><button class="shop-reset" type="button" id="shop-reset"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span>Reset filters</span></button>
      <p id="shop-filter-error" class="shop-filter-error d-none" role="alert"></p>
@@ -114,7 +114,7 @@
 	<script src="/js/cart-store.js"></script>
 <script src="/js/cart-animation.js"></script>
 <script src="/js/shop-categories.js"></script>
-<script src="/js/shop.js?v=filters-7"></script>
+<script src="/js/shop.js?v=stock-filter-8"></script>
 
 
 <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">

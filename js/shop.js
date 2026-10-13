@@ -10,7 +10,7 @@ function filterShopProducts(products, filters) {
         return product.is_active !== false
             && (!keyword || String(product.name || "").toLowerCase().includes(keyword))
             && window.ShopCategories.matches(product, filters.categories)
-            && stock > 0
+            && (!filters.inStockOnly || stock > 0)
             && price >= filters.minPrice && price <= filters.maxPrice;
     });
     result.sort((a, b) => {
@@ -30,7 +30,7 @@ function filterShopProducts(products, filters) {
 (() => {
     const PAGE_SIZE = 12;
     let products = [], page = 1, loaded = false, noticeTimer;
-    const filters = { keyword: new URLSearchParams(location.search).get("q") || "", categories: new Set(), minPrice: 0, maxPrice: Infinity, sort: "newest" };
+    const filters = { keyword: new URLSearchParams(location.search).get("q") || "", categories: new Set(), inStockOnly: false, minPrice: 0, maxPrice: Infinity, sort: "newest" };
     let favorites = [];
     try { favorites = JSON.parse(localStorage.getItem("abraham_favorites") || "[]"); if (!Array.isArray(favorites)) favorites = []; } catch (_) { favorites = []; }
     const $ = id => document.getElementById(id);
@@ -93,7 +93,7 @@ function filterShopProducts(products, filters) {
         const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
         page = Math.min(page, pages);
         $("product-count").textContent = filtered.length;
-        $("search-status").textContent = `${filtered.length} products. In stock only.`;
+        $("search-status").textContent = `${filtered.length} products. ${filters.inStockOnly ? "In stock only." : "All availability."}`;
         $("product-list").innerHTML = filtered.length ? filtered.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE).map(card).join("") : '<div class="shop-state"><h2>No products found</h2><p>Try a different search or adjust your filters.</p><button type="button" data-reset-filters>Reset filters</button></div>';
         renderPagination(pages);
     }
@@ -109,8 +109,9 @@ function filterShopProducts(products, filters) {
         $("pagination").innerHTML = `<button type="button" data-page="${page-1}" ${page===1 ? "disabled" : ""} aria-label="Previous page">‹</button>${buttons}<button type="button" data-page="${page+1}" ${page===pages ? "disabled" : ""} aria-label="Next page">›</button>`;
     }
     function reset() {
-        filters.keyword=""; filters.categories.clear(); filters.minPrice=0; filters.maxPrice=Infinity; page=1;
+        filters.keyword=""; filters.categories.clear(); filters.inStockOnly=false; filters.minPrice=0; filters.maxPrice=Infinity; page=1;
         $("product-search").value=""; $("price-min").value=0; $("price-max").value=$("price-range").max; $("price-range").value=$("price-range").max;
+        $("in-stock-only").checked=false;
         $("shop-filter-error").classList.add("d-none");
         syncCategories(); render();
     }
@@ -131,7 +132,7 @@ function filterShopProducts(products, filters) {
         loaded = false;
         $("product-list").innerHTML = '<div class="shop-state" role="status"><div class="spinner-border spinner-border-sm" aria-hidden="true"></div><p>Loading products...</p></div>';
         try {
-            products = (await fetchAllShopProducts()).filter(p=>p.is_active!==false && Number(p.stock || 0) > 0);
+            products = (await fetchAllShopProducts()).filter(p=>p.is_active!==false);
             const maxPrice = Math.max(10000000,...products.map(p=>Number(p.price)||0));
             $("price-range").max = Math.ceil(maxPrice/1000)*1000;
             $("price-range").value = $("price-range").max;
@@ -163,6 +164,7 @@ function filterShopProducts(products, filters) {
             $("shop-filter-error").classList.add("d-none");filters.minPrice=min;filters.maxPrice=max;page=1;render();
         });
         $("shop-reset").addEventListener("click",reset);
+        $("in-stock-only").addEventListener("change",()=>{filters.inStockOnly=$("in-stock-only").checked;page=1;render();});
         $("shop-sort").addEventListener("change",()=>{filters.sort=$("shop-sort").value;page=1;render();});
         [["shop-grid",false],["shop-list",true]].forEach(([id,isList])=>$(id).addEventListener("click",()=>{$("product-list").classList.toggle("is-list",isList);$("shop-grid").classList.toggle("is-selected",!isList);$("shop-list").classList.toggle("is-selected",isList);$("shop-grid").setAttribute("aria-pressed",String(!isList));$("shop-list").setAttribute("aria-pressed",String(isList));}));
         $("pagination").addEventListener("click",event=>{const button=event.target.closest("button[data-page]");if(!button||button.disabled)return;page=Number(button.dataset.page);render();$("product-count").scrollIntoView({behavior:"smooth",block:"start"});});

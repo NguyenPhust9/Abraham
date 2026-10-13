@@ -8,6 +8,7 @@ let allProducts = [];
 let productModalInstance = null;
 let adminProductPage = 1;
 let adminProductPageSize = 20;
+let stockEditingProductId = null;
 
 /* ---------- Cấu hình Cloudinary (upload ảnh sản phẩm) ---------- */
 const CLOUDINARY_CLOUD_NAME = "desf1gsdl";
@@ -102,13 +103,15 @@ function renderTable() {
 	const tbody = document.getElementById("productsTableBody");
 	const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
 	const category = document.getElementById("categoryFilter").value;
+	const inStockOnly = document.getElementById("inStockOnlyFilter")?.checked || false;
 
 	let list = allProducts.filter(p => {
 		const matchKeyword = !keyword ||
 			(p.name || "").toLowerCase().includes(keyword) ||
 			(p.sku || "").toLowerCase().includes(keyword);
 		const matchCategory = !category || p.category === category;
-		return matchKeyword && matchCategory;
+		const matchStock = !inStockOnly || Number(p.stock ?? 0) > 0;
+		return matchKeyword && matchCategory && matchStock;
 	});
 
     const total = list.length;
@@ -134,7 +137,19 @@ function renderTable() {
 			<td>${p.category || "—"}</td>
 			<td class="fw-semibold">${formatVND(p.price)}</td>
 			<td>
-				<span class="badge ${(p.stock ?? 0) <= 5 ? "badge-stock-low" : "bg-light text-dark"}">${p.stock ?? 0}</span>
+				${stockEditingProductId === p.id ? `
+					<div class="stock-editor">
+						<span class="stock-editor-current">Tồn hiện tại: <strong>${p.stock ?? 0}</strong></span>
+						<div class="stock-editor-controls">
+							<input type="number" min="0" step="1" class="form-control form-control-sm" id="stockInput-${p.id}" value="${p.stock ?? 0}" aria-label="Tồn kho mới của ${p.name || 'sản phẩm'}">
+							<button type="button" class="btn btn-sm btn-success" onclick="saveProductStock(${p.id})" title="Lưu tồn kho"><i class="fa fa-check"></i></button>
+							<button type="button" class="btn btn-sm btn-outline-secondary" onclick="cancelStockEdit()" title="Huỷ"><i class="fa fa-xmark"></i></button>
+						</div>
+					</div>` : `
+					<div class="stock-display">
+						<span class="badge ${(p.stock ?? 0) <= 5 ? "badge-stock-low" : "bg-light text-dark"}">${p.stock ?? 0}</span>
+						<button type="button" class="stock-edit-button" onclick="beginStockEdit(${p.id})" title="Chỉnh tồn kho" aria-label="Chỉnh tồn kho của ${p.name || 'sản phẩm'}"><i class="fa fa-pen"></i></button>
+					</div>`}
 			</td>
 			<td>
 				<span class="badge ${p.is_active ? "badge-active" : "badge-inactive"}">${p.is_active ? "Đang bán" : "Đã ẩn"}</span>
@@ -171,6 +186,59 @@ function renderAdminProductPagination(total, pages) {
 function resetAdminProductPage() {
     adminProductPage = 1;
     renderTable();
+}
+
+function beginStockEdit(id) {
+	stockEditingProductId = id;
+	renderTable();
+	document.getElementById(`stockInput-${id}`)?.focus();
+}
+
+function cancelStockEdit() {
+	stockEditingProductId = null;
+	renderTable();
+}
+
+function parseStockValue(value) {
+	const stock = Number(value);
+	return Number.isInteger(stock) && stock >= 0 ? stock : null;
+}
+
+async function saveProductStock(id) {
+	const product = allProducts.find(item => item.id === id);
+	const input = document.getElementById(`stockInput-${id}`);
+	if (!product || !input) return;
+	const oldStock = product.stock ?? 0;
+
+	const stock = parseStockValue(input.value);
+	if (stock === null) {
+		alert("Tồn kho phải là số nguyên không âm.");
+		input.focus();
+		return;
+	}
+
+	const buttons = input.parentElement?.querySelectorAll("button") || [];
+	buttons.forEach(button => { button.disabled = true; });
+	input.disabled = true;
+
+	const { data, error } = await supabaseClient.from("products")
+		.update({ stock, updated_at: new Date().toISOString() })
+		.eq("id", id)
+		.select("id, stock");
+
+	if (error || !data?.length) {
+		alert("Không thể cập nhật tồn kho: " + (error?.message || "Kiểm tra quyền admin và thử lại."));
+		input.disabled = false;
+		buttons.forEach(button => { button.disabled = false; });
+		input.focus();
+		return;
+	}
+
+	product.stock = data[0].stock ?? stock;
+	stockEditingProductId = null;
+	renderStats();
+	renderTable();
+	showAdminSuccess(`Đã cập nhật tồn kho “${product.name || product.id}” từ ${oldStock} thành ${product.stock}.`);
 }
 
 /* ---------- Mở modal thêm mới ---------- */
@@ -375,6 +443,7 @@ document.addEventListener("adminVerified", function (e) {
     }, true);
 	document.getElementById("searchInput").addEventListener("input", resetAdminProductPage);
 	document.getElementById("categoryFilter").addEventListener("change", resetAdminProductPage);
+	document.getElementById("inStockOnlyFilter").addEventListener("change", resetAdminProductPage);
     document.getElementById("productPageSize").addEventListener("change", function () {
         const size = Number(this.value);
         if (![10, 20, 50].includes(size)) return;

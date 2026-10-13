@@ -11,4 +11,7 @@ get('searchInput').value='SKU-39';c.resetAdminProductPage();assert.equal(rows(),
 get('searchInput').value='';get('categoryFilter').value='City';c.resetAdminProductPage();assert.equal(rows(),10);assert.match(get('productPageInfo').textContent,/10 sản phẩm/);
 get('searchInput').value='missing';c.resetAdminProductPage();assert.match(get('productPageInfo').textContent,/0–0 \/ 0/);assert.match(get('productsTableBody').innerHTML,/Không tìm thấy/);
 get('searchInput').value='';get('categoryFilter').value='';vm.runInContext('adminProductPageSize=10;',c);c.resetAdminProductPage();assert.equal(rows(),10);
+vm.runInContext('allProducts=[{id:1,name:"Available",stock:3,is_active:true},{id:2,name:"Sold out",stock:0,is_active:true},{id:3,name:"Missing stock",stock:null,is_active:true}];',c);
+get('inStockOnlyFilter').checked=false;c.resetAdminProductPage();assert.equal(rows(),3);
+get('inStockOnlyFilter').checked=true;c.resetAdminProductPage();assert.equal(rows(),1);assert.match(get('productsTableBody').innerHTML,/Available/);assert.doesNotMatch(get('productsTableBody').innerHTML,/Sold out/);
 console.log('Passed page slicing, last page, clamping after deletion, global SKU search, categories, empty results and page size.');

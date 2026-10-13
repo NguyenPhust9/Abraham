@@ -139,6 +139,16 @@
       width: 46px; height: 46px; object-fit: cover; border-radius: 8px; background: #F1F3F7;
     }
     .badge-stock-low { background: #FDE8E8; color: var(--abx-red); }
+    .stock-display { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .stock-edit-button {
+      border: 0; background: transparent; color: var(--abx-navy-light);
+      padding: 2px 4px; border-radius: 5px; line-height: 1;
+    }
+    .stock-edit-button:hover { background: #EEF4FC; }
+    .stock-editor { min-width: 185px; }
+    .stock-editor-current { display: block; color: var(--abx-text); font-size: 12px; margin-bottom: 5px; }
+    .stock-editor-controls { display: flex; align-items: center; gap: 5px; }
+    .stock-editor input { width: 82px; min-height: 32px; padding: 3px 7px; }
     .badge-active { background: #E7F7EE; color: #16A34A; }
     .badge-inactive { background: #F1F3F7; color: var(--abx-text); }
 
@@ -286,6 +296,10 @@
                 <select id="categoryFilter" class="form-select" style="min-width:160px;">
                   <option value="">Tất cả danh mục</option>
                 </select>
+                <label class="form-check d-flex align-items-center gap-2 mb-0 px-2">
+                  <input class="form-check-input mt-0" type="checkbox" id="inStockOnlyFilter">
+                  <span class="form-check-label">Chỉ hiển thị còn hàng</span>
+                </label>
               </div>
               <div class="d-flex gap-2 flex-wrap">
                 <button class="btn btn-outline-success" id="openBulkPriceImportBtn" type="button">
